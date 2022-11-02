@@ -1,4 +1,4 @@
-package potsdam.slicer;
+package de.potsdam.slicer;
 
 public class SliceVarUse extends SliceBase {
 	

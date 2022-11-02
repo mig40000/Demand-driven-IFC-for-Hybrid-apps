@@ -1,15 +1,15 @@
 /**
  * 
  */
-package potsdam.db;
+package de.potsdam.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import potsdam.constants.GenericConstants;
-import potsdam.main.ApplicationAnalysis;
+import de.potsdam.constants.GenericConstants;
+import de.potsdam.main.ApplicationAnalysis;
 
 /**
  * @author abhishektiwari

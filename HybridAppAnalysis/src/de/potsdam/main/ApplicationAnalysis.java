@@ -1,24 +1,24 @@
 /**
  * 
  */
-package potsdam.main;
+package de.potsdam.main;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import potsdam.ApplicationDetails.ApplicationDetails;
-import potsdam.Logging.IIFALogger;
-import potsdam.ManifestParser.ManifestParser;
-import potsdam.SmaliContent.SmaliContent;
-import potsdam.constants.GenericConstants;
-import potsdam.evaluateJavascript.EvaluateJavaScriptHandler;
-import potsdam.extract.ApkToolHandler;
-import potsdam.extract.CollectClasses;
-import potsdam.extract.InputApkFileContainer;
-import potsdam.loadurl.LoadURLAnalyzer;
-import potsdam.slicer.Slicer;
+import de.potsdam.ApplicationDetails.ApplicationDetails;
+import de.potsdam.evaluateJavascript.EvaluateJavaScriptHandler;
+import de.potsdam.Logging.IIFALogger;
+import de.potsdam.ManifestParser.ManifestParser;
+import de.potsdam.SmaliContent.SmaliContent;
+import de.potsdam.constants.GenericConstants;
+import de.potsdam.extract.ApkToolHandler;
+import de.potsdam.extract.CollectClasses;
+import de.potsdam.extract.InputApkFileContainer;
+import de.potsdam.loadurl.LoadURLAnalyzer;
+import de.potsdam.slicer.Slicer;
 
 /**
  * @author abhishektiwari

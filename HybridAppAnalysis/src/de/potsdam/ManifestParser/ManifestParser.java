@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.ManifestParser;
+package de.potsdam.ManifestParser;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,11 +11,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
+import de.potsdam.ApplicationDetails.ApplicationDetails;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
-
-import potsdam.ApplicationDetails.ApplicationDetails;
 
 
 /**

@@ -1,11 +1,11 @@
 /**
  * 
  */
-package potsdam.loadurl;
+package de.potsdam.loadurl;
 
 import java.util.StringTokenizer;
 
-import potsdam.constants.GenericConstants;
+import de.potsdam.constants.GenericConstants;
 
 /**
  * @author abhishektiwari

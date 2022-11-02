@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.Logging;
+package de.potsdam.Logging;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;

@@ -1,4 +1,4 @@
-package potsdam.slicer;
+package de.potsdam.slicer;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,7 +23,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import potsdam.ApplicationDetails.ApplicationDetails;
+import de.potsdam.ApplicationDetails.ApplicationDetails;
 
 import java.util.regex.Matcher;
 

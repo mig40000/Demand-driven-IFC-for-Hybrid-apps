@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.extract;
+package de.potsdam.extract;
 
 import java.io.File;
 import java.util.ArrayList;

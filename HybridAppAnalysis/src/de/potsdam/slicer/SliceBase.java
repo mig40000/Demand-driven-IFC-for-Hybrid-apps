@@ -1,4 +1,4 @@
-package potsdam.slicer;
+package de.potsdam.slicer;
 
 abstract public class SliceBase implements Comparable<SliceBase>{
 

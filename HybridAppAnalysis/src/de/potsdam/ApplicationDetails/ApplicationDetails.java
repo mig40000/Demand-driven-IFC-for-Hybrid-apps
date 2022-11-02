@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.ApplicationDetails;
+package de.potsdam.ApplicationDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;

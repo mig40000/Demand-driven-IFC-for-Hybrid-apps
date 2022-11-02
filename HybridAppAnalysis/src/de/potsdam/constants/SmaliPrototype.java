@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.constants;
+package de.potsdam.constants;
 
 
 /**

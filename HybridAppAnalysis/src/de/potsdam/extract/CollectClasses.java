@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.extract;
+package de.potsdam.extract;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 
-import potsdam.SmaliContent.SmaliContent;
+import de.potsdam.SmaliContent.SmaliContent;
 
 
 /**

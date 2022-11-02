@@ -1,17 +1,17 @@
 /**
  * 
  */
-package potsdam.evaluateJavascript;
+package de.potsdam.evaluateJavascript;
 
 import java.util.List;
 import java.util.StringTokenizer;
 
-import potsdam.SmaliContent.SmaliContent;
-import potsdam.constants.GenericConstants;
-import potsdam.db.LoadUrlDB;
-import potsdam.loadurl.LoadURLAnalyzer;
-import potsdam.loadurl.StringOptimizer;
-import potsdam.main.ApplicationAnalysis;
+import de.potsdam.SmaliContent.SmaliContent;
+import de.potsdam.constants.GenericConstants;
+import de.potsdam.db.LoadUrlDB;
+import de.potsdam.loadurl.LoadURLAnalyzer;
+import de.potsdam.loadurl.StringOptimizer;
+import de.potsdam.main.ApplicationAnalysis;
 
 /**
  * @author abhishektiwari

@@ -1,14 +1,14 @@
 /**
  * 
  */
-package potsdam.extract;
+package de.potsdam.extract;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
-import potsdam.constants.GenericConstants;
+import de.potsdam.constants.GenericConstants;
 
 /**
  * @author abhishektiwari

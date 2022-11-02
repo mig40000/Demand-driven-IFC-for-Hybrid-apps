@@ -1,7 +1,7 @@
 /**
  * 
  */
-package potsdam.main;
+package de.potsdam.main;
 
 import java.io.File;
 

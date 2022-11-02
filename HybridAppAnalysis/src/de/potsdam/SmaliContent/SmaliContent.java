@@ -1,12 +1,12 @@
 /**
  * 
  */
-package potsdam.SmaliContent;
+package de.potsdam.SmaliContent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import potsdam.constants.GenericConstants;
+import de.potsdam.constants.GenericConstants;
 
 /**
  * @author abhishektiwari

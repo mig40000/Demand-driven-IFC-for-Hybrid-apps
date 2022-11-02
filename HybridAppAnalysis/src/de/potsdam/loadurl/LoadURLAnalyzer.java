@@ -1,15 +1,15 @@
 /**
  * 
  */
-package potsdam.loadurl;
+package de.potsdam.loadurl;
 
 import java.util.List;
 import java.util.StringTokenizer;
 
-import potsdam.SmaliContent.SmaliContent;
-import potsdam.constants.GenericConstants;
-import potsdam.db.LoadUrlDB;
-import potsdam.main.ApplicationAnalysis;
+import de.potsdam.db.LoadUrlDB;
+import de.potsdam.main.ApplicationAnalysis;
+import de.potsdam.SmaliContent.SmaliContent;
+import de.potsdam.constants.GenericConstants;
 
 /**
  * @author abhishektiwari
