@@ -1,4 +1,4 @@
-package de.unipassau.ludroidInterface;
+package de.unipassau.dbinterfaces;
 
 import java.nio.file.Path;
 import java.sql.*;

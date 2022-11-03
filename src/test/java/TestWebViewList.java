@@ -1,4 +1,4 @@
-import de.unipassau.ludroidInterface.WebViewsList;
+import de.unipassau.dbinterfaces.WebViewsList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
