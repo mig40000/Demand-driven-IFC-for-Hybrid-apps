@@ -23,5 +23,6 @@ public class GenericConstants {
 	public static final String STRINGBUILDER_TOSTRING = "Ljava/lang/StringBuilder;->toString()Ljava/lang/String;";
 
 	public static final String EVALUATE_JS = "Landroid/webkit/WebView;->evaluateJavascript(Ljava/lang/String;Landroid/webkit/ValueCallback;)V";
+	public static final String ADDJSInterface = "Landroid/webkit/WebView;->addJavascriptInterface(Ljava/lang/Object;Ljava/lang/String;)V";
 	
 }

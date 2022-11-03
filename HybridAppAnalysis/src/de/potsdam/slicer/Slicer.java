@@ -64,6 +64,7 @@ public class Slicer {
 		this.app = app;
 
 		prepareSlice();
+		
 
 		if (this.toSliceSet.isEmpty()) {
 			saveDB("");
@@ -102,6 +103,7 @@ public class Slicer {
 					
 
 			}
+			System.out.println("Here in Slicer " +  s.class_name);
 			
 		//	saveDB(s.class_name);
 			saveAltDB(s.class_name);
@@ -211,7 +213,7 @@ public class Slicer {
 	 */
 	public void saveAltDB(String class_name) {
 
-		String sql = "INSERT INTO webview_prime (initiatingClass, bridgeClass, intefaceObject, bridgeMethods) VALUES (?,?,?,?)";
+		String sql = "INSERT INTO webview_prime (appName, initiatingClass, bridgeClass, intefaceObject, bridgeMethods) VALUES (?,?,?,?,?)";
 
 		Connection conn = null;
 		try{
@@ -222,12 +224,13 @@ public class Slicer {
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			//stmt.setString(1, app.getAppName());
-			stmt.setString(1, class_name);
-			stmt.setString(3, this.interfaceObject);
+			stmt.setString(1, this.app.getAppName());
+			stmt.setString(2, class_name);
+			stmt.setString(4, this.interfaceObject);
 			if (this.currentWebView == null) {
-				stmt.setString(4, "");
+				stmt.setString(5, "");
 			} else {
-				stmt.setString(4, this.methodNames);
+				stmt.setString(5, this.methodNames);
 			}
 		
 			//Changes Abhishek
@@ -239,9 +242,9 @@ public class Slicer {
 		//	stmt.setBoolean(6, this.jsEnabled);
 		//	stmt.setBoolean(7, this.injects);
 			if (this.currentWebView == null) {
-				stmt.setString(2, "");
+				stmt.setString(3, "");
 			} else {
-				stmt.setString(2, this.currentWebView.class_name);	
+				stmt.setString(3, this.currentWebView.class_name);	
 			}
 			stmt.executeUpdate();
 		} catch (SQLException e) {
