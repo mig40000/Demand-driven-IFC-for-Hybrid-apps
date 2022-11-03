@@ -31,7 +31,7 @@
 .method public constructor <init>(Landroid/view/View;Ljava/lang/String;)V
     .locals 0
     .param p1, "hostView"    # Landroid/view/View;
-    .param p2, "methodName"    # Ljava/lang/String;
+    .param p2, "name"    # Ljava/lang/String;
 
     .line 276
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V

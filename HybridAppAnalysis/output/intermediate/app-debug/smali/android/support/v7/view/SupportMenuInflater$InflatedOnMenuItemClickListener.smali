@@ -58,7 +58,7 @@
 .method public constructor <init>(Ljava/lang/Object;Ljava/lang/String;)V
     .locals 5
     .param p1, "realOwner"    # Ljava/lang/Object;
-    .param p2, "methodName"    # Ljava/lang/String;
+    .param p2, "name"    # Ljava/lang/String;
 
     .line 244
     invoke-direct {p0}, Ljava/lang/Object;-><init>()V

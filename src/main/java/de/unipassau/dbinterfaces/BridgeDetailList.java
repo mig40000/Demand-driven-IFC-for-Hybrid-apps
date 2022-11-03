@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BridgeDetailList {
-    private ArrayList<BridgeDetail> bridgeDetails = new ArrayList<>();
+    private final ArrayList<BridgeDetail> bridgeDetails = new ArrayList<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeDetailList.class);
 

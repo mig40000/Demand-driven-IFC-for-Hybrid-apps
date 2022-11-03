@@ -29,34 +29,31 @@ public class AndroidAnalysis {
 
     PointerAnalysis<InstanceKey> pointerAnalysis = null;
     CallGraph callGraph = null;
-    String apkfilepath;
-    String androidJarpath;
+    String apkfile;
+    String androidJar;
     AnalysisScope scope = null;
     DexIRFactory dexIr = null;
+    IClassHierarchy cha = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidAnalysis.class);
 
-    public AndroidAnalysis(String apkfilepath, String androidJarpath) {
-        this.androidJarpath = androidJarpath;
-        this.apkfilepath = apkfilepath;
+    public AndroidAnalysis(String apkfile, String androidJar) {
+        this.androidJar = apkfile;
+        this.apkfile = androidJar;
     }
 
-    public void run() throws CancelException, IOException {
-        setupAnalysis();
-    }
 
-    private void setupAnalysis() throws CancelException, IOException {
+    public void setup() throws CancelException, IOException {
         scope = AnalysisScope.createJavaAnalysisScope();
         scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
         this.dexIr = new DexIRFactory();
         var cache = new AnalysisCacheImpl(this.dexIr);
         try {
-            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(androidJarpath));
+            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(androidJar));
         } catch (IOException e) {
-            LOGGER.error("Cannot access  " + androidJarpath + "\t" + e.getMessage());
+            LOGGER.error("Cannot access  " + androidJar + "\t" + e.getMessage());
         }
-        scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(apkfilepath)));
-        IClassHierarchy cha = null;
+        scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(apkfile)));
         try {
             cha = ClassHierarchyFactory.make(scope);
         } catch (ClassHierarchyException e) {
@@ -71,4 +68,31 @@ public class AndroidAnalysis {
         this.pointerAnalysis = cgb.getPointerAnalysis();
     }
 
+    public PointerAnalysis<InstanceKey> getPointerAnalysis() {
+        return pointerAnalysis;
+    }
+
+    public CallGraph getCallGraph() {
+        return callGraph;
+    }
+
+    public String getApkfile() {
+        return apkfile;
+    }
+
+    public String getAndroidJar() {
+        return androidJar;
+    }
+
+    public AnalysisScope getScope() {
+        return scope;
+    }
+
+    public DexIRFactory getDexIr() {
+        return dexIr;
+    }
+
+    public IClassHierarchy getCha() {
+        return cha;
+    }
 }
