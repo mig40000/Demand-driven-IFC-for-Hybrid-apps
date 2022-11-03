@@ -39,6 +39,6 @@ public class WebViewsList {
     }
 
     public Set<String> getInjectedClass(String apk) {
-        return webViews.stream().filter(webView -> webView.getApk().equals(apk)).map(WebView::getInjectedClass).collect(Collectors.toSet());
+        return webViews.stream().filter(webView -> webView.apk().equals(apk)).map(WebView::injectedClass).collect(Collectors.toSet());
     }
 }

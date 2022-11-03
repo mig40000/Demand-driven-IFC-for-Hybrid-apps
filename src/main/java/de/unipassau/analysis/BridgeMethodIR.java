@@ -19,11 +19,11 @@ import java.nio.file.Paths;
  * Constructs the IR from the given class
  */
 public class BridgeMethodIR {
-    private DexIRFactory dexIrFactory;
-    private String className;
-    private ClassHierarchy cha;
-    private SSAOptions options;
-    private String methodName;
+    private final DexIRFactory dexIrFactory;
+    private final String className;
+    private final ClassHierarchy cha;
+    private final SSAOptions options;
+    private final String methodName;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeMethodIR.class);
 

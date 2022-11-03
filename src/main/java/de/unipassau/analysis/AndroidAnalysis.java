@@ -32,6 +32,7 @@ public class AndroidAnalysis {
     String apkfilepath;
     String androidJarpath;
     AnalysisScope scope = null;
+    DexIRFactory dexIr = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AndroidAnalysis.class);
 
@@ -47,7 +48,8 @@ public class AndroidAnalysis {
     private void setupAnalysis() throws CancelException, IOException {
         scope = AnalysisScope.createJavaAnalysisScope();
         scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
-        var cache = new AnalysisCacheImpl(new DexIRFactory());
+        this.dexIr = new DexIRFactory();
+        var cache = new AnalysisCacheImpl(this.dexIr);
         try {
             scope.addToScope(ClassLoaderReference.Primordial, new JarFile(androidJarpath));
         } catch (IOException e) {

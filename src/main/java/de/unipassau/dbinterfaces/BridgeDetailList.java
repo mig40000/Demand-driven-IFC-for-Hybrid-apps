@@ -43,6 +43,6 @@ public class BridgeDetailList {
     }
 
     private Set<BridgeDetail> getByPackageName(String apk) {
-        return bridgeDetails.stream().filter(bridge -> bridge.getPackageName().equals(apk)).collect(Collectors.toSet());
+        return bridgeDetails.stream().filter(bridge -> bridge.packageName().equals(apk)).collect(Collectors.toSet());
     }
 }
