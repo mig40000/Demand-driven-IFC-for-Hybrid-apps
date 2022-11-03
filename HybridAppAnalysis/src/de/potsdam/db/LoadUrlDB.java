@@ -57,4 +57,39 @@ public class LoadUrlDB {
 		}
 		
 	}
+	
+	public static void initDB(){
+		
+		Connection c = null;
+		Statement stmt = null;
+		String sql = "delete from jsdetails;";
+		
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection(GenericConstants.DB_NAME);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+			System.out.println("sql is " + sql);
+			stmt.executeUpdate(sql);
+			
+			 stmt.close();
+			 c.commit();
+			 
+			 
+			 sql = "delete from webview_prime;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
+			 c.close();
+			
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

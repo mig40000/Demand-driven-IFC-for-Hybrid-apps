@@ -68,7 +68,7 @@ public class ManifestParser {
 			    			  activityName = removePackageFromActivity(activityWithPackageName);
 			    		  else {
 			    			  activityWithPackageName = myParser.getAttributeValue(null,"name");
-			    			  System.out.println("activityWithPackageName here is " + activityWithPackageName);
+			    			//  System.out.println("activityWithPackageName here is " + activityWithPackageName);
 			    			  activityName = removePackageFromActivity(activityWithPackageName);
 			    		  }
 			    		  

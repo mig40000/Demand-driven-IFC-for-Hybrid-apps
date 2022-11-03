@@ -14,6 +14,7 @@ import de.potsdam.Logging.IIFALogger;
 import de.potsdam.ManifestParser.ManifestParser;
 import de.potsdam.SmaliContent.SmaliContent;
 import de.potsdam.constants.GenericConstants;
+import de.potsdam.db.LoadUrlDB;
 import de.potsdam.extract.ApkToolHandler;
 import de.potsdam.extract.CollectClasses;
 import de.potsdam.extract.InputApkFileContainer;
@@ -54,6 +55,7 @@ public class ApplicationAnalysis {
 
 	public  void extractApplicationDetails(){
 		
+		LoadUrlDB.initDB();
 		
 		for(File individualApplication : this.fileContainer.getInputApplicationFiles()){
 			int counter = 0;
