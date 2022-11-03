@@ -64,6 +64,7 @@ public class Slicer {
 		this.app = app;
 
 		prepareSlice();
+		
 
 		if (this.toSliceSet.isEmpty()) {
 			saveDB("");
@@ -102,8 +103,9 @@ public class Slicer {
 					
 
 			}
+			System.out.println("Here in Slicer " +  s.class_name);
 			
-		//	saveDB(s.class_name);
+			saveDB(s.class_name);
 			saveAltDB(s.class_name);
 			
 			clearSlice();

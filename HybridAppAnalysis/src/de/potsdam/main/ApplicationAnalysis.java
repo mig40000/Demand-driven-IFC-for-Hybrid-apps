@@ -56,7 +56,7 @@ public class ApplicationAnalysis {
 		
 		
 		for(File individualApplication : this.fileContainer.getInputApplicationFiles()){
-			
+			int counter = 0;
 			try{	
 				this.appDetails.setAppName(individualApplication.toString());
 				this.logger.initLogging(this.appDetails.getAppName(), GenericConstants.DEFAULT_LOG_DIRECTORY);
@@ -74,6 +74,26 @@ public class ApplicationAnalysis {
 					CollectClasses.listFiles(directory, this.smaliData, this.logger.getLogger());
 				}			
 
+				
+				/* Stop the analysis if the app does not contain addJavascriptInterface api call
+				 * i.e., there is no hybrid data transfer
+				*/
+				
+				for (List<String> fileContentInSmaliFormat : this.smaliData.class_content){
+					String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
+					for (int index =0; index< fileContentInArray.length ; index++){
+					if(fileContentInArray[index].contains(GenericConstants.ADDJSInterface)){
+						counter++;
+					}
+					}				
+				}
+				if(counter == 0) {
+					System.out.println("No addJavascriptInterface in " + this.appDetails.getAppName());
+					System.out.println("Moving on to the next app");
+					this.reInitialize();
+					continue;
+				}
+				
 
 				//Backward slicing on loadURL, find any potential leaks and store it in the DB
 				// Requirement number 3
@@ -98,7 +118,8 @@ public class ApplicationAnalysis {
 				System.out.println("App " + appCounter + " Analyzed");
 			} catch(Exception e){
 				System.out.println("Abhishek here in extractApplicationDetails");
-				System.out.println("Exception is " + e.getStackTrace());
+				System.out.println("Exception is " + e.getMessage());
+				e.printStackTrace(System.out);
 			}
 		}
 	}

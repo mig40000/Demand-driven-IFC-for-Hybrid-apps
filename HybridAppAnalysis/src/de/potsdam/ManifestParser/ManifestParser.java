@@ -63,8 +63,14 @@ public class ManifestParser {
 			    	  }
 			    	  if(name.equals("activity") || name.equals("service") || name.equals("receiver") || name.equals("provider")){
 			    		  String activityWithPackageName = myParser.getAttributeValue(null,"android:name");
+			    		
 			    		  if(activityWithPackageName!=null)
-			    		  activityName = removePackageFromActivity(activityWithPackageName);
+			    			  activityName = removePackageFromActivity(activityWithPackageName);
+			    		  else {
+			    			  activityWithPackageName = myParser.getAttributeValue(null,"name");
+			    			  System.out.println("activityWithPackageName here is " + activityWithPackageName);
+			    			  activityName = removePackageFromActivity(activityWithPackageName);
+			    		  }
 			    		  
 			    		 logger.info("App actvity/service/receiver/provider/" + activityName);
 			    		  
