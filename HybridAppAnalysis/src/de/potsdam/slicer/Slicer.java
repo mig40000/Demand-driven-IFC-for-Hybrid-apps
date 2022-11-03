@@ -50,6 +50,8 @@ public class Slicer {
 	public boolean injects = false;
 	public int annotated = 0;
 	public int invoked = 0;
+	public String interfaceObject = "";
+	public String methodNames = new String();
 
 	public List<String> extraMethods = new LinkedList<String>();
 	public Queue<SliceMethod> extraMethodsQueue = new LinkedList<SliceMethod>();
@@ -101,7 +103,8 @@ public class Slicer {
 
 			}
 			
-			saveDB(s.class_name);
+		//	saveDB(s.class_name);
+			saveAltDB(s.class_name);
 			
 			clearSlice();
 		
@@ -202,6 +205,52 @@ public class Slicer {
 		}
 
 	}
+	
+	/**
+	 * Save new statistics in an sqlite3 database
+	 */
+	public void saveAltDB(String class_name) {
+
+		String sql = "INSERT INTO webview_prime (initiatingClass, bridgeClass, intefaceObject, bridgeMethods) VALUES (?,?,?,?)";
+
+		Connection conn = null;
+		try{
+			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
+		} catch (SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
+		
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			//stmt.setString(1, app.getAppName());
+			stmt.setString(1, class_name);
+			stmt.setString(3, this.interfaceObject);
+			if (this.currentWebView == null) {
+				stmt.setString(4, "");
+			} else {
+				stmt.setString(4, this.methodNames);
+			}
+		
+			//Changes Abhishek
+		//	if (app.permission.contains("android.permission.INTERNET")) {
+			//	stmt.setBoolean(5, true);
+		//	} else {
+			//	stmt.setBoolean(5, false);
+			//}
+		//	stmt.setBoolean(6, this.jsEnabled);
+		//	stmt.setBoolean(7, this.injects);
+			if (this.currentWebView == null) {
+				stmt.setString(2, "");
+			} else {
+				stmt.setString(2, this.currentWebView.class_name);	
+			}
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+	
+	
 
 	/**
 	 * extract all strings in the slice into a list
@@ -314,9 +363,11 @@ public class Slicer {
 			}
 			
 			if (currentSlice.line.contains("const-string " + objRegister)) {
-
-				// this time we get the classname from "new-instance register, classname"
-				System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
+				// this should be the instance register -- may not work in all cases
+			//	System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
+				this.interfaceObject = currentSlice.line.split(",")[1].substring(1);
+				this.interfaceObject = this.interfaceObject.replace("\"", "");
+				this.interfaceObject = this.interfaceObject.trim();
 			}
 
 			if (currentSlice.line.contains("new-instance " + searchRegister)) {
@@ -393,6 +444,14 @@ public class Slicer {
 					this.annotated++;
 					for (String s : a.sourceCode) {
 						this.extraMethods.add(s);
+						
+						if(s.contains(".method ")) {
+							this.methodNames = this.methodNames.concat(s);
+							this.methodNames = this.methodNames.concat("\n");		
+							
+						}
+						
+						
 						bw.write(s);
 						bw.newLine();
 					}
