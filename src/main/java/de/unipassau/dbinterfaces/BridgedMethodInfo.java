@@ -2,19 +2,18 @@ package de.unipassau.dbinterfaces;
 
 import java.util.Arrays;
 
-public record BridgedMethodInfo(String initiatingClass, String bridgedClass, String interfaceObject, String accessSpecifier,
-                                String name, String[] arguments, String returnType) {
+public record BridgedMethodInfo(String appName, String initiatingClass, String clazz, String interfaceObject, String accessSpecifier,
+                                String methodSign) {
 
     @Override
     public String toString() {
         return "BridgedMethodInfo{" +
-                "initiatingClass='" + initiatingClass + '\'' +
-                ", bridgedClass='" + bridgedClass + '\'' +
+                "appName='" + appName + '\'' +
+                ", initiatingClass='" + initiatingClass + '\'' +
+                ", clazz='" + clazz + '\'' +
                 ", interfaceObject='" + interfaceObject + '\'' +
                 ", accessSpecifier='" + accessSpecifier + '\'' +
-                ", name='" + name + '\'' +
-                ", arguments=" + Arrays.toString(arguments) +
-                ", returnType='" + returnType + '\'' +
+                ", methodSign='" + methodSign + '\'' +
                 '}';
     }
 }

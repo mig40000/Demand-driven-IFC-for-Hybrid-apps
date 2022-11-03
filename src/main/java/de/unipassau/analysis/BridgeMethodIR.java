@@ -2,10 +2,12 @@ package de.unipassau.analysis;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.dalvik.classLoader.DexIRFactory;
+import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.impl.Everywhere;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
+import com.ibm.wala.ssa.IRFactory;
 import com.ibm.wala.ssa.SSAOptions;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.Selector;
@@ -13,31 +15,24 @@ import com.ibm.wala.types.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Paths;
-
 /**
  * Constructs the IR from the given class
  */
 public class BridgeMethodIR {
-    private final DexIRFactory dexIrFactory;
+    private final IRFactory<IMethod> irFactory;
     private final String className;
-    private final ClassHierarchy cha;
+    private final IClassHierarchy cha;
     private final SSAOptions options;
     private final String methodName;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeMethodIR.class);
 
-    public BridgeMethodIR(String className, String methodName, DexIRFactory dexIrFactory, ClassHierarchy cha, SSAOptions options) {
-        this.dexIrFactory = dexIrFactory;
+    public BridgeMethodIR(String className, String methodSign, IClassHierarchy cha, AnalysisCache cache) {
+        this.irFactory = cache.getIRFactory();
         this.className = className;
         this.cha = cha;
-        this.options = options;
-        this.methodName = methodName;
-
-        if (options == null) {
-            LOGGER.info("Using default SSA options");
-            options = SSAOptions.defaultOptions();
-        }
+        this.options = cache.getSSAOptions();
+        this.methodName = methodSign;
     }
 
     /**
@@ -53,6 +48,6 @@ public class BridgeMethodIR {
         if (method == null) {
             throw new IllegalArgumentException("Cannot found method " + methodName + " in class " + className);
         }
-        return dexIrFactory.makeIR(method, Everywhere.EVERYWHERE, this.options);
+        return irFactory.makeIR(method, Everywhere.EVERYWHERE, this.options);
     }
 }

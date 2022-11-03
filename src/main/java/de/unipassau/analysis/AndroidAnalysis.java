@@ -3,12 +3,7 @@ package de.unipassau.analysis;
 import com.ibm.wala.classLoader.Language;
 import com.ibm.wala.dalvik.classLoader.DexFileModule;
 import com.ibm.wala.dalvik.classLoader.DexIRFactory;
-import com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl;
-import com.ibm.wala.dalvik.util.AndroidAnalysisScope;
-import com.ibm.wala.ipa.callgraph.AnalysisCacheImpl;
-import com.ibm.wala.ipa.callgraph.AnalysisOptions;
-import com.ibm.wala.ipa.callgraph.AnalysisScope;
-import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.callgraph.*;
 import com.ibm.wala.ipa.callgraph.impl.AllApplicationEntrypoints;
 import com.ibm.wala.ipa.callgraph.impl.Util;
 import com.ibm.wala.ipa.callgraph.propagation.InstanceKey;
@@ -19,46 +14,73 @@ import com.ibm.wala.ipa.cha.ClassHierarchyFactory;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.util.CancelException;
+import com.ibm.wala.util.collections.Pair;
+import de.unipassau.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.jar.JarFile;
 
 public class AndroidAnalysis {
 
 
-    String apkfile;
-    String androidJar;
+    private final String apkfile;
+    private final String androidJar;
+    private final AnalysisCache cache;
+    private IClassHierarchy cha = null;
+    private AnalysisOptions options = null;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AndroidAnalysis.class);
+    private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
-    public AndroidAnalysis(String apkfile, String androidJar) {
-        this.androidJar = androidJar;
-        this.apkfile = apkfile;
+    public AndroidAnalysis(Config config) throws ClassHierarchyException, IOException {
+        logger.info("Setting up android analysis environment");
+        this.androidJar = Config.getConfig().androidJarpath;
+        logger.info("Using " + this.androidJar);
+        this.apkfile = config.Apk;
+        logger.info("APK: " + this.apkfile);
+        this.cache = new AnalysisCacheImpl(new DexIRFactory());
+        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
+        scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
+        try {
+            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(this.androidJar));
+            scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(this.apkfile)));
+            this.cha = ClassHierarchyFactory.make(scope);
+            this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
+            logger.info("Analysis environment setup successful");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
     }
 
 
-    public void setup() throws CancelException, IOException, ClassHierarchyException {
-        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
-        scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
-        var dexIr = new DexIRFactory();
-        var cache = new AnalysisCacheImpl(dexIr);
+//    public Pair<CallGraph, PointerAnalysis<InstanceKey>> buildCallgraph() throws CancelException, IOException, ClassHierarchyException {
+//        SSAPropagationCallGraphBuilder cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
+//        System.err.println("Created callgraph with options " + options.getAnalysisScope().toString());
+//        CallGraph callGraph = cgb.makeCallGraph(options);
+//        PointerAnalysis<InstanceKey> pointerAnalysis = cgb.getPointerAnalysis();
+//        return Pair.make(callGraph, pointerAnalysis);
+//    }
 
-        try {
-            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(this.androidJar));
-        } catch (IOException e) {
-            LOGGER.error("Cannot access  " + androidJar + "\t" + e.getMessage());
-        }
-        scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(this.apkfile)));
-        IClassHierarchy cha = ClassHierarchyFactory.make(scope);
-        AnalysisOptions options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
+    public AnalysisCache getCache() {
+        return cache;
+    }
 
-        SSAPropagationCallGraphBuilder cgb = Util.makeZeroCFABuilder(Language.JAVA, options, cache, cha);
-        System.err.println("Created callgraph with options " + options.getAnalysisScope().toString());
-        CallGraph callGraph = cgb.makeCallGraph(options);
-        PointerAnalysis<InstanceKey> pointerAnalysis = cgb.getPointerAnalysis();
+    public IClassHierarchy getCha() {
+        return cha;
+    }
+
+    public AnalysisOptions getOptions() {
+        return options;
+    }
+
+    @Override
+    public String toString() {
+        return "AndroidAnalysis{" +
+                "apkfile='" + apkfile + '\'' +
+                ", androidJar='" + androidJar + '\'' +
+                ", options=" + options +
+                '}';
     }
 }

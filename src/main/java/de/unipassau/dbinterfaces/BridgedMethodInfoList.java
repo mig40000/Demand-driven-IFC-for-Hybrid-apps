@@ -13,7 +13,7 @@ public class BridgedMethodInfoList {
 
     private final Logger LOGGER = LoggerFactory.getLogger(BridgedMethodInfoList.class);
 
-    private void add(String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
+    private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
         // TODO: Extract the bridged methods and get the objects and add it to webview objects
         for (String bridgeMethod : bridgeMethods.split("\n")) {
             // [0]: .method keyword, [1]: access specifier, [2]: method signature
@@ -27,11 +27,11 @@ public class BridgedMethodInfoList {
             }
 
 
-            String[] arguments = extractArguments(tokens[2]);
-            String methodName = extractMethodName(methodSign);
-            String methodReturnType = extractMethodReturnType(methodSign);
+//            String[] arguments = extractArguments(tokens[2]);
+//            String methodName = extractMethodName(methodSign);
+//            String methodReturnType = extractMethodReturnType(methodSign);
 
-            BridgedMethodInfo info = new BridgedMethodInfo(initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodName, arguments, methodReturnType);
+            BridgedMethodInfo info = new BridgedMethodInfo(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign);
             bridgedMethods.add(info);
         }
     }
@@ -44,6 +44,7 @@ public class BridgedMethodInfoList {
             ResultSet rows = stmt.executeQuery("SELECT * from webview_prime");
             while (rows.next()) {
                 int index = 0;
+                var appName = rows.getString(++index);
                 var initiatingClass = rows.getString(++index);
                 var bridgeClass = rows.getString(++index);
                 var interfaceObject = rows.getString(++index);
@@ -52,7 +53,7 @@ public class BridgedMethodInfoList {
                 // Exclude the last ';' from the class names
                 initiatingClass = initiatingClass.substring(0, initiatingClass.length()-1);
                 bridgeClass = bridgeClass.substring(0, bridgeClass.length()-1);
-                webViewsList.add(initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
+                webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,26 +62,26 @@ public class BridgedMethodInfoList {
     }
 
 
-    private String extractMethodName(String methodSignature) {
-        int indxOpenBracnes = methodSignature.indexOf('(');
-        return methodSignature.substring(0, indxOpenBracnes);
-    }
-
-    private String extractMethodReturnType(String methodSignature) {
-        int indxClosedBraces = methodSignature.indexOf(')');
-        String returnType = methodSignature.substring(indxClosedBraces+1);
-        if (returnType.equals("V")) {
-            return "Void";
-        } else {
-            return returnType;
-        }
-    }
-
-    private String[] extractArguments(String methodSignature) {
-        int indxOpenBraces = methodSignature.indexOf('(');
-        int idxClosedBraces = methodSignature.indexOf(')');
-        return methodSignature.substring(indxOpenBraces+1,idxClosedBraces).split(";");
-    }
+//    private String extractMethodName(String methodSignature) {
+//        int indxOpenBracnes = methodSignature.indexOf('(');
+//        return methodSignature.substring(0, indxOpenBracnes);
+//    }
+//
+//    private String extractMethodReturnType(String methodSignature) {
+//        int indxClosedBraces = methodSignature.indexOf(')');
+//        String returnType = methodSignature.substring(indxClosedBraces+1);
+//        if (returnType.equals("V")) {
+//            return "Void";
+//        } else {
+//            return returnType;
+//        }
+//    }
+//
+//    private String[] extractArguments(String methodSignature) {
+//        int indxOpenBraces = methodSignature.indexOf('(');
+//        int idxClosedBraces = methodSignature.indexOf(')');
+//        return methodSignature.substring(indxOpenBraces+1,idxClosedBraces).split(";");
+//    }
 
     @Override
     public String toString() {
@@ -94,5 +95,13 @@ public class BridgedMethodInfoList {
 
     public int size() {
         return bridgedMethods.size();
+    }
+
+    public List<BridgedMethodInfo> getBridgedMethods() {
+        return bridgedMethods;
+    }
+
+    public BridgedMethodInfo get(int index) {
+        return bridgedMethods.get(index);
     }
 }
