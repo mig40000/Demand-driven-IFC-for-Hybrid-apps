@@ -6,10 +6,14 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class BridgeDetailList {
+public class BridgeDetailList implements Iterable<BridgeDetail> {
+    
     private final ArrayList<BridgeDetail> bridgeDetails = new ArrayList<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeDetailList.class);
@@ -44,5 +48,20 @@ public class BridgeDetailList {
 
     private Set<BridgeDetail> getByPackageName(String apk) {
         return bridgeDetails.stream().filter(bridge -> bridge.packageName().equals(apk)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Iterator<BridgeDetail> iterator() {
+        return bridgeDetails.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super BridgeDetail> action) {
+        Iterable.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator<BridgeDetail> spliterator() {
+        return Iterable.super.spliterator();
     }
 }

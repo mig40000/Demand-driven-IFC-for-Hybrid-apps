@@ -1,5 +1,7 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.analysis.BridgeMethodIR;
+import de.unipassau.dbinterfaces.BridgedMethods;
 import de.unipassau.utils.Config;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -16,19 +18,34 @@ public class HybridIFCAnalyzer {
     private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
 
-    private static Options options = new Options();
+    private static final Options options = new Options();
 
-    private static Option apiLevel = Option.builder().option("level").hasArg().desc("android platform version: android-<version>").required().build();
-    private static Option apk = Option.builder().option("apk").hasArg().desc("path to apk file to analyze").required().build();
+    private static final Option apiLevel = Option.builder().option("level").hasArg().desc("android platform version: android-<version>").required().build();
+    private static final Option apk = Option.builder().option("apk").hasArg().desc("path to apk file to analyze").required().build();
+    private static final Option db = Option.builder().option("db").hasArg().desc("database").required().build();
+    private static final Option help = Option.builder().option("h").desc("help").build();
 
     static {
         options.addOption(apiLevel);
         options.addOption(apk);
+        options.addOption(db);
+        options.addOption(help);
     }
 
     public static void usage() {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("HybridIFCAnalyzer", options);
+    }
+
+    public static void run(Config config) throws ClassHierarchyException, IOException {
+        AndroidAnalysis analysis = new AndroidAnalysis(config);
+        BridgedMethods methods = BridgedMethods.load(config.database);
+        // TODO: Remove this
+        for (var bridgeMethod : methods) {
+            var methodIr = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
+            System.out.println(methodIr);
+        }
+
     }
 
     public static void main(String[] args) {
@@ -46,22 +63,26 @@ public class HybridIFCAnalyzer {
             System.exit(100);
         }
 
+
+        int api = cmd.hasOption(apiLevel) ? parseInt(cmd.getOptionValue(apiLevel)) : -1;
+        logger.info("Using API level " + api);
+        Config.getConfig().ApiLevel = api;
+
+        Config.getConfig().Apk = cmd.getOptionValue(apk);
+
+        Path androidLib = Paths.get(sdkRoot, "platforms", "android-" + api, "android.jar");
+        Config.getConfig().androidJarpath = androidLib.toString();
+
+        Config.getConfig().database = cmd.getOptionValue(db);
+
+        if (!androidLib.toFile().exists()) {
+            logger.error("Cannot find android.jar in " + androidLib);
+            System.exit(100);
+        }
+
         try {
-            int api = cmd.hasOption(apiLevel) ? parseInt(cmd.getOptionValue(apiLevel)) : -1;
-            Config.getConfig().ApiLevel = api;
-
-            logger.info("Using API level " + api);
-
-            Config.getConfig().Apk = cmd.getOptionValue(apk);
-            Path androidlib = Paths.get(sdkRoot, "platforms", "android-" + api, "android.jar");
-            Config.getConfig().androidJarpath = androidlib.toString();
-            if (!androidlib.toFile().exists()) {
-                logger.error("Cannot find android.jar in " + androidlib);
-                System.exit(100);
-            }
-            AndroidAnalysis analysis = new AndroidAnalysis(Config.getConfig());
+            run(Config.getConfig());
         } catch (ClassHierarchyException | IOException e) {
-            usage();
             e.printStackTrace();
         }
     }

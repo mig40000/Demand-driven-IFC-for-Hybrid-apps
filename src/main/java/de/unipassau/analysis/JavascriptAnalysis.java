@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class JavascriptAnalysis {
     private final IRFactory<IMethod> factory;
-    private final IClassHierarchy cha;
+    private IClassHierarchy cha;
 
     public JavascriptAnalysis(String... jsFiles) throws ClassHierarchyException {
         JSCallGraphUtil.setTranslatorFactory(new CAstRhinoTranslatorFactory());
@@ -33,7 +33,7 @@ public class JavascriptAnalysis {
 
     public ArrayList<IMethod> getMethods() {
         ArrayList<IMethod> methods = new ArrayList<>();
-        for (IClass klass: cha) {
+        for (IClass klass: this.cha) {
             if (!klass.getName().toString().startsWith("Lprologue.js")) {
                 IMethod m = klass.getMethod(AstMethodReference.fnSelector);
                 if (m != null)

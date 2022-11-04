@@ -1,17 +1,20 @@
 package de.unipassau.dbinterfaces;
 
+import de.unipassau.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
-public class BridgedMethodInfoList {
-    private final List<BridgedMethodInfo> bridgedMethods = new ArrayList<>();
+public class BridgedMethods implements Iterable<BridgedMethod> {
+    private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
 
-    private final Logger LOGGER = LoggerFactory.getLogger(BridgedMethodInfoList.class);
+    private final static Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
         // TODO: Extract the bridged methods and get the objects and add it to webview objects
@@ -22,23 +25,17 @@ public class BridgedMethodInfoList {
             String accessSpecifier = tokens[1];
             String methodSign = tokens[2];
 
-            if (!tokenType.equals(".method")) {
-                LOGGER.error("Invalid method name");
-            }
-
-
-//            String[] arguments = extractArguments(tokens[2]);
-//            String methodName = extractMethodName(methodSign);
-//            String methodReturnType = extractMethodReturnType(methodSign);
-
-            BridgedMethodInfo info = new BridgedMethodInfo(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign);
+            if (!tokenType.equals(".method"))
+                logger.error("Invalid method name");
+            BridgedMethod info = new BridgedMethod(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign);
             bridgedMethods.add(info);
         }
     }
 
-    public static BridgedMethodInfoList load(Path dbPath) {
-        BridgedMethodInfoList webViewsList = new BridgedMethodInfoList();
-        String url = "jdbc:sqlite:" + dbPath.toString();
+    public static BridgedMethods load(String dbPath) {
+        BridgedMethods webViewsList = new BridgedMethods();
+        String url = "jdbc:sqlite:" + dbPath;
+        logger.info("Reading Bridge Interfaces from database " + dbPath);
         try (Connection connection = DriverManager.getConnection(url)) {
             Statement stmt = connection.createStatement();
             ResultSet rows = stmt.executeQuery("SELECT * from webview_prime");
@@ -51,8 +48,8 @@ public class BridgedMethodInfoList {
                 var bridgeMethods = rows.getString(++index);
 
                 // Exclude the last ';' from the class names
-                initiatingClass = initiatingClass.substring(0, initiatingClass.length()-1);
-                bridgeClass = bridgeClass.substring(0, bridgeClass.length()-1);
+                initiatingClass = initiatingClass.substring(0, initiatingClass.length() - 1);
+                bridgeClass = bridgeClass.substring(0, bridgeClass.length() - 1);
                 webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
             }
         } catch (SQLException e) {
@@ -97,11 +94,26 @@ public class BridgedMethodInfoList {
         return bridgedMethods.size();
     }
 
-    public List<BridgedMethodInfo> getBridgedMethods() {
+    public List<BridgedMethod> getBridgedMethods() {
         return bridgedMethods;
     }
 
-    public BridgedMethodInfo get(int index) {
+    public BridgedMethod get(int index) {
         return bridgedMethods.get(index);
+    }
+
+    @Override
+    public Iterator<BridgedMethod> iterator() {
+        return bridgedMethods.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super BridgedMethod> action) {
+        Iterable.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator<BridgedMethod> spliterator() {
+        return Iterable.super.spliterator();
     }
 }

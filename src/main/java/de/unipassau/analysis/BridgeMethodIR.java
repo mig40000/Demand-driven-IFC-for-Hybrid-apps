@@ -4,7 +4,6 @@ import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.AnalysisCache;
 import com.ibm.wala.ipa.callgraph.impl.Everywhere;
-import com.ibm.wala.ipa.cha.ClassHierarchy;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.IRFactory;
@@ -12,6 +11,7 @@ import com.ibm.wala.ssa.SSAOptions;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
+import de.unipassau.dbinterfaces.BridgedMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,20 +27,19 @@ public class BridgeMethodIR {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeMethodIR.class);
 
-    public BridgeMethodIR(String className, String methodSign, IClassHierarchy cha, AnalysisCache cache) {
+    public BridgeMethodIR(BridgedMethod method, IClassHierarchy cha, AnalysisCache cache) {
         this.irFactory = cache.getIRFactory();
-        this.className = className;
+        this.className = method.clazz();
         this.cha = cha;
         this.options = cache.getSSAOptions();
-        this.methodName = methodSign;
+        this.methodName = method.signature();
     }
 
     /**
      * Constructs the IR for the given methdo
      * @return IR
-     * @throws ClassNotFoundException
      */
-    public IR makeIR() throws ClassNotFoundException {
+    public IR makeIR() {
         IClass clazz = cha.lookupClass(TypeReference.find(ClassLoaderReference.Application, className));
         if (clazz == null)
             throw new IllegalArgumentException("Cannot find class " + className + " in class hierarchy");
