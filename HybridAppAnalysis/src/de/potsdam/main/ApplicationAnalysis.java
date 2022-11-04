@@ -72,7 +72,12 @@ public class ApplicationAnalysis {
 				this.removeDuplicate(this.appDetails.getActivityPath());
 				//Store each class file content (in smali format) to the SmaliContent class_content
 				for(String directory : this.appDetails.getActivityPath()){
-					directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath() +directory;
+					System.out.println("directory is " + directory);
+				//	directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath() +directory;
+					// Providing an alternate directory
+					directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath();
+					directory = directory.replace("smali/", "");
+					System.out.println("directory below is " + directory);
 					CollectClasses.listFiles(directory, this.smaliData, this.logger.getLogger());
 				}			
 
