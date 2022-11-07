@@ -103,7 +103,7 @@ public class Slicer {
 					
 
 			}
-			System.out.println("Here in Slicer " +  s.class_name);
+		//	System.out.println("Here in Slicer " +  s.class_name);
 			
 		//	saveDB(s.class_name);
 			saveAltDB(s.class_name);
@@ -629,12 +629,14 @@ public class Slicer {
 				// Control Flow Statements
 				if (temp.trim().startsWith("if") || temp.trim().startsWith(":") || temp.trim().startsWith("goto")
 						|| temp.trim().startsWith(".catch")) {
+					if(currentMethod!=null)
 					currentMethod.cfList
 							.add(new SliceControlFlow(temp, currentClass.class_name, currentMethod.name, i));
 				}
 
 				// move-result needs to add the invoke before
 				if (temp.trim().startsWith("move-result")) {
+					if(currentMethod!=null)
 					currentMethod.cfList.add(lastInvoke); // needs to be currentVar.createUse() not cfList?
 				}
 
@@ -645,6 +647,7 @@ public class Slicer {
 
 				// Method Returns
 				if (temp.trim().startsWith("return")) {
+					if(currentMethod!=null)
 					currentMethod.returnList
 							.add(new SliceControlFlow(temp, currentClass.class_name, currentMethod.name, i));
 				}
