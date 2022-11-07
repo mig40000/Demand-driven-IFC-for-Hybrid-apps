@@ -1,7 +1,7 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.analysis.BridgeMethodIR;
-import de.unipassau.dbinterfaces.BridgedMethods;
+import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.utils.Config;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class HybridIFCAnalyzer {
 
     public static void run(Config config) throws ClassHierarchyException, IOException {
         AndroidAnalysis analysis = new AndroidAnalysis(config);
-        BridgedMethods methods = BridgedMethods.load(config.database);
+        BridgedMethodList methods = BridgedMethodList.load(config.database);
         // TODO: Remove this
         for (var bridgeMethod : methods) {
             var methodIr = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();

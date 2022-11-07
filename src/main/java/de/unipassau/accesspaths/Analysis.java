@@ -3,7 +3,7 @@ package de.unipassau.accesspaths;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import com.ibm.wala.classLoader.IField;
-import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ssa.IR;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -18,14 +18,14 @@ public class Analysis {
   private SetMultimap<Integer, AccessGraph> analysisResult =
       MultimapBuilder.treeKeys().hashSetValues().build();
 
-  private final CGNode node;
+  private final IR node;
 
   private final int returnValuenum;
 
-  Analysis(CGNode node) {
+  Analysis(IR node) {
     this.node = node;
     // assign the last value number to the return node
-    this.returnValuenum = node.getIR().getSymbolTable().getMaxValueNumber() + 1;
+    this.returnValuenum = node.getSymbolTable().getMaxValueNumber() + 1;
   }
 
   void update(int iindex, AccessGraph graph) {
@@ -81,7 +81,7 @@ public class Analysis {
             '}';
   }
 
-  public CGNode getNode() {
+  public IR getNode() {
     return node;
   }
 

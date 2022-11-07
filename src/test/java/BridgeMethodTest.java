@@ -1,4 +1,4 @@
-import de.unipassau.dbinterfaces.BridgedMethods;
+import de.unipassau.dbinterfaces.BridgedMethodList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -6,14 +6,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class BridgeMethodTest {
-    BridgedMethods bridgeMethodsList;
+    BridgedMethodList bridgeMethodsList;
 
     String webViewDatabase = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/Database/Intent.sqlite";
 
 
     @BeforeEach
     void setup() {
-        bridgeMethodsList = BridgedMethods.load(webViewDatabase);
+        bridgeMethodsList = BridgedMethodList.load(webViewDatabase);
     }
 
     @Test

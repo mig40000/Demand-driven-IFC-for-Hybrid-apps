@@ -4,7 +4,7 @@ import com.ibm.wala.analysis.typeInference.TypeInference;
 import com.ibm.wala.cfg.ControlFlowGraph;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
-import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.*;
 
 import java.util.*;
@@ -15,9 +15,8 @@ public class FunctionSummary {
 
   Analysis analysis;
 
-  private final CGNode cgnode;
-
-  private final Vector<String> foreignObjects;
+  private final IR ir;
+  private final IClassHierarchy cha;
 
   private class TransferFunctionVisitor implements SSAInstruction.IVisitor {
 
@@ -66,7 +65,7 @@ public class FunctionSummary {
     public void visitReturn(SSAReturnInstruction instruction) {
       int result = instruction.getResult();
       if (result != -1) {
-        System.err.println(".... no return value... ignoring " + cgnode.getMethod());
+        System.err.println(".... no return value... ignoring " + ir.getMethod());
         return;
       }
       analysis.updateReturnValue(analysis.getAccessgraphsForLocalVariable(result));
@@ -75,7 +74,7 @@ public class FunctionSummary {
 
     public void visitGet(SSAGetInstruction instruction) {
       // generate the constraint for get dstValue = x.f as [x.f] &subseteq; [dstValue]
-      IField fld = getCgnode().getClassHierarchy().resolveField(instruction.getDeclaredField());
+      IField fld = getCha().resolveField(instruction.getDeclaredField());
       if (fld == null) {
         System.err.println("\tUnable to resolve field");
         return;
@@ -97,7 +96,7 @@ public class FunctionSummary {
 
       // generate the constraint for put instruction x.f = w as [w] &subseteq; [x.f]
       //      Path loadValue = new Variable(instruction.getUse(0), getCgnode());
-      IField fld = getCgnode().getClassHierarchy().resolveField(instruction.getDeclaredField());
+      IField fld = getCha().resolveField(instruction.getDeclaredField());
       if (fld == null) {
         System.err.println("\tUnable to resolve field");
         return;
@@ -129,13 +128,9 @@ public class FunctionSummary {
 
     public void visitNew(SSANewInstruction instruction) {
       // generate an abstract object
-      AbstractObject object =
-          new AbstractObject(
-              instruction.getNewSite().getDeclaredType().toString() + "@" + instruction.iIndex());
       int def = instruction.getDef();
-      IClass klass = TypeInference.make(cgnode.getIR(), false).getType(def).getType();
-      analysis.updateAll(instruction.iIndex(), AccessGraph.makeAccessgraphsForLocalVariable(def, klass, object));
-//      analysis.update(instruction.iIndex(), new AccessGraph(def, object, klass));
+      IClass klass = TypeInference.make(getIr(), false).getType(def).getType();
+      analysis.update(instruction.iIndex(), new AccessGraph(def, klass));
     }
 
     public void visitArrayLength(SSAArrayLengthInstruction instruction) {
@@ -196,31 +191,31 @@ public class FunctionSummary {
     }
   }
 
-  private FunctionSummary(CGNode function, Vector<String> foreignObjects) {
-    this.cgnode = function;
-    this.foreignObjects = foreignObjects;
-    analysis = new Analysis(this.cgnode);
+  public FunctionSummary(IR function, IClassHierarchy cha) {
+    this.ir = function;
+    this.cha = cha;
+    analysis = new Analysis(this.ir);
     buildAccesspathsForArguments();
   }
 
   private void buildAccesspathsForArguments() {
-    IR ir = cgnode.getIR();
+    IR ir = this.ir;
     SymbolTable table  = ir.getSymbolTable();
-    int i = cgnode.getMethod().isStatic() ? 0 : 1;
+    int i = this.ir.getMethod().isStatic() ? 0 : 1;
     for (;i < ir.getNumberOfParameters(); ++i) {
-      int j = cgnode.getMethod().isStatic() ? i : i-1; // if the method is an instnace method then then the index of arguemnt is at i-1
+      int j = this.ir.getMethod().isStatic() ? i : i-1; // if the method is an instnace method then then the index of arguemnt is at i-1
       int param = ir.getParameter(i);
       var type = TypeInference.make(ir, false).getType(param).getType();
       if (type.isArrayClass()) {
-        analysis.update(0, new AccessGraph(param, new AbstractObject(this.foreignObjects.elementAt(i)), type));
+        analysis.update(0, new AccessGraph(param, type));
       } else {
-        analysis.updateAll(0, AccessGraph.makeAccessgraphsForLocalVariable(param, type, new AbstractObject(this.foreignObjects.elementAt(j))));
+        analysis.update(0, new AccessGraph(param, type));
       }
     }
   }
 
   public void computefixpoint() {
-    IR ir = this.cgnode.getIR();
+    IR ir = this.ir;
     Queue<ISSABasicBlock> worklist = new LinkedList<>();
 
     // Initialize the worklist with all basic blocks
@@ -253,14 +248,12 @@ public class FunctionSummary {
     if (VERBOSE) System.err.println("Fixed point computation completed");
   }
 
-  public static FunctionSummary buildSummary(CGNode n, Vector<String> arguments) {
-    FunctionSummary summary = new FunctionSummary(n, arguments);
-    summary.computefixpoint();
-    return summary;
+  public IClassHierarchy getCha() {
+    return this.cha;
   }
 
-  public CGNode getCgnode() {
-    return cgnode;
+  public IR getIr() {
+    return this.ir;
   }
 
   public Collection<AccessGraph> getAnalysis() {
@@ -272,7 +265,7 @@ public class FunctionSummary {
   public String toString() {
     StringBuilder builder = new StringBuilder();
     builder.append("FUNCTION SUMMARY ");
-    builder.append(cgnode).append("\n");
+    builder.append(ir).append("\n");
     getAnalysis().forEach( q -> builder.append("\t").append(q.toString()).append("\n"));
     builder.append("\n");
     return builder.toString();

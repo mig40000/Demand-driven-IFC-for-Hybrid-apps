@@ -1,7 +1,7 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.analysis.BridgeMethodIR;
-import de.unipassau.dbinterfaces.BridgedMethods;
+import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.utils.Config;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,14 +15,14 @@ public class TestBridgeMethodIR {
     String apkfile = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/input/app-debug.apk";
     String androidJar = "/Users/jyotiprakash/Library/Android/sdk/platforms/android-29/android.jar";
     String database = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/Database/Intent.sqlite";
-    BridgedMethods bridgedMethods;
+    BridgedMethodList bridgedMethods;
 
     @BeforeEach
     void setup() throws ClassHierarchyException, IOException {
         Config.getConfig().androidJarpath = androidJar;
         Config.getConfig().Apk = apkfile;
         analysis = new AndroidAnalysis(Config.getConfig());
-        bridgedMethods = BridgedMethods.load(database);
+        bridgedMethods = BridgedMethodList.load(database);
     }
 
     @Test

@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class BridgeDetailList implements Iterable<BridgeDetail> {
-    
+
     private final ArrayList<BridgeDetail> bridgeDetails = new ArrayList<>();
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeDetailList.class);

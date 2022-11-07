@@ -1,5 +1,6 @@
 package de.unipassau.accesspaths;
 
+import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
 import com.ibm.wala.classLoader.IField;
@@ -31,16 +32,6 @@ public class FieldGraph implements Cloneable {
       from = to;
     }
     tail = fieldToInt(fields[fields.length - 1]);
-  }
-
-  private FieldGraph() {
-
-  }
-  /* Create a field graph with field as the head element */
-  public FieldGraph(IField field) {
-    int fieldId = fieldToInt(field);
-    fieldGraph.addNode(fieldId);
-    head = tail = fieldId;
   }
 
   private int fieldToInt(IField field) {

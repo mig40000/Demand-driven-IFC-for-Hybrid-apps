@@ -9,43 +9,19 @@ import java.util.Set;
 public class AccessGraph {
 
   private int baseVariable;
-
   private IClass basevartype;
-
-//  private TypeReference baseVariableType;
-
-
   FieldGraph graph;
-  AbstractObject object;
-
-  private boolean hasObject;
-
-  private AccessGraph() {}
-
-  public AccessGraph(int baseVariable, FieldGraph graph, AbstractObject object, IClass basevarClass) {
-    this.baseVariable = baseVariable;
-    this.graph = graph;
-    this.object = object;
-    this.basevartype = basevarClass;
-    if (object != null) {
-      hasObject = true;
-    }
-  }
-
-  public AccessGraph(int baseVariable, AbstractObject object, IClass basevarClass) {
-    this(baseVariable, null, object, basevarClass);
-  }
 
   public AccessGraph(int baseVariable, IClass basevarClass) {
-    this(baseVariable, null, null, basevarClass);
+    this.baseVariable = baseVariable;
+    this.graph = null;
+    this.basevartype = basevarClass;
   }
 
-  public AccessGraph(int baseVariable, IClass basevartype, IField head) {
-    this(baseVariable, new FieldGraph(head), null, basevartype);
-  }
-
-  public AccessGraph(int baseVariable, IClass basevartype, IField head, AbstractObject object) {
-    this(baseVariable, new FieldGraph(head), object, basevartype);
+  public AccessGraph(int baseVariable, FieldGraph graph, IClass basevarClass) {
+    this.baseVariable = baseVariable;
+    this.graph = graph;
+    this.basevartype = basevarClass;
   }
 
   public int getBaseVariable() {
@@ -54,10 +30,6 @@ public class AccessGraph {
 
   public FieldGraph getGraph() {
     return graph;
-  }
-
-  public AbstractObject getObject() {
-    return object;
   }
 
   public boolean matchesBaseAndFirstfield(int base, IField f) {
@@ -69,12 +41,11 @@ public class AccessGraph {
   }
 
   public AccessGraph clone() throws CloneNotSupportedException {
-    AccessGraph cloned = new AccessGraph();
-    cloned.baseVariable = this.baseVariable;
-    if (this.graph != null) cloned.graph = (FieldGraph) this.graph.clone();
-    else this.graph = null;
-    cloned.object = this.object;
-    return cloned;
+    AccessGraph clone = (AccessGraph) super.clone();
+    clone.basevartype = this.basevartype;
+    clone.graph = (this.graph == null) ? null : (FieldGraph) this.graph.clone();
+    clone.baseVariable = this.baseVariable;
+    return clone;
   }
 
   public AccessGraph changeBase(int base) throws CloneNotSupportedException {
@@ -103,41 +74,12 @@ public class AccessGraph {
     return graphs;
   }
 
-  /**
-   * Makes a set of access graphs for a local variable with each field
-   * @param localVar
-   * @param localvarType
-   * @return
-   */
-  public static Set<AccessGraph> makeAccessgraphsForLocalVariable(int localVar, IClass localvarType) {
-    Set<AccessGraph> graphs = new HashSet<>();
-    for (IField field : localvarType.getAllInstanceFields()) {
-      graphs.add(new AccessGraph(localVar, localvarType, field));
-    }
-    return graphs;
-  }
-
-  public static Set<AccessGraph> makeAccessgraphsForLocalVariable(int localVar, IClass localvarType, AbstractObject object) {
-    Set<AccessGraph> graphs = new HashSet<>();
-    if (localvarType.isArrayClass()) {
-      graphs.add(new AccessGraph(localVar, localvarType));
-      return graphs;
-    }
-
-    for (IField field : localvarType.getAllInstanceFields()) {
-      graphs.add(new AccessGraph(localVar, localvarType, field, object));
-    }
-    return graphs;
-  }
-
   @Override
   public String toString() {
     return "AccessGraph{" +
             "baseVariable=" + baseVariable +
             ", basevarClass=" + basevartype +
             ", graph=" + graph +
-            ", object=" + object +
-            ", hasObject=" + hasObject +
             '}';
   }
 }

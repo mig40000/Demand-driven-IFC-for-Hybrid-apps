@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public class BridgedMethods implements Iterable<BridgedMethod> {
+public class BridgedMethodList implements Iterable<BridgedMethod> {
     private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
 
     private final static Logger logger = LoggerFactory.getLogger(Config.ToolName);
@@ -32,8 +32,8 @@ public class BridgedMethods implements Iterable<BridgedMethod> {
         }
     }
 
-    public static BridgedMethods load(String dbPath) {
-        BridgedMethods webViewsList = new BridgedMethods();
+    public static BridgedMethodList load(String dbPath) {
+        BridgedMethodList webViewsList = new BridgedMethodList();
         String url = "jdbc:sqlite:" + dbPath;
         logger.info("Reading Bridge Interfaces from database " + dbPath);
         try (Connection connection = DriverManager.getConnection(url)) {
