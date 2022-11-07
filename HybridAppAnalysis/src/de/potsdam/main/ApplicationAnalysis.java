@@ -78,13 +78,17 @@ public class ApplicationAnalysis {
 				/*	directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath();
 					directory = directory.replace("smali/", ""); */
 				//	System.out.println("directory below is " + directory);
-					CollectClasses.listFiles(directory, this.smaliData, this.logger.getLogger());
+					CollectClasses.listFilesA(directory, this.smaliData, this.logger.getLogger());
+					
+				//	CollectClasses.storeFiles(directory, this.smaliData, this.logger.getLogger());
 				}			
 
 				
 				/* Stop the analysis if the app does not contain addJavascriptInterface api call
 				 * i.e., there is no hybrid data transfer
 				*/
+			//temp abort	
+			//	System.exit(0);
 				
 				for (List<String> fileContentInSmaliFormat : this.smaliData.class_content){
 					String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
