@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -57,11 +58,15 @@ public class Slicer {
 	public Queue<SliceMethod> extraMethodsQueue = new LinkedList<SliceMethod>();
 	public List<String> sources = new LinkedList<String>();
 	public List<String> foundSources = new LinkedList<String>();
+	
+	
 
-	public Slicer(List<List<String>> class_list, Logger logger, ApplicationDetails app) {
+	public Slicer(List<List<String>> class_list, Logger logger, ApplicationDetails app) throws IOException {
 		this.class_content = class_list;
 		this.logger = logger;
 		this.app = app;
+		FileWriter writer = new FileWriter("output/dummy.txt");
+		BufferedWriter buffer = new BufferedWriter(writer); 
 
 		prepareSlice();
 		
@@ -70,16 +75,39 @@ public class Slicer {
 			saveDB("");
 		}
 		
-		// get the variables to slice and backward slice it's last usage in it's method
-
 		for (SliceVar sVar : this.toSliceSet) {
-			this.usesWebView = true;
-
 			SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
-
-			sliceAt(s.class_name, s.method_name, s.line_number, s.slice_var.name);
-
-			currentWebView = extractWebViewClass();
+	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
+	     	buffer.write(s.class_name + " " + s.method_name + " " + s.line_number + " " + s.slice_var.name);  
+	     	buffer.write("\n");
+		}
+		buffer.close();
+		
+		
+		
+		BufferedReader reader = new BufferedReader(new FileReader("output/dummy.txt"));
+		Set<String> lines = new HashSet<String>(50000);
+		String line;
+	    while ((line = reader.readLine()) != null) {
+	        lines.add(line);
+	    }
+	    reader.close();
+	    BufferedWriter writerA = new BufferedWriter(new FileWriter("output/dummy.txt"));
+	    for (String unique : lines) {
+	        writerA.write(unique);
+	        writerA.newLine();
+	    }
+	    writerA.close();
+	    
+	    for (String unique : lines) {
+	    	String [] parts = unique.split(" ");
+	    	SliceVarUse s = new SliceVarUse(parts[0], parts[1], Integer.valueOf(parts[2]), parts[3]);	
+	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
+	    	
+	    	sliceAt(s.class_name, s.method_name, s.line_number,s.var_name);
+	    	
+	    	
+	    	currentWebView = extractWebViewClass();
 			checkJsEnabled();
 
 			if (currentWebView != null) {
@@ -109,8 +137,47 @@ public class Slicer {
 			saveAltDB(s.class_name);
 			
 			clearSlice();
+	    
+	    }
+	    
 		
-		}
+		// get the variables to slice and backward slice it's last usage in it's method
+
+		/*
+		 * for (SliceVar sVar : this.toSliceSet) { this.usesWebView = true;
+		 * 
+		 * SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
+		 * 
+		 * 
+		 * sliceAt(s.class_name, s.method_name, s.line_number, s.slice_var.name);
+		 * 
+		 * currentWebView = extractWebViewClass(); checkJsEnabled();
+		 * 
+		 * if (currentWebView != null) {
+		 * 
+		 * readSources();
+		 * 
+		 * // log a list of all annotated methods in the class for (SliceMethod m :
+		 * this.annotatedMethods) { if (m.class_name == currentWebView.class_name) {
+		 * this.logger.info("Annotated List => Class: " + m.class_name + " Method: " +
+		 * m.name); } }
+		 * 
+		 * 
+		 * saveSlice(s.class_name, currentWebView);
+		 * 
+		 * // optionally download webpages for further analysis // downloadUrls();
+		 * 
+		 * findLeaks();
+		 * 
+		 * 
+		 * } // System.out.println("Here in Slicer " + s.class_name);
+		 * 
+		 * saveDB(s.class_name); //saveAltDB(s.class_name);
+		 * 
+		 * clearSlice();
+		 * 
+		 * }
+		 */
 
 	}
 
@@ -170,6 +237,7 @@ public class Slicer {
 		String sql = "INSERT INTO webviews (apk, class_name, slice, uses_webview, permission_set, js_enabled, injects, injected_class, annotated, invoked, leaks) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
 		Connection conn = null;
+		if(this.currentWebView != null) {
 		try{
 			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
 		} catch (SQLException e1) {
@@ -205,6 +273,7 @@ public class Slicer {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		}
 
 	}
 	
@@ -216,6 +285,7 @@ public class Slicer {
 		String sql = "INSERT INTO webview_prime (appName, initiatingClass, bridgeClass, intefaceObject, bridgeMethods) VALUES (?,?,?,?,?)";
 
 		Connection conn = null;
+		if(this.currentWebView != null) {
 		try{
 			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
 		} catch (SQLException e1) {
@@ -249,6 +319,7 @@ public class Slicer {
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
+		}
 		}
 
 	}
@@ -347,6 +418,7 @@ public class Slicer {
 		SliceBase currentSlice;
 		Iterator<SliceBase> it = this.slice.descendingIterator();
 		boolean nextInvoke = false;
+		int count = 0;
 
 		// searchRegister is something that will not be found for now
 		searchRegister = "x0";
@@ -365,12 +437,13 @@ public class Slicer {
 				this.injects = true;
 			}
 			
-			if (currentSlice.line.contains("const-string " + objRegister)) {
+			if (currentSlice.line.contains("const-string " + objRegister) && count == 0) {
 				// this should be the instance register -- may not work in all cases
 			//	System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
 				this.interfaceObject = currentSlice.line.split(",")[1].substring(1);
 				this.interfaceObject = this.interfaceObject.replace("\"", "");
 				this.interfaceObject = this.interfaceObject.trim();
+				count++;
 			}
 
 			if (currentSlice.line.contains("new-instance " + searchRegister)) {
@@ -580,8 +653,10 @@ public class Slicer {
 
 					// new Method
 					bits = temp.split(" ");
+					if(currentClass!=null) {
 					currentMethod = new SliceMethod(temp, currentClass.class_name, bits[bits.length - 1], i);
 					currentClass.methodMap.put(bits[bits.length - 1], currentMethod);
+					}
 
 				} else if (temp.contains(".annotation runtime Landroid/webkit/JavascriptInterface;")) {
 
@@ -813,8 +888,8 @@ public class Slicer {
 	private SliceMethod findMethod(String s) {
 
 		Matcher m = this.invokePattern.matcher(s);
-		m.find();
-
+	//	m.find();
+		if(m.find()) {
 		String className = "L" + m.group(1);
 		String methodName = m.group(2);
 		SliceClass sClass = this.classMap.get(className);
@@ -822,8 +897,9 @@ public class Slicer {
 		if (sClass == null) {
 			return null;
 		}
-
 		return sClass.methodMap.get(methodName);
+		}	
+		return null;
 	}
 
 }
