@@ -1,46 +1,53 @@
 package de.unipassau.accesspaths;
 
-import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.core.util.config.AnalysisScopeReader;
-import com.ibm.wala.ipa.callgraph.AnalysisCache;
-import com.ibm.wala.ipa.callgraph.AnalysisCacheImpl;
-import com.ibm.wala.ipa.callgraph.AnalysisScope;
-import com.ibm.wala.ipa.callgraph.impl.Everywhere;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import com.ibm.wala.ipa.cha.ClassHierarchyFactory;
-import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.IR;
-import com.ibm.wala.types.*;
 import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.analysis.BridgeMethodIR;
 import de.unipassau.dbinterfaces.BridgedMethodList;
+import de.unipassau.utils.Config;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.jar.JarFile;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Arrays;
 
 class FunctionSummaryTest {
 
+    AndroidAnalysis analysis;
+    IR ir = null;
+    String apkfile =  System.getProperty("user.dir") + "/HybridAppAnalysis/input/app-debug.apk";
+    String androidJar = System.getenv("ANDROID_SDK_ROOT")  + "/platforms/android-29/android.jar";
+    String database = System.getProperty("user.dir") + "/src/test/resources/Intent.sqlite";
+    BridgedMethodList bridgedMethods;
+
+    @BeforeEach
+    void setup() throws ClassHierarchyException, IOException {
+        Config.getConfig().androidJarpath = androidJar;
+        Config.getConfig().Apk = apkfile;
+        analysis = new AndroidAnalysis(Config.getConfig());
+        bridgedMethods = BridgedMethodList.load(database);
+    }
+
+    @BeforeEach
+    void testGenerateBridgeMethod0() throws ClassNotFoundException {
+        var bridgeMethod = bridgedMethods.get(0);
+        ir = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
+        Arrays.stream(ir.getInstructions()).forEach(System.out::println);
+//        System.out.println(ir);
+        Assertions.assertNotEquals(null, ir);
+    }
+
     @Test
     void getAnalysis() throws IOException, ClassHierarchyException {
-        // setup the analysis
-        AnalysisScope scope = AnalysisScopeReader.instance.makeJavaBinaryAnalysisScope("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/src/test/resources/", null);
-
-//        scope.addToScope(ClassLoaderReference.Application, new JarFile("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/src/test/resources/test1.jar"));
-        IClassHierarchy cha = ClassHierarchyFactory.make(scope);
-        IClass clazz = cha.lookupClass(TypeReference.find(ClassLoaderReference.Application, TypeName.string2TypeName("SummaryFunction1")));
-        IMethod method = clazz.getMethod(Selector.make("foo()Object"));
-        Assertions.assertNotEquals(null, method);
-        AnalysisCache cache = new AnalysisCacheImpl();
-        IR ir = cache.getIR(method, Everywhere.EVERYWHERE);
-
         // compute the function summary
-        FunctionSummary summary = new FunctionSummary(ir, cha);
+        if (ir == null) {
+            throw new AssertionFailedError("IR is null");
+        }
+        FunctionSummary summary = new FunctionSummary(ir, analysis.getCha());
+        summary.compute();
         System.out.println(summary.getAnalysis());
     }
 }

@@ -48,9 +48,13 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
                 var bridgeMethods = rows.getString(++index);
 
                 // Exclude the last ';' from the class names
-                initiatingClass = initiatingClass.substring(0, initiatingClass.length() - 1);
-                bridgeClass = bridgeClass.substring(0, bridgeClass.length() - 1);
-                webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
+                if (!initiatingClass.isEmpty() && !bridgeClass.isEmpty()) {
+                    initiatingClass = initiatingClass.substring(0, initiatingClass.length() - 1);
+                    bridgeClass = bridgeClass.substring(0, bridgeClass.length() - 1);
+                    webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
+                } else {
+                    logger.warn("Could not found initialingClass and bridge class for " + appName);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

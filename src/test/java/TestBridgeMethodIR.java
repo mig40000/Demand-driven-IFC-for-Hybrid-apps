@@ -12,9 +12,9 @@ import java.io.IOException;
 public class TestBridgeMethodIR {
 
     AndroidAnalysis analysis;
-    String apkfile = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/input/app-debug.apk";
-    String androidJar = "/Users/jyotiprakash/Library/Android/sdk/platforms/android-29/android.jar";
-    String database = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/Database/Intent.sqlite";
+    String apkfile =  System.getProperty("user.dir") + "/HybridAppAnalysis/input/app-debug.apk";
+    String androidJar = System.getenv("ANDROID_SDK_ROOT")  + "/platforms/android-29/android.jar";
+    String database = System.getProperty("user.dir") + "/src/test/resources/Intent.sqlite";
     BridgedMethodList bridgedMethods;
 
     @BeforeEach
@@ -26,7 +26,7 @@ public class TestBridgeMethodIR {
     }
 
     @Test
-    void testGenerateBridgeMethod0() throws ClassNotFoundException {
+    void testGenerateBridgeMethod0() {
         var bridgeMethod = bridgedMethods.get(0);
         var ir = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
         System.out.println(ir);
@@ -34,7 +34,7 @@ public class TestBridgeMethodIR {
     }
 
     @Test
-    void testGeneratedBridgeMethod1() throws ClassNotFoundException {
+    void testGeneratedBridgeMethod1() {
         var bridgeMethod = bridgedMethods.get(1);
         var ir = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
         System.out.println(ir);

@@ -1,16 +1,19 @@
-package de.unipassau.accesspaths;
+package de.unipassau.modifiedpaths;
 
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.SetMultimap;
 import com.ibm.wala.classLoader.IField;
+import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ssa.IR;
+import de.unipassau.accesspaths.AccessGraph;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Analysis {
+public class ModifiedPathsAnalysis {
 
   /*
     Map from value number to the set of access graph
@@ -19,20 +22,24 @@ public class Analysis {
       MultimapBuilder.treeKeys().hashSetValues().build();
 
   private final IR node;
+  private final IMethod method;
 
   private final int returnValuenum;
+  //
+  private HashMap<Integer, Set<AccessGraph>> accessGraphs;
 
-  Analysis(IR node) {
+  public ModifiedPathsAnalysis(IR node, IMethod method) {
     this.node = node;
     // assign the last value number to the return node
     this.returnValuenum = node.getSymbolTable().getMaxValueNumber() + 1;
+    this.method = method;
   }
 
-  void update(int iindex, AccessGraph graph) {
+  public void update(int iindex, AccessGraph graph) {
     analysisResult.put(iindex, graph);
   }
 
-  void updateAll(int iindex, Set<AccessGraph> graphs) {
+  public void updateAll(int iindex, Set<AccessGraph> graphs) {
     for (AccessGraph graph : graphs) {
       analysisResult.put(iindex, graph);
     }
@@ -63,7 +70,7 @@ public class Analysis {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Analysis analysis = (Analysis) o;
+    ModifiedPathsAnalysis analysis = (ModifiedPathsAnalysis) o;
     return returnValuenum == analysis.returnValuenum && Objects.equals(analysisResult, analysis.analysisResult) && Objects.equals(node, analysis.node);
   }
 

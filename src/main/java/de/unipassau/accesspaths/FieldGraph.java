@@ -4,6 +4,9 @@ import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
 import com.ibm.wala.classLoader.IField;
+import de.unipassau.utils.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -14,6 +17,8 @@ public class FieldGraph implements Cloneable {
   private int tail;
 
   private MutableGraph<Integer> fieldGraph = GraphBuilder.directed().build();
+
+  private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
   private List<IField> fieldtoIntMap = new LinkedList<>();
 
@@ -59,13 +64,19 @@ public class FieldGraph implements Cloneable {
     return Objects.hash(head, tail, fieldGraph, fieldtoIntMap);
   }
 
-  public Object clone() throws CloneNotSupportedException {
-    FieldGraph cloned = (FieldGraph) super.clone();
-    cloned.fieldGraph = this.fieldGraph;
-    cloned.head = this.head;
-    cloned.tail = this.tail;
-    cloned.fieldtoIntMap = this.fieldtoIntMap;
-    return cloned;
+  public FieldGraph clone() throws CloneNotSupportedException {
+    try {
+      FieldGraph cloned = (FieldGraph) super.clone();
+      cloned.fieldGraph = this.fieldGraph;
+      cloned.head = this.head;
+      cloned.tail = this.tail;
+      cloned.fieldtoIntMap = this.fieldtoIntMap;
+      return cloned;
+    } catch (CloneNotSupportedException e) {
+      logger.error("Cannot clone field graph" + e.getMessage());
+      e.printStackTrace();
+      return null;
+    }
   }
 
   private boolean inALoop(int src) {
@@ -80,17 +91,22 @@ public class FieldGraph implements Cloneable {
     return false;
   }
 
-  public Set<FieldGraph> removeHead() throws CloneNotSupportedException {
+  public Set<FieldGraph> removeHead()  {
     // get the successors of head. For each successor of head, create a new field graph and return
     boolean headInLoop = inALoop(head);
     Set<FieldGraph> graphs = new HashSet<>();
     for (int successor : fieldGraph.successors(head)) {
-      FieldGraph cloned = (FieldGraph) clone();
-      if (!headInLoop) {
-        cloned.fieldGraph.removeNode(head);
+      try {
+        FieldGraph cloned = clone();
+        if (!headInLoop) {
+          cloned.fieldGraph.removeNode(head);
+        }
+        cloned.head = successor;
+        graphs.add(cloned);
+      } catch (CloneNotSupportedException e) {
+        logger.error("Cannot clone field [" + e.getMessage() + "]");
+        e.printStackTrace();
       }
-      cloned.head = successor;
-      graphs.add(cloned);
     }
     return graphs;
   }
@@ -101,16 +117,21 @@ public class FieldGraph implements Cloneable {
    * @param f
    * @return
    */
-  public FieldGraph prependHead(IField f) throws CloneNotSupportedException {
-    FieldGraph cloned = (FieldGraph) clone();
-    int fieldId = cloned.fieldToInt(f);
-    if (fieldGraph.nodes().isEmpty()) {
-      fieldGraph.addNode(fieldId);
-    } else {
-      cloned.fieldGraph.putEdge(fieldId, head);
+  public FieldGraph prependHead(IField f) {
+    try {
+      FieldGraph cloned = clone();
+      int fieldId = cloned.fieldToInt(f);
+      if (fieldGraph.nodes().isEmpty()) {
+        fieldGraph.addNode(fieldId);
+      } else {
+        cloned.fieldGraph.putEdge(fieldId, head);
+      }
+      cloned.head = fieldId;
+      return cloned;
+    } catch (CloneNotSupportedException e) {
+      logger.error("Cannot clone FieldGraph " + e.getMessage());
+      return null;
     }
-    cloned.head = fieldId;
-    return cloned;
   }
 
   public boolean isHead(IField f) {

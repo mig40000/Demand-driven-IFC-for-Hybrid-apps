@@ -1,27 +1,30 @@
 package de.unipassau.accesspaths;
 
-import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
+import com.ibm.wala.ipa.callgraph.CGNode;
+import de.unipassau.utils.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class AccessGraph {
+public class AccessGraph implements Datafact {
 
   private int baseVariable;
-  private IClass basevartype;
-  FieldGraph graph;
+  private FieldGraph graph;
+  private CGNode cgNode;
 
-  public AccessGraph(int baseVariable, IClass basevarClass) {
+  private final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+
+  public AccessGraph(int baseVariable) {
     this.baseVariable = baseVariable;
     this.graph = null;
-    this.basevartype = basevarClass;
   }
 
-  public AccessGraph(int baseVariable, FieldGraph graph, IClass basevarClass) {
+  public AccessGraph(int baseVariable, FieldGraph graph) {
     this.baseVariable = baseVariable;
     this.graph = graph;
-    this.basevartype = basevarClass;
   }
 
   public int getBaseVariable() {
@@ -40,21 +43,26 @@ public class AccessGraph {
     return baseVariable == base;
   }
 
-  public AccessGraph clone() throws CloneNotSupportedException {
-    AccessGraph clone = (AccessGraph) super.clone();
-    clone.basevartype = this.basevartype;
-    clone.graph = (this.graph == null) ? null : (FieldGraph) this.graph.clone();
-    clone.baseVariable = this.baseVariable;
-    return clone;
+  public AccessGraph clone() {
+    try {
+      AccessGraph clone = (AccessGraph) super.clone();
+      clone.graph = (this.graph == null) ? null : (FieldGraph) this.graph.clone();
+      clone.baseVariable = this.baseVariable;
+      return clone;
+    } catch (CloneNotSupportedException e) {
+      logger.error("Failed to clone accessgraph [ " + e.getMessage() + "]");
+      e.printStackTrace();
+      return null;
+    }
   }
 
-  public AccessGraph changeBase(int base) throws CloneNotSupportedException {
+  public AccessGraph changeBase(int base)  {
     AccessGraph newGraph = clone();
     newGraph.baseVariable = base;
     return newGraph;
   }
 
-  public AccessGraph changeBaseAddField(int base, IField field) throws CloneNotSupportedException {
+  public AccessGraph changeBaseAddField(int base, IField field) {
     AccessGraph newGraph = clone();
     newGraph.baseVariable = base;
     if (newGraph.graph == null) {
@@ -63,7 +71,7 @@ public class AccessGraph {
     return newGraph;
   }
 
-  public Set<AccessGraph> changeBaseRemoveHead(int baseVariable) throws CloneNotSupportedException {
+  public Set<AccessGraph> changeBaseRemoveHead(int baseVariable) {
     Set<AccessGraph> graphs = new HashSet<>();
     for (FieldGraph headRemoved : this.graph.removeHead()) {
       AccessGraph newGraph = clone();
@@ -75,10 +83,14 @@ public class AccessGraph {
   }
 
   @Override
+  public FieldGraph fieldGraph() {
+    return this.graph;
+  }
+
+  @Override
   public String toString() {
     return "AccessGraph{" +
             "baseVariable=" + baseVariable +
-            ", basevarClass=" + basevartype +
             ", graph=" + graph +
             '}';
   }

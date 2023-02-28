@@ -2,18 +2,18 @@ package de.unipassau.accesspaths;
 
 import com.ibm.wala.analysis.typeInference.TypeInference;
 import com.ibm.wala.cfg.ControlFlowGraph;
-import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.*;
+import de.unipassau.modifiedpaths.ModifiedPathsAnalysis;
 
 import java.util.*;
 
 public class FunctionSummary {
 
-  private static final boolean VERBOSE = false;
+  private static final boolean VERBOSE = true;
 
-  Analysis analysis;
+  ModifiedPathsAnalysis analysis;
 
   private final IR ir;
   private final IClassHierarchy cha;
@@ -83,11 +83,7 @@ public class FunctionSummary {
           analysis.getAccessgraphsForLocalVarAndHead(instruction.getUse(1), fld);
       Set<AccessGraph> destGraphs = new HashSet<>();
       for (AccessGraph sourceGraph : sourceGraphs) {
-        try {
-          destGraphs.addAll(sourceGraph.changeBaseRemoveHead(instruction.getUse(0)));
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
+        destGraphs.addAll(sourceGraph.changeBaseRemoveHead(instruction.getUse(0)));
       }
       change = true;
     }
@@ -111,26 +107,24 @@ public class FunctionSummary {
           analysis.getAccessgraphsForLocalVariable(instruction.getUse(1));
       Set<AccessGraph> destGraphs = new HashSet<>();
       for (AccessGraph sourceGraph : sourceGraphs) {
-        try {
-          destGraphs.add(sourceGraph.changeBaseAddField(instruction.getUse(0), fld));
-        } catch (CloneNotSupportedException e) {
-          System.err.println(e.getMessage()  + ":" + e.getCause());
-          e.printStackTrace();
-        }
+        destGraphs.add(sourceGraph.changeBaseAddField(instruction.getUse(0), fld));
       }
       analysis.updateAll(instruction.iIndex(), destGraphs);
       change = true;
     }
 
     public void visitInvoke(SSAInvokeInstruction instruction) {
-      System.err.println("\t\t We don't handle interprocedural cases");
+//      System.err.println("\t\t We don't handle interprocedural cases");
+      if (instruction.isStatic()) {
+
+      }
     }
 
     public void visitNew(SSANewInstruction instruction) {
       // generate an abstract object
       int def = instruction.getDef();
-      IClass klass = TypeInference.make(getIr(), false).getType(def).getType();
-      analysis.update(instruction.iIndex(), new AccessGraph(def, klass));
+//      IClass klass = TypeInference.make(getIr(), false).getType(def).getType();
+      analysis.update(instruction.iIndex(), new AccessGraph(def));
     }
 
     public void visitArrayLength(SSAArrayLengthInstruction instruction) {
@@ -150,11 +144,7 @@ public class FunctionSummary {
           analysis.getAccessgraphsForLocalVariable(instruction.getVal());
       Set<AccessGraph> destGraphs = new HashSet<>();
       for (AccessGraph sourceGraph : sourceGraphs) {
-        try {
-          destGraphs.add(sourceGraph.changeBase(instruction.getResult()));
-        } catch (CloneNotSupportedException e) {
-          e.printStackTrace();
-        }
+        destGraphs.add(sourceGraph.changeBase(instruction.getResult()));
       }
       analysis.updateAll(instruction.iIndex(), destGraphs);
       change = true;
@@ -194,7 +184,7 @@ public class FunctionSummary {
   public FunctionSummary(IR function, IClassHierarchy cha) {
     this.ir = function;
     this.cha = cha;
-    analysis = new Analysis(this.ir);
+    analysis = new ModifiedPathsAnalysis(this.ir, function.getMethod());
     buildAccesspathsForArguments();
   }
 
@@ -207,14 +197,14 @@ public class FunctionSummary {
       int param = ir.getParameter(i);
       var type = TypeInference.make(ir, false).getType(param).getType();
       if (type.isArrayClass()) {
-        analysis.update(0, new AccessGraph(param, type));
+        analysis.update(0, new AccessGraph(param));
       } else {
-        analysis.update(0, new AccessGraph(param, type));
+        analysis.update(0, new AccessGraph(param));
       }
     }
   }
 
-  public void computefixpoint() {
+  public void compute() {
     IR ir = this.ir;
     Queue<ISSABasicBlock> worklist = new LinkedList<>();
 

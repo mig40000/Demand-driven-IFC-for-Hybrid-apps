@@ -51,4 +51,8 @@ public class BridgeMethodIR {
         }
         return irFactory.makeIR(method, Everywhere.EVERYWHERE, this.options);
     }
+
+    public IClassHierarchy getCha() {
+        return cha;
+    }
 }
