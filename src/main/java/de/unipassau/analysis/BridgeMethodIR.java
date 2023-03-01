@@ -11,7 +11,6 @@ import com.ibm.wala.ssa.SSAOptions;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
-import de.unipassau.accesspaths.FunctionSummary;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ public class BridgeMethodIR {
     private final IClassHierarchy cha;
     private final SSAOptions options;
     private final String methodName;
-    private final FunctionSummary summary = null;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BridgeMethodIR.class);
 

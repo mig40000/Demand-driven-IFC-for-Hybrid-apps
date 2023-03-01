@@ -17,13 +17,15 @@ public class AccessGraph implements Datafact {
 
   private final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
-  public AccessGraph(int baseVariable) {
+  public AccessGraph(CGNode node, int baseVariable) {
+    this.cgNode = node;
     this.baseVariable = baseVariable;
     this.graph = null;
   }
 
-  public AccessGraph(int baseVariable, FieldGraph graph) {
+  public AccessGraph(CGNode node, int baseVariable, FieldGraph graph) {
     this.baseVariable = baseVariable;
+    this.cgNode = node;
     this.graph = graph;
   }
 
@@ -31,15 +33,12 @@ public class AccessGraph implements Datafact {
     return baseVariable;
   }
 
-  public FieldGraph getGraph() {
-    return graph;
-  }
 
   public boolean matchesBaseAndFirstfield(int base, IField f) {
     return graph != null && base == baseVariable && graph.isHead(f);
   }
 
-  public boolean matchBase(int base) {
+  public boolean hasBase(int base) {
     return baseVariable == base;
   }
 
@@ -93,5 +92,9 @@ public class AccessGraph implements Datafact {
             "baseVariable=" + baseVariable +
             ", graph=" + graph +
             '}';
+  }
+
+  public CGNode getCgNode() {
+    return cgNode;
   }
 }

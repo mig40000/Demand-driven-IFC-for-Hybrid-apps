@@ -1,29 +1,42 @@
 package de.unipassau.modifiedpaths;
 
+import com.ibm.wala.classLoader.CallSiteReference;
+import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.dataflow.IFDS.*;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.*;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.FieldReference;
+import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
 
+import java.util.HashMap;
 import java.util.Set;
 
-public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
+/**
+ * Flow functions for modified path analysis
+ */
+public class MPAFlowFunctions implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
     private final ICFGSupergraph supergraph;
     private final CGNode bridgeNode;
-
+    private final HashMap<Object, Object> fakeReturns;
     private final AccessPathsDomain domain;
 
-    public ModifiedPathAnalysisWrapper(CallGraph callGraph, CGNode bridgeNode) {
+    private final int FAKE_RETURN_VALUE = Integer.MAX_VALUE;
+
+    public MPAFlowFunctions(CallGraph callGraph, CGNode bridgeNode) {
         this.supergraph = ICFGSupergraph.make(callGraph);
         this.bridgeNode = bridgeNode;
         this.domain = new AccessPathsDomain();
+        fakeReturns = HashMapFactory.make();
     }
 
 
@@ -32,9 +45,8 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
         // Ininitalize the facts of all parameters for computing reachabiblity
         var symbolTable = getSymbolTable(entryBlk);
         var params = getParameterValueNumbers(entryBlk);
-        entryBlk.getDelegate().getInstruction()
         for (int param : params) {
-            AccessGraph paramNode = new AccessGraph(param);
+            AccessGraph paramNode = new AccessGraph(entryBlk.getNode(), param);
             int fact = domain.add(paramNode);
             entryfacts.add(fact);
         }
@@ -77,11 +89,36 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
             return getPhiInstructionFlowFunction((SSAPhiInstruction) instr, entryfacts);
         }
 
+        if (instr instanceof SSAReturnInstruction) {
+            return getReturnInstructionFlowFunction((SSAReturnInstruction) instr, src.getNode(), entryfacts);
+        }
+
         if (src.isEntryBlock()) {
             return identity(entryfacts);
         } else {
             return IdentityFlowFunction.identity();
         }
+    }
+
+    /**
+     * Map the return value to a fake return value. The fake return value will be prpoagated to the caller function
+     */
+    private IUnaryFlowFunction getReturnInstructionFlowFunction(SSAReturnInstruction instr, CGNode node, MutableIntSet entryfacts) {
+        int vr = instr.getUse(0);
+        return new IUnaryFlowFunction() {
+            @Override
+            public IntSet getTargets(int d1) {
+                AccessGraph graph = domain.getMappedObject(d1);
+                if (graph.hasBase(vr)) {
+                    //Create a fake return value and add it to the
+                    AccessGraph returnValue = new AccessGraph(node, FAKE_RETURN_VALUE);
+                    fakeReturns.put(node, returnValue);
+                    int id = domain.add(returnValue);
+                    entryfacts.add(id);
+                }
+                return entryfacts;
+            }
+        };
     }
 
     private IUnaryFlowFunction getPhiInstructionFlowFunction(SSAPhiInstruction instr, MutableIntSet entry) {
@@ -92,20 +129,14 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
         int v2 = instr.getUse(0);
         int v3 = instr.getUse(1);
         Set<Integer> uses = Set.of(v2, v3);
-        return new IUnaryFlowFunction() {
-            @Override
-            public IntSet getTargets(int i) {
-                AccessGraph ag = domain.getMappedObject(i);
-                if (uses.contains(ag.getBaseVariable())) {
-                    AccessGraph dst = new AccessGraph(v1);
-                    int id = domain.add(dst);
-                    entry.add(id);
-                    return entry;
-                } else {
-                    // return the identity function
-                    return entry;
-                }
+        return d1 -> {
+            AccessGraph ag = domain.getMappedObject(d1);
+            if (uses.contains(ag.getBaseVariable())) {
+                AccessGraph dst = new AccessGraph(ag.getCgNode(), v1);
+                int id = domain.add(dst);
+                entry.add(id);
             }
+            return entry;
         };
     }
 
@@ -119,18 +150,15 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
         var field = get.getDeclaredField().getName().toString();
         int dest = get.getDef();
 
-        return new IUnaryFlowFunction() {
-            @Override
-            public IntSet getTargets(int i) {
-                var accessgraph = domain.getMappedObject(i);
-                if (accessgraph.matchBase(src)) {
-                    AccessGraph newAccessgrpah = new AccessGraph(dest, accessgraph.fieldGraph());
-                    int id = domain.add(newAccessgrpah);
-                    entry.add(id);
-                    return entry;
-                }
+        return i -> {
+            var accessgraph = domain.getMappedObject(i);
+            if (accessgraph.hasBase(src)) {
+                AccessGraph newAccessgrpah = new AccessGraph(bridgeNode, dest, accessgraph.fieldGraph());
+                int id = domain.add(newAccessgrpah);
+                entry.add(id);
                 return entry;
             }
+            return entry;
         };
     }
 
@@ -140,21 +168,24 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
     private IUnaryFlowFunction getPutFieldFlowFunction(SSAPutInstruction put, MutableIntSet entry) {
         int dest = put.getUse(0); // x
         int src = put.getUse(1); // v
-        var field = put.getDeclaredField();
+        var field = resolveFieldReference(bridgeNode.getClassHierarchy(), put.getDeclaredField());
 
 
-        return new IUnaryFlowFunction() {
-            @Override
-            public IntSet getTargets(int i) {
-                var accessgraph = domain.getMappedObject(i);
-                if (accessgraph.matchBase(dest)) {
-                    AccessGraph newAccessgraph = new AccessGraph(src, new FieldGraph(new String[]{field}));
-                    int id = domain.add(newAccessgraph);
-                    entry.add(id);
-                }
-                return entry; // identity function
+        return i -> {
+            var accessgraph = domain.getMappedObject(i);
+            if (accessgraph.hasBase(dest)) {
+                AccessGraph newAccessgraph = new AccessGraph(bridgeNode, src, FieldGraph.of(field));
+                int id = domain.add(newAccessgraph);
+                entry.add(id);
             }
+            return entry; // identity function
         };
+    }
+
+    private IField resolveFieldReference(IClassHierarchy cha, FieldReference fr) {
+        IField f = cha.resolveField(fr);
+        assert f != null : "unable to resolve field [" + fr + "]";
+        return f;
     }
 
     private IUnaryFlowFunction union(IUnaryFlowFunction f1, IUnaryFlowFunction f2) {
@@ -163,7 +194,7 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
 
     private IUnaryFlowFunction getNewInstructionFlowFunction(SSANewInstruction inst, MutableIntSet entry) {
         return d1 -> {
-            AccessGraph newgraph = new AccessGraph(inst.getDef());
+            AccessGraph newgraph = new AccessGraph(bridgeNode, inst.getDef());
             entry.add(domain.add(newgraph));
             return entry;
         };
@@ -171,13 +202,7 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
 
 
     private IUnaryFlowFunction identity(MutableIntSet entry) {
-        return new IUnaryFlowFunction() {
-            @Override
-            public IntSet getTargets(int i) {
-                MutableIntSet result = MutableSparseIntSet.make(entry);
-                return result;
-            }
-        };
+        return d1 -> MutableSparseIntSet.make(entry);
     }
 
     /**
@@ -206,39 +231,70 @@ public class ModifiedPathAnalysisWrapper implements IFlowFunctionMap<BasicBlockI
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
         SSAInvokeInstruction invoke =  (SSAInvokeInstruction) getInstruction(src);
 
-        return new IUnaryFlowFunction() {
-            // map d1 to the dataflow fact of the called function
-            @Override
-            public IntSet getTargets(int d1) {
-                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+        if (isLibraryFunctionCall(invoke.getCallSite())) {
+            // Skip library calls and replace them with identity function
+            return IdentityFlowFunction.identity();
+        }
 
-                // map the actual parameters in d1 to the formal parameters in the called function
+        if (invoke.getCallSite().isVirtual()) {
 
-                for (int i=0; i < invoke.getNumberOfPositionalParameters(); ++i) {
-                    AccessGraph graph = domain.getMappedObject(d1);
-                    int vi = invoke.getUse(i);
-                    if (graph.matchBase(vi)) {
-                        AccessGraph newgraph = new AccessGraph(dst.getNode())
-                    }
+        }
+        // map the positional parameters and propagate the reachable parameters
+        // map d1 to the dataflow fact of the called function
+
+        /*
+         * For each function call at site f(x, y, z) to a function f(a, b, c), map the access graph of x to a, y to b, and z to c
+         */
+        return d1 -> {
+            MutableIntSet result = MutableSparseIntSet.makeEmpty();
+            for (int i=0; i < invoke.getNumberOfPositionalParameters(); ++i) {
+                AccessGraph graph = domain.getMappedObject(d1);
+                int vi = invoke.getUse(i);
+                if (graph.hasBase(vi)) {
+                    AccessGraph newgraph = new AccessGraph(dst.getNode(), i, graph.fieldGraph());
+                    int id = domain.add(newgraph);
+                    result.add(id);
                 }
-
-                return result;
             }
+            return result;
+        };
+    }
+
+    private boolean isLibraryFunctionCall(CallSiteReference callsite) {
+        return callsite.getDeclaredTarget().getDeclaringClass().getClassLoader().equals(ClassLoaderReference.Primordial);
+    }
+
+    private IUnaryFlowFunction empty() {
+        return d1 -> MutableSparseIntSet.makeEmpty();
+    }
+
+    @Override
+    public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst) {
+        // src in the called function, dst is in caller function
+        SSAInvokeInstruction invoke = (SSAInvokeInstruction) getInstruction(call);
+        if (!invoke.hasDef()) {
+            // don't propagate as there is no variable which captures the return value
+            return empty();
+        }
+        int callerDef = invoke.getDef();
+        return (IUnaryFlowFunction) d1 -> {
+            AccessGraph returnvalue = domain.getMappedObject(d1);
+            MutableIntSet result = MutableSparseIntSet.makeEmpty();
+            if (returnvalue.hasBase(FAKE_RETURN_VALUE)) {
+                AccessGraph capturingVariable = new AccessGraph(call.getNode(), callerDef);
+                result.add(domain.add(capturingVariable));
+            }
+            return result;
         };
     }
 
     @Override
-    public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1, BasicBlockInContext<IExplodedBasicBlock> t2) {
-
-    }
-
-    @Override
     public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return null;
+        return IdentityFlowFunction.identity();
     }
 
     @Override
     public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return null;
+       return IdentityFlowFunction.identity();
     }
 }

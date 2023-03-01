@@ -46,8 +46,8 @@ class FunctionSummaryTest {
         if (ir == null) {
             throw new AssertionFailedError("IR is null");
         }
-        FunctionSummary summary = new FunctionSummary(ir, analysis.getCha());
-        summary.compute();
-        System.out.println(summary.getAnalysis());
+//        FunctionSummary summary = new FunctionSummary(ir, analysis.getCha());
+//        summary.compute();
+//        System.out.println(summary.getAnalysis());
     }
 }

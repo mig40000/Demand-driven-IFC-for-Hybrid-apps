@@ -39,6 +39,10 @@ public class FieldGraph implements Cloneable {
     tail = fieldToInt(fields[fields.length - 1]);
   }
 
+  public static FieldGraph of(IField... fields) {
+    return new FieldGraph(fields);
+  }
+
   private int fieldToInt(IField field) {
     if (fieldtoIntMap.contains(field)) {
       return fieldtoIntMap.indexOf(field);

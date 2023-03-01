@@ -28,7 +28,7 @@ public class IFDSSolver<N extends ESGNode, E extends  ESGEdge> {
         int[] parameters = this.method.getIR().getParameterValueNumbers();
 
         for (int i=0; i < ir.getNumberOfParameters(); ++i) {
-            ESGNode node = new ESGNode(new MethodEntryStatement(method, i), new AccessGraph(parameters[i]));
+            ESGNode node = new ESGNode(new MethodEntryStatement(method, i), new AccessGraph(method, parameters[i]));
         }
     }
 
