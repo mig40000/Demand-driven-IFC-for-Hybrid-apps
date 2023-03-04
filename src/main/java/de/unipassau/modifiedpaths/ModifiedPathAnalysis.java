@@ -15,16 +15,14 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashMapFactory;
+import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Flow functions for modified path analysis
@@ -389,5 +387,17 @@ public class ModifiedPathAnalysis {
         } catch (CancelException e) {
             throw new IllegalStateException("Cannot solve the constraints");
         }
+    }
+
+    public Collection<AccessGraph> collectSolutions() {
+        var pathEdges = analyze().getSeeds();
+        List<AccessGraph> solutions = new ArrayList<>();
+        pathEdges.forEach(edge -> {
+            var from = domain.getMappedObject(edge.getD1());
+            var to = domain.getMappedObject(edge.getD2());
+            solutions.add(from);
+            solutions.add(to);
+        });
+        return solutions;
     }
 }
