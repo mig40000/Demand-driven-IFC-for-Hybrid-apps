@@ -49,10 +49,14 @@ public class TestMPAAnalysis {
     }
 
     @Test
-    void testGeneratedBridgeMethod1() {
+    void testGeneratedBridgeMethod1() throws CancelException {
         var bridgeMethod = bridgedMethods.get(1);
-        var ir = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
-        System.out.println(ir);
-        Assertions.assertNotEquals(null, ir);
+        var callgraph = analysis.callgraph();
+        var method = analysis.nodeForMethod(getMethod(bridgeMethod));
+        assert method.isPresent() : "Failed to find method %s in %s".formatted(bridgeMethod.methodSign(), bridgeMethod.clazz());
+
+        System.out.println(method.get().getIR());
+        var mpanalysis = new ModifiedPathAnalysis(callgraph, method.get());
+        var result = mpanalysis.analyze();
     }
 }

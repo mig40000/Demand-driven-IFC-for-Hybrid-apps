@@ -84,9 +84,9 @@ public class ModifiedPathAnalysis {
         public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst) {
             MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
 
-            if (src.isEntryBlock()) {
-                entryfacts = entryBlockDataflowFacts(src);
-            }
+//            if (src.isEntryBlock()) {
+//                entryfacts = entryBlockDataflowFacts(src);
+//            }
 
             SSAInstruction instr = getInstruction(src);
 
@@ -368,7 +368,9 @@ public class ModifiedPathAnalysis {
                 if (param != 0) {
                     AccessGraph paramI = new AccessGraph(entryMethod, param);
                     int id = domain.add(paramI);
-                    seeds.add(PathEdge.createPathEdge(entrySuperblock, id, entrySuperblock, id));
+                    var edge = PathEdge.createPathEdge(entrySuperblock, id, entrySuperblock, id);
+                    System.out.println("Initialized pathedge " + edge);
+                    seeds.add(edge);
                 }
             }
             return seeds;
