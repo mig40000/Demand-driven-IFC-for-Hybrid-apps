@@ -3,7 +3,6 @@ package de.unipassau.modifiedpaths;
 import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.dataflow.IFDS.*;
-import com.ibm.wala.dataflow.graph.ITransferFunctionProvider;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
@@ -12,6 +11,8 @@ import com.ibm.wala.ssa.*;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.FieldReference;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.intset.IntSet;
@@ -44,18 +45,29 @@ public class ModifiedPathAnalysis {
     }
 
 
+    public AccessPathsDomain domain() {
+        return this.domain;
+    }
 
+    public CGNode bridgemethod() {
+        return this.bridgeNode;
+    }
 
     private MutableIntSet entryBlockDataflowFacts(BasicBlockInContext<IExplodedBasicBlock> entryBlk) {
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
         // Ininitalize the facts of all parameters for computing reachabiblity
         var symbolTable = getSymbolTable(entryBlk);
-        var params = getParameterValueNumbers(entryBlk);
-        for (int param : params) {
-            AccessGraph paramNode = new AccessGraph(entryBlk.getNode(), param);
-            int fact = domain.add(paramNode);
+        for (int i=0; i < symbolTable.getMaxValueNumber(); ++i) {
+            AccessGraph variable = new AccessGraph(entryBlk.getNode(), i);
+            int fact = domain.add(variable);
             entryfacts.add(fact);
         }
+//        var params = getParameterValueNumbers(entryBlk);
+//        for (int param : params) {
+//            AccessGraph paramNode = new AccessGraph(entryBlk.getNode(), param);
+//            int fact = domain.add(paramNode);
+//            entryfacts.add(fact);
+//        }
         return entryfacts;
     }
 
@@ -115,6 +127,9 @@ public class ModifiedPathAnalysis {
                 @Override
                 public IntSet getTargets(int d1) {
                     AccessGraph graph = domain.getMappedObject(d1);
+                    if (graph == null) {
+                        return entryfacts;
+                    }
                     if (graph.hasBase(vr)) {
                         //Create a fake return value and add it to the
                         AccessGraph returnValue = new AccessGraph(node, FAKE_RETURN_VALUE);
@@ -226,6 +241,11 @@ public class ModifiedPathAnalysis {
             return src.getDelegate().getInstruction();
         }
 
+        private boolean isAndroidLibraryMethodCall(CallSiteReference callsite) {
+            MethodReference method = callsite.getDeclaredTarget();
+            TypeReference clazz = method.getDeclaringClass();
+            return clazz.getName().toString().startsWith("LAndroid");
+        }
         /**
          * @param src Call Instruction
          * @param dst Entry of the callee
@@ -238,6 +258,10 @@ public class ModifiedPathAnalysis {
 
             if (isLibraryFunctionCall(invoke.getCallSite())) {
                 // Skip library calls and replace them with identity function
+                return IdentityFlowFunction.identity();
+            }
+
+            if (isAndroidLibraryMethodCall(invoke.getCallSite())) {
                 return IdentityFlowFunction.identity();
             }
 
@@ -268,6 +292,10 @@ public class ModifiedPathAnalysis {
         private boolean isLibraryFunctionCall(CallSiteReference callsite) {
             return callsite.getDeclaredTarget().getDeclaringClass().getClassLoader().equals(ClassLoaderReference.Primordial);
         }
+
+//        private boolean isAndroidLibraryCall(CallSiteReference callsite) {
+//            if (callsite.)
+//        }
 
         private IUnaryFlowFunction empty() {
             return d1 -> MutableSparseIntSet.makeEmpty();
@@ -304,17 +332,17 @@ public class ModifiedPathAnalysis {
         }
     } // end of flow functions
 
-    public ICFGSupergraph getSupergraph() {
+    public ICFGSupergraph supergraph() {
         return supergraph;
     }
 
     protected class MPAProblem implements TabulationProblem<BasicBlockInContext<IExplodedBasicBlock>, CGNode, AccessGraph> {
 
-        private Flowfunctions flowfunctions = new Flowfunctions();
+        private final Flowfunctions flowfunctions = new Flowfunctions();
 
         @Override
         public ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> getSupergraph() {
-            return supergraph;
+            return supergraph();
         }
 
         @Override
@@ -329,9 +357,19 @@ public class ModifiedPathAnalysis {
 
         @Override
         public Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> initialSeeds() {
+            CGNode entryMethod = bridgemethod();
             ArrayList<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> seeds = new ArrayList<>();
-            for (var bb : supergraph) {
-                seeds.add(PathEdge.createPathEdge(bb, 0, bb, 0));
+            var entryBlock = entryMethod.getIR().getControlFlowGraph().entry().getGraphNodeId();
+            // add all parameters of the bridge method as seed values
+            // essentially, for every f(n1, n2, ..., nn), it creates the pathedge <f, n_i> --> <f, n_i> for n_i in {n1, .., nn}
+            var entrySuperblock = supergraph().getLocalBlock(entryMethod, entryBlock);
+            for (int param : entryMethod.getIR().getParameterValueNumbers()) {
+                // ignore the first parameter as it denotes "this" parameter.
+                if (param != 0) {
+                    AccessGraph paramI = new AccessGraph(entryMethod, param);
+                    int id = domain.add(paramI);
+                    seeds.add(PathEdge.createPathEdge(entrySuperblock, id, entrySuperblock, id));
+                }
             }
             return seeds;
         }

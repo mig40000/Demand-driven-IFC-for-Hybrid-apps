@@ -38,6 +38,8 @@ public class TestMPAAnalysis {
         var callgraph = analysis.callgraph();
         var method = analysis.nodeForMethod(getMethod(bridgeMethod));
         assert method.isPresent() : "Failed to find method %s in %s".formatted(bridgeMethod.methodSign(), bridgeMethod.clazz());
+
+        System.out.println(method.get().getIR());
         var mpanalysis = new ModifiedPathAnalysis(callgraph, method.get());
         var result = mpanalysis.analyze();
     }
