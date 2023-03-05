@@ -1,5 +1,6 @@
 package de.unipassau.ifc;
 
+import com.ibm.wala.ipa.callgraph.CGNode;
 import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
 
@@ -15,11 +16,16 @@ public class TaintAnalysisFact {
         this.taintinfo = taintinfo;
     }
 
+    public TaintAnalysisFact(CGNode node, int base, FieldGraph graph, TaintInformation taint) {
+        this.graph = new AccessGraph(node, base, graph);
+        this.taintinfo = taint;
+    }
+
     public int getBase() {
         return this.graph.getBaseVariable();
     }
 
-    public FieldGraph getGraph() {
+    public FieldGraph fieldgraph() {
         return this.graph.fieldGraph();
     }
 
