@@ -276,11 +276,9 @@ public class ModifiedPathAnalysis {
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
                 for (int i = 0; i < invoke.getNumberOfPositionalParameters(); ++i) {
                     AccessGraph graph = domain.getMappedObject(d1);
-                    int vi = invoke.getUse(i);
-                    if (graph.hasBase(vi)) {
+                    if (graph.hasBase(invoke.getUse(i))) {
                         AccessGraph newgraph = new AccessGraph(dst.getNode(), i, graph.fieldGraph());
-                        int id = domain.add(newgraph);
-                        result.add(id);
+                        result.add(domain.add(newgraph));
                     }
                 }
                 return result;

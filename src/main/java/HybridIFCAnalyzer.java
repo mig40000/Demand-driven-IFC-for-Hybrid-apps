@@ -23,6 +23,7 @@ public class HybridIFCAnalyzer {
     private static final Option apiLevel = Option.builder().option("level").hasArg().desc("android platform version: android-<version>").required().build();
     private static final Option apk = Option.builder().option("apk").hasArg().desc("path to apk file to analyze").required().build();
     private static final Option db = Option.builder().option("db").hasArg().desc("database").required().build();
+    private static final Option sourceSinkFile = Option.builder().option("s").hasArg(true).desc("source sink file").required().build();
     private static final Option help = Option.builder().option("h").desc("help").build();
 
     static {
@@ -30,6 +31,7 @@ public class HybridIFCAnalyzer {
         options.addOption(apk);
         options.addOption(db);
         options.addOption(help);
+        options.addOption(sourceSinkFile);
     }
 
     public static void usage() {

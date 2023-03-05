@@ -6,17 +6,17 @@ import de.unipassau.accesspaths.FieldGraph;
 
 import java.util.Objects;
 
-public class TaintAnalysisFact {
+public class IfcAnalysisFact {
 
     private final AccessGraph graph;
-    private final TaintInformation taintinfo;
+    private final IFCLabel taintinfo;
 
-    public TaintAnalysisFact(AccessGraph graph, TaintInformation taintinfo) {
+    public IfcAnalysisFact(AccessGraph graph, IFCLabel taintinfo) {
         this.graph = graph;
         this.taintinfo = taintinfo;
     }
 
-    public TaintAnalysisFact(CGNode node, int base, FieldGraph graph, TaintInformation taint) {
+    public IfcAnalysisFact(CGNode node, int base, FieldGraph graph, IFCLabel taint) {
         this.graph = new AccessGraph(node, base, graph);
         this.taintinfo = taint;
     }
@@ -29,7 +29,7 @@ public class TaintAnalysisFact {
         return this.graph.fieldGraph();
     }
 
-    public TaintInformation taintinfo() {
+    public IFCLabel ifclabel() {
         return this.taintinfo;
     }
 
@@ -37,7 +37,7 @@ public class TaintAnalysisFact {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TaintAnalysisFact that = (TaintAnalysisFact) o;
+        IfcAnalysisFact that = (IfcAnalysisFact) o;
         return Objects.equals(graph, that.graph) && taintinfo == that.taintinfo;
     }
 

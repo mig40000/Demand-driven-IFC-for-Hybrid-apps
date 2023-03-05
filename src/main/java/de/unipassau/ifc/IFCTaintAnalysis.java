@@ -1,5 +1,6 @@
 package de.unipassau.ifc;
 
+import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph;
 import com.ibm.wala.dataflow.IFDS.IFlowFunction;
@@ -20,18 +21,17 @@ import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class IFCTaintAnalysis {
     private final ICFGSupergraph supergraph;
     private final CGNode bridgeNode;
     private final HashMap<Object, Object> fakeReturns;
-    private final TaintAnalysisFactDomain domain;
-    private final HashMap<CGNode, TaintAnalysisFact> returnFacts;
+    private final IfcAnalysisFactDomain domain;
+    private final HashMap<CGNode, IfcAnalysisFact> returnFacts;
     private final static int RETURN_VALUE = Integer.MAX_VALUE;
 
     public IFCTaintAnalysis(CallGraph cg, CGNode bridgeNode) {
-        domain = new TaintAnalysisFactDomain();
+        domain = new IfcAnalysisFactDomain();
         fakeReturns = HashMapFactory.make();
         this.bridgeNode = bridgeNode;
         this.supergraph = ICFGSupergraph.make(cg);
@@ -66,7 +66,7 @@ public class IFCTaintAnalysis {
                 return buildReturnInstruction((SSAReturnInstruction) inst, src.getNode());
             } else if (inst instanceof SSAPhiInstruction) {
                 return buildPhiInstruction((SSAPhiInstruction) inst, src.getNode());
-            }else {
+            } else {
                 return identity();
             }
         }
@@ -76,11 +76,11 @@ public class IFCTaintAnalysis {
                 @Override
                 public IntSet getTargets(int d1) {
                     MutableIntSet result = MutableSparseIntSet.makeEmpty();
-                    for (int i=0; i < inst.getNumberOfUses(); ++i) {
+                    for (int i = 0; i < inst.getNumberOfUses(); ++i) {
                         int use = inst.getUse(i);
                         var srcFact = domain.getMappedObject(d1);
                         if (srcFact.getBase() == use) {
-                            TaintAnalysisFact fact = new TaintAnalysisFact(node, RETURN_VALUE, null, srcFact.taintinfo());
+                            IfcAnalysisFact fact = new IfcAnalysisFact(node, RETURN_VALUE, null, srcFact.ifclabel());
                             result.add(domain.add(fact));
                         } else {
                             result.add(d1);
@@ -97,8 +97,8 @@ public class IFCTaintAnalysis {
                 int src = inst.getUse(0);
                 var fact = domain.getMappedObject(d1);
                 if (fact.getBase() == src) {
-                    AccessGraph graph = new AccessGraph(node, RETURN_VALUE, null);
-                    result.add(domain.add(new TaintAnalysisFact(graph, fact.taintinfo())))
+                    IfcAnalysisFact newFact = new IfcAnalysisFact(node, RETURN_VALUE, null, fact.ifclabel());
+                    result.add(domain.add(newFact));
                 } else {
                     result.add(d1);
                 }
@@ -115,12 +115,10 @@ public class IFCTaintAnalysis {
                 var srcTaintInfo = domain.getMappedObject(d1);
                 if (srcTaintInfo.getBase() == src) {
                     if (srcTaintInfo.fieldgraph() == null) {
-                        AccessGraph srcWithField = new AccessGraph(node, src, new FieldGraph(new IField[]{field}));
-                        TaintAnalysisFact fieldFact = new TaintAnalysisFact(srcWithField, srcTaintInfo.taintinfo());
+                        IfcAnalysisFact fieldFact = new IfcAnalysisFact(node, src, FieldGraph.of(field), srcTaintInfo.ifclabel());
                         result.add(domain.add(fieldFact));
                     }
-                    AccessGraph dest = new AccessGraph(node, dst);
-                    TaintAnalysisFact dstFact = new TaintAnalysisFact(dest, srcTaintInfo.taintinfo());
+                    IfcAnalysisFact dstFact = new IfcAnalysisFact(node, dst, null, srcTaintInfo.ifclabel());
                     result.add(domain.add(dstFact));
                 } else {
                     result.add(d1);
@@ -137,9 +135,8 @@ public class IFCTaintAnalysis {
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
                 var srcTaintInfo = domain.getMappedObject(d1);
                 if (srcTaintInfo.getBase() == src) {
-                    TaintAnalysisFact fact = new TaintAnalysisFact(new AccessGraph(node, dst, new FieldGraph(new IField[]{field})), srcTaintInfo.taintinfo());
-                    int x = domain.add(fact);
-                    result.add(x);
+                    IfcAnalysisFact fact = new IfcAnalysisFact(node, dst, FieldGraph.of(field), srcTaintInfo.ifclabel());
+                    result.add(domain.add(fact));
                 } else {
                     result.add(d1); // return identify function
                 }
@@ -157,7 +154,7 @@ public class IFCTaintAnalysis {
             return d1 -> {
                 int def = inst.getDef();
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
-                TaintAnalysisFact fact = new TaintAnalysisFact(new AccessGraph(node, def), TaintInformation.UNTAINTED);
+                IfcAnalysisFact fact = new IfcAnalysisFact(new AccessGraph(node, def), IFCLabel.PUBLIC);
                 int x = domain.add(fact);
                 result.add(x);
                 result.add(d1);
@@ -166,8 +163,43 @@ public class IFCTaintAnalysis {
         }
 
         @Override
-        public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1, BasicBlockInContext<IExplodedBasicBlock> t2) {
-            return null;
+        public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
+            SSAInvokeInstruction invoke = (SSAInvokeInstruction) getInstruction(src);
+            if (isSensitiveSource(invoke.getCallSite())) {
+                return d1 -> {
+                    MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                    int def = invoke.getDef();
+                    if (def != -1) {
+                        IfcAnalysisFact fact = new IfcAnalysisFact(src.getNode(), def, null, IFCLabel.SECRET);
+                        result.add(domain.add(fact));
+                    } else {
+                        result.add(d1);
+                    }
+                    return result;
+                };
+            } else if (isLibraryCall(invoke.getCallSite())) {
+                // propagate library calls by replqcing it with identity functions
+                return identity();
+            } else {
+                // skip analysing these calls and replace it with identity functions
+                return d1 -> {
+                    MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                    var fact = domain.getMappedObject(d1);
+                    for (int i = 0; i < invoke.getNumberOfPositionalParameters(); ++i) {
+                        if (invoke.getUse(i) == fact.getBase()) {
+                            if (i != 0) {
+                                IfcAnalysisFact newfact = new IfcAnalysisFact(dst.getNode(), i + 1, fact.fieldgraph(), fact.ifclabel());
+                                result.add(domain.add(newfact));
+                            }
+                        }
+                    }
+                    return result;
+                };
+            }
+        }
+
+        private boolean isLibraryCall(CallSiteReference callSite) {
+            return true;
         }
 
         @Override
@@ -183,6 +215,11 @@ public class IFCTaintAnalysis {
         @Override
         public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
             return identity();
+        }
+
+        private boolean isSensitiveSource(CallSiteReference functionCallSite) {
+            // todo: Check fo
+            return true;
         }
     }
 }
