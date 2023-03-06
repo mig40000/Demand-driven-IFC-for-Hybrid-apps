@@ -15,12 +15,12 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashMapFactory;
-import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
+import de.unipassau.utils.IFDSSolutionCollector;
 
 import java.util.*;
 
@@ -387,15 +387,18 @@ public class ModifiedPathAnalysis {
         }
     }
 
-    public Collection<AccessGraph> collectSolutions() {
-        var pathEdges = analyze().getSeeds();
-        List<AccessGraph> solutions = new ArrayList<>();
-        pathEdges.forEach(edge -> {
-            var from = domain.getMappedObject(edge.getD1());
-            var to = domain.getMappedObject(edge.getD2());
-            solutions.add(from);
-            solutions.add(to);
-        });
-        return solutions;
+    public Collection<AccessGraph> solutions() {
+        IFDSSolutionCollector<BasicBlockInContext<IExplodedBasicBlock>, CGNode, AccessGraph> results = new IFDSSolutionCollector<>(analyze(), domain);
+        return results.collectSolutions();
+
+//        var pathEdges = analyze().getSeeds();
+//        List<AccessGraph> solutions = new ArrayList<>();
+//        pathEdges.forEach(edge -> {
+//            var from = domain.getMappedObject(edge.getD1());
+//            var to = domain.getMappedObject(edge.getD2());
+//            solutions.add(from);
+//            solutions.add(to);
+//        });
+//        return solutions;
     }
 }
