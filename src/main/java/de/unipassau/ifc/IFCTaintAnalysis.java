@@ -25,14 +25,12 @@ import java.util.HashMap;
 public class IFCTaintAnalysis {
     private final ICFGSupergraph supergraph;
     private final CGNode bridgeNode;
-    private final HashMap<Object, Object> fakeReturns;
     private final IfcAnalysisFactDomain domain;
     private final HashMap<CGNode, IfcAnalysisFact> returnFacts;
     private final static int RETURN_VALUE = Integer.MAX_VALUE;
 
     public IFCTaintAnalysis(CallGraph cg, CGNode bridgeNode) {
         domain = new IfcAnalysisFactDomain();
-        fakeReturns = HashMapFactory.make();
         this.bridgeNode = bridgeNode;
         this.supergraph = ICFGSupergraph.make(cg);
         this.returnFacts = HashMapFactory.make();
@@ -72,22 +70,19 @@ public class IFCTaintAnalysis {
         }
 
         private IUnaryFlowFunction buildPhiInstruction(SSAPhiInstruction inst, CGNode node) {
-            return new IUnaryFlowFunction() {
-                @Override
-                public IntSet getTargets(int d1) {
-                    MutableIntSet result = MutableSparseIntSet.makeEmpty();
-                    for (int i = 0; i < inst.getNumberOfUses(); ++i) {
-                        int use = inst.getUse(i);
-                        var srcFact = domain.getMappedObject(d1);
-                        if (srcFact.getBase() == use) {
-                            IfcAnalysisFact fact = new IfcAnalysisFact(node, RETURN_VALUE, null, srcFact.ifclabel());
-                            result.add(domain.add(fact));
-                        } else {
-                            result.add(d1);
-                        }
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                for (int i = 0; i < inst.getNumberOfUses(); ++i) {
+                    int use = inst.getUse(i);
+                    var srcFact = domain.getMappedObject(d1);
+                    if (srcFact.getBase() == use) {
+                        IfcAnalysisFact fact = new IfcAnalysisFact(node, RETURN_VALUE, null, srcFact.ifclabel());
+                        result.add(domain.add(fact));
+                    } else {
+                        result.add(d1);
                     }
-                    return result;
                 }
+                return result;
             };
         }
 
@@ -203,13 +198,28 @@ public class IFCTaintAnalysis {
         }
 
         @Override
-        public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1, BasicBlockInContext<IExplodedBasicBlock> t2) {
-            return null;
+        public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
+            SSAInvokeInstruction callInstruction = (SSAInvokeInstruction) getInstruction(call);
+            SSAReturnInstruction returnInst = (SSAReturnInstruction) getInstruction(src);
+            return (IUnaryFlowFunction) d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                // if the use of d1 is reachable
+                var flowFact = domain.getMappedObject(d1);
+                if (flowFact.getBase() == returnInst.getUse(0)) {
+                    int def = callInstruction.getDef();
+                    if (def != -1) {
+                        var fakeReturn = returnFacts.get(src.getNode());
+                        var newFlowFact = new IfcAnalysisFact(call.getNode(), def, null, fakeReturn.ifclabel());
+                        result.add(domain.add(newFlowFact));
+                    }
+                }
+                return result;
+            };
         }
 
         @Override
         public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-            return null;
+            return identity();
         }
 
         @Override
