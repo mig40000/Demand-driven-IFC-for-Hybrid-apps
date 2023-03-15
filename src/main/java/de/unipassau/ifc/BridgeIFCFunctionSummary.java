@@ -7,20 +7,18 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.*;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.CancelException;
-import com.ibm.wala.util.collections.HashMapFactory;
 import de.unipassau.utils.IFDSSolutionCollector;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 public class BridgeIFCFunctionSummary {
     private final ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph;
     private final CGNode bridgeNode;
-    private final AccessGraphDomain domain;
+    private final IFCAnalysisFactDomain domain;
 
     public BridgeIFCFunctionSummary(CallGraph cg, CGNode bridgeNode) {
-        domain = new AccessGraphDomain();
+        domain = new IFCAnalysisFactDomain();
         this.bridgeNode = bridgeNode;
         this.supergraph = ICFGSupergraph.make(cg);
     }
@@ -35,7 +33,7 @@ public class BridgeIFCFunctionSummary {
         }
 
         @Override
-        public TabulationDomain<IfcAnalysisFact, BasicBlockInContext<IExplodedBasicBlock>> getDomain() {
+        public IFCAnalysisFactDomain getDomain() {
             return domain;
         }
 

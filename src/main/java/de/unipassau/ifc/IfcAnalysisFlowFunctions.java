@@ -21,12 +21,12 @@ import de.unipassau.utils.SourceSinkManager;
 import java.util.HashMap;
 
 public class IfcAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
-    protected AccessGraphDomain domain;
+    protected IFCAnalysisFactDomain domain;
     protected CGNode entryPoint;
     protected HashMap<CGNode, IfcAnalysisFact> returnFacts;
     protected final static int RETURN_VALUE = Integer.MAX_VALUE;
 
-    public IfcAnalysisFlowFunctions(CGNode entryPoint, AccessGraphDomain domain) {
+    public IfcAnalysisFlowFunctions(CGNode entryPoint, IFCAnalysisFactDomain domain) {
         this.entryPoint = entryPoint;
         this.domain = domain;
         this.returnFacts = HashMapFactory.make();
@@ -231,5 +231,9 @@ public class IfcAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlockInCo
     protected boolean isSensitiveSource(CallSiteReference functionCallSite) {
         String method = functionCallSite.getDeclaredTarget().getName().toString();
         return SourceSinkManager.isSourceMethod(method);
+    }
+
+    public IFCAnalysisFactDomain getDomain() {
+        return domain;
     }
 }

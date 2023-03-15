@@ -1,6 +1,5 @@
 package de.unipassau.ifc;
 
-import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.dataflow.IFDS.IFlowFunction;
 import com.ibm.wala.dataflow.IFDS.IUnaryFlowFunction;
 import com.ibm.wala.ipa.callgraph.CGNode;
@@ -8,15 +7,12 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SSAGetInstruction;
 import com.ibm.wala.ssa.SSAPutInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
-import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
-import de.unipassau.accesspaths.AccessGraph;
-import de.unipassau.accesspaths.FieldGraph;
 
 public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions {
 
-    public IfcAnalysisBackwardFlowFunctions(CGNode entryPoint, AccessGraphDomain domain) {
+    public IfcAnalysisBackwardFlowFunctions(CGNode entryPoint, IFCAnalysisFactDomain domain) {
         super(entryPoint, domain);
     }
 
