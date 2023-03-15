@@ -1,5 +1,6 @@
 package de.unipassau.utils;
 
+import com.ibm.wala.dataflow.IFDS.PathEdge;
 import com.ibm.wala.dataflow.IFDS.TabulationDomain;
 import com.ibm.wala.dataflow.IFDS.TabulationResult;
 
@@ -15,7 +16,7 @@ public class IFDSSolutionCollector<T, P, F> {
     }
 
     public Collection<F> collectSolutions() {
-        var pathEdges = result.getSeeds();
+        var pathEdges = getPathEdges();
         Set<F> solutions = new HashSet<>();
         pathEdges.forEach(edge -> {
             var from = domain.getMappedObject(edge.getD1());
@@ -24,5 +25,9 @@ public class IFDSSolutionCollector<T, P, F> {
             solutions.add(to);
         });
         return solutions;
+    }
+
+    public Collection<PathEdge<T>> getPathEdges() {
+        return result.getSeeds();
     }
 }

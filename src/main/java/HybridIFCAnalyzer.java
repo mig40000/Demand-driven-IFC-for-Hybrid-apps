@@ -7,6 +7,7 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ import static java.lang.Integer.parseInt;
 
 public class HybridIFCAnalyzer {
 
-    private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+    private static final Logger logger = LoggerFactory.getLogger(HybridIFCAnalyzer.class);
 
 
     private static final Options options = new Options();
