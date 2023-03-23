@@ -18,6 +18,5 @@ public class WebviewCallAnalysis {
     WebviewCallAnalysis(CallGraph cg, CGNode entryPoint) {
         this.entryPoint = entryPoint;
         this.backwardsupergraph = BackwardsSupergraph.make(ICFGSupergraph.make(cg));
-
     }
 }

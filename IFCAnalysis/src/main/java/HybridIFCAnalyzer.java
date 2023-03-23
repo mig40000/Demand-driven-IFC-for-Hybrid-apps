@@ -43,12 +43,10 @@ public class HybridIFCAnalyzer {
     public static void run(Config config) throws ClassHierarchyException, IOException {
         AndroidAnalysis analysis = new AndroidAnalysis(config);
         BridgedMethodList methods = BridgedMethodList.load(config.database);
-        // TODO: Remove this
         for (var bridgeMethod : methods) {
             var methodIr = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
             System.out.println(methodIr);
         }
-
     }
 
     public static void main(String[] args) {
@@ -68,7 +66,7 @@ public class HybridIFCAnalyzer {
 
 
         int api = cmd.hasOption(apiLevel) ? parseInt(cmd.getOptionValue(apiLevel)) : -1;
-        logger.info("Using API level " + api);
+        logger.info("Using API level {}", api);
         Config.getConfig().ApiLevel = api;
 
         Config.getConfig().Apk = cmd.getOptionValue(apk);
@@ -78,9 +76,14 @@ public class HybridIFCAnalyzer {
 
         Config.getConfig().database = cmd.getOptionValue(db);
 
+
         if (!androidLib.toFile().exists()) {
-            logger.error("Cannot find android.jar in " + androidLib);
+            logger.error("Cannot find android.jar in {}", androidLib);
             System.exit(100);
+        }
+
+        if (sourceSinkFile.hasArg()) {
+            Config.getConfig().sourceSinkFile = sourceSinkFile.getValue();
         }
 
         try {
