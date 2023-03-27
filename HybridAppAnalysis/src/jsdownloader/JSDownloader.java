@@ -66,6 +66,7 @@ public class JSDownloader {
 		String path = "output/intermediate/";
 		path = path.concat(appName+"/");
 		boolean flag = false;
+		String script = "";
 		if(jsString.contains("asset") && jsString.contains(".html")) {
 			//System.out.println("correctly parsed JsString " + jsString);
 			StringTokenizer st  = new StringTokenizer(jsString, "///");
@@ -86,6 +87,25 @@ public class JSDownloader {
 				path = path.replace("asset", "assets");
 			System.out.println("Correct path is " + path);
 			parseHtml(path, ifcObj, appName);
+		}
+		
+		if(jsString.contains("javascript:")) {
+			System.out.println("jsString is " + jsString);
+			String array[] = jsString.split("javascript:");
+			
+			for(String token : array) {
+				script = token;
+			//	System.out.println("script is " + script);
+			}
+		/*	StringTokenizer st  = new StringTokenizer(jsString, "javascript:");
+			while(st.hasMoreElements()) {
+				st.nextToken();
+				script = st.nextToken();
+				System.out.println("script is " + script);
+				
+			}*/
+			
+			
 		}
 				
 	}

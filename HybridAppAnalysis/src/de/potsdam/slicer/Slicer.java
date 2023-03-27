@@ -111,7 +111,7 @@ public class Slicer {
 	    	SliceVarUse s = new SliceVarUse(parts[0], parts[1], Integer.valueOf(parts[2]), parts[3]);	
 	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
 	    	
-	    	System.out.println("cvritical here " + s.var_name);
+	    //	System.out.println("cvritical here " + s.var_name);
 	    	sliceAt(s.class_name, s.method_name, s.line_number,s.var_name);
 	    	
 	    	
@@ -141,7 +141,7 @@ public class Slicer {
 			}
 		//	System.out.println("Here in Slicer " +  s.class_name);
 			
-		//	saveDB(s.class_name);
+			saveDB(s.class_name);
 			saveAltDB(s.class_name);
 			
 			clearSlice();
