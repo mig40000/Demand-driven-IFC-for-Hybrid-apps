@@ -1,7 +1,7 @@
 package de.unipassau.dbinterfaces;
 
 public record BridgedMethod(String appName, String initiatingClass, String clazz, String interfaceObject, String accessSpecifier,
-                            String methodSign) {
+                            String signature) {
 
     @Override
     public String toString() {
@@ -11,7 +11,11 @@ public record BridgedMethod(String appName, String initiatingClass, String clazz
                 ", clazz='" + clazz + '\'' +
                 ", interfaceObject='" + interfaceObject + '\'' +
                 ", accessSpecifier='" + accessSpecifier + '\'' +
-                ", methodSign='" + methodSign + '\'' +
+                ", signature='" + signature + '\'' +
                 '}';
+    }
+
+    public boolean matchClassAndMethodSign(String clazz, String signature) {
+        return this.clazz.equals(clazz) && this.signature.equals(signature);
     }
 }

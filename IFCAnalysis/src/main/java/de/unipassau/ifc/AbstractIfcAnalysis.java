@@ -23,12 +23,4 @@ public abstract class AbstractIfcAnalysis<T, P, F> {
         this.bridgeNode = bridgeNode;
         this.domain = domain;
     }
-
-//    protected abstract TabulationResult<T, P, F> analyze();
-
-//    Collection<F> collectSolutions() {
-//        IFDSSolutionCollector<BasicBlockInContext<IExplodedBasicBlock>, CGNode, IfcAnalysisFact> solution = new IFDSSolutionCollector<T, P, F>(analyze(), domain);
-//        return solution.collectSolutions();
-//    }
-
 }

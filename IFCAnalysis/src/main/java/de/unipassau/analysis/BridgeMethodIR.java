@@ -32,7 +32,7 @@ public class BridgeMethodIR {
         this.className = method.clazz();
         this.cha = cha;
         this.options = cache.getSSAOptions();
-        this.methodName = method.methodSign();
+        this.methodName = method.signature();
     }
 
     /**

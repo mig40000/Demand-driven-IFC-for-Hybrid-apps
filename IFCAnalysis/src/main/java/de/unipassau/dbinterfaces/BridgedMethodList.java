@@ -17,9 +17,8 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
     private final static Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
-        // TODO: Extract the bridged methods and get the objects and add it to webview objects
         for (String bridgeMethod : bridgeMethods.split("\n")) {
-            // [0]: .method keyword, [1]: access specifier, [2]: method methodSign
+            // [0]: .method keyword, [1]: access specifier, [2]: method signature
             String[] tokens = bridgeMethod.split(" ");
             String tokenType = tokens[0];
             String accessSpecifier = tokens[1];
