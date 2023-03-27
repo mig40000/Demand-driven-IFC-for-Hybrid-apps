@@ -75,11 +75,18 @@ public class Slicer {
 			saveDB("");
 		}
 		
+		//this.toSliceSet.remove(logger)
+		Integer linenumber = 0;
+		
 		for (SliceVar sVar : this.toSliceSet) {
 			SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
+			if(linenumber == s.line_number)
+				continue;
 	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
 	     	buffer.write(s.class_name + " " + s.method_name + " " + s.line_number + " " + s.slice_var.name);  
 	     	buffer.write("\n");
+	     	linenumber = s.line_number;
+	     	
 		}
 		buffer.close();
 		
@@ -104,6 +111,7 @@ public class Slicer {
 	    	SliceVarUse s = new SliceVarUse(parts[0], parts[1], Integer.valueOf(parts[2]), parts[3]);	
 	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
 	    	
+	    	System.out.println("cvritical here " + s.var_name);
 	    	sliceAt(s.class_name, s.method_name, s.line_number,s.var_name);
 	    	
 	    	
@@ -685,8 +693,10 @@ public class Slicer {
 
 						// if not in varMap put it in
 						if (!currentMethod.varMap.containsKey(tempVar)) {
+							//System.out.println("important check tempvar " + tempVar);
 							currentVar = new SliceVar(tempVar, currentMethod);
 							currentMethod.varMap.put(tempVar, currentVar);
+						//	System.out.println("important check currentVar " + currentVar.slice_method);
 						} else {
 							currentVar = currentMethod.varMap.get(tempVar);
 						}
