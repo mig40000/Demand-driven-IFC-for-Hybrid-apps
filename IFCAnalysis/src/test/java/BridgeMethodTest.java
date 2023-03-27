@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class BridgeMethodTest {
     BridgedMethodList bridgeMethodsList;
 
-    String webViewDatabase = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/Database/Intent.sqlite";
+    String webViewDatabase = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/Database/Intent.sqlite";
 
 
     @BeforeEach
@@ -21,4 +21,6 @@ public class BridgeMethodTest {
         System.out.println(bridgeMethodsList);
         assertNotEquals(0, bridgeMethodsList.size());
     }
+
+    
 }

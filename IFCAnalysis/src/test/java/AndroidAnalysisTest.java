@@ -11,7 +11,7 @@ public class AndroidAnalysisTest {
 
     AndroidAnalysis analysis;
 
-    String apkfile = "/Users/jyotiprakash/Research/ModularIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis/input/app-debug.apk";
+    String apkfile = "/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/apps/HelloHybrid.apk";
     String androidJar = "/Users/jyotiprakash/Library/Android/sdk/platforms/android-29/android.jar";
 
     @Test
