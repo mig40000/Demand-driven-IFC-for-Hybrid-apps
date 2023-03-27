@@ -75,11 +75,18 @@ public class Slicer {
 			saveDB("");
 		}
 		
+		//this.toSliceSet.remove(logger)
+		Integer linenumber = 0;
+		
 		for (SliceVar sVar : this.toSliceSet) {
 			SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
+			if(linenumber == s.line_number)
+				continue;
 	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
 	     	buffer.write(s.class_name + " " + s.method_name + " " + s.line_number + " " + s.slice_var.name);  
 	     	buffer.write("\n");
+	     	linenumber = s.line_number;
+	     	
 		}
 		buffer.close();
 		
@@ -104,6 +111,7 @@ public class Slicer {
 	    	SliceVarUse s = new SliceVarUse(parts[0], parts[1], Integer.valueOf(parts[2]), parts[3]);	
 	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
 	    	
+	    	System.out.println("cvritical here " + s.var_name);
 	    	sliceAt(s.class_name, s.method_name, s.line_number,s.var_name);
 	    	
 	    	
@@ -419,6 +427,7 @@ public class Slicer {
 		Iterator<SliceBase> it = this.slice.descendingIterator();
 		boolean nextInvoke = false;
 		int count = 0;
+		boolean flag = false;
 
 		// searchRegister is something that will not be found for now
 		searchRegister = "x0";
@@ -434,16 +443,19 @@ public class Slicer {
 				objRegister = currentSlice.line.split(",")[2].substring(1);
 				objRegister = objRegister.replace("}", "");
 				System.out.println("Register is Abhi " + objRegister);
+				flag = true;
 				this.injects = true;
 			}
 			
-			if (currentSlice.line.contains("const-string " + objRegister) && count == 0) {
+			if (currentSlice.line.contains("const-string " + objRegister) && flag) {
 				// this should be the instance register -- may not work in all cases
-			//	System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
+				System.out.println("Current Slice is " + currentSlice.line);
+				System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
 				this.interfaceObject = currentSlice.line.split(",")[1].substring(1);
 				this.interfaceObject = this.interfaceObject.replace("\"", "");
 				this.interfaceObject = this.interfaceObject.trim();
-				count++;
+				flag = false;
+				//count++;
 			}
 
 			if (currentSlice.line.contains("new-instance " + searchRegister)) {
@@ -681,8 +693,10 @@ public class Slicer {
 
 						// if not in varMap put it in
 						if (!currentMethod.varMap.containsKey(tempVar)) {
+							//System.out.println("important check tempvar " + tempVar);
 							currentVar = new SliceVar(tempVar, currentMethod);
 							currentMethod.varMap.put(tempVar, currentVar);
+						//	System.out.println("important check currentVar " + currentVar.slice_method);
 						} else {
 							currentVar = currentMethod.varMap.get(tempVar);
 						}

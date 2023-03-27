@@ -30,7 +30,8 @@ public class LoadURLAnalyzer {
 			index =0;
 			String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
 			
-			className = classNameExtractor(fileContentInArray[0]);
+			//className = classNameExtractor(fileContentInArray[0]);
+			className = classNameExtractorAlt(fileContentInArray[0]);
 			for(String line: fileContentInArray){
 				if(line.contains(GenericConstants.LOAD_URL)){
 					System.out.println("Line is " + line + " Class is " + className);
@@ -54,6 +55,15 @@ public class LoadURLAnalyzer {
 	public static String classNameExtractor(String classHeader){
 		String name = "dummyClass";
 		StringTokenizer st = new StringTokenizer(classHeader, "/;");
+		while(st.hasMoreTokens()){
+			name = st.nextToken();
+		}
+		return name;
+	}
+	
+	public static String classNameExtractorAlt(String classHeader){
+		String name = "dummyClass";
+		StringTokenizer st = new StringTokenizer(classHeader, " ");
 		while(st.hasMoreTokens()){
 			name = st.nextToken();
 		}

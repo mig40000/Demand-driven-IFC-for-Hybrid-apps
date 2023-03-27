@@ -20,6 +20,7 @@ import de.potsdam.extract.CollectClasses;
 import de.potsdam.extract.InputApkFileContainer;
 import de.potsdam.loadurl.LoadURLAnalyzer;
 import de.potsdam.slicer.Slicer;
+import jsdownloader.JSDownloader;
 
 /**
  * @author abhishektiwari
@@ -126,6 +127,8 @@ public class ApplicationAnalysis {
 
 			// Checking for evaluateJavaScript
 				EvaluateJavaScriptHandler.checkEvaluateJavaScript(this);
+				
+				JSDownloader.getJSDetails();
 				//re-initialize 
 				this.reInitialize();
 				//app Analyzed successfully
