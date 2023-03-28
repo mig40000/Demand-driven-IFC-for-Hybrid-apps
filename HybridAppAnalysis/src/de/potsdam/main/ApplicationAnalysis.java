@@ -129,6 +129,7 @@ public class ApplicationAnalysis {
 				EvaluateJavaScriptHandler.checkEvaluateJavaScript(this);
 				
 				JSDownloader.getJSDetails();
+				JSDownloader.getAltJSDetails();
 				//re-initialize 
 				this.reInitialize();
 				//app Analyzed successfully

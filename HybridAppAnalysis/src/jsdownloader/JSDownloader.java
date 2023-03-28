@@ -14,6 +14,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.*;
+import java.util.*;
 
 import de.potsdam.constants.GenericConstants;
 
@@ -60,6 +61,123 @@ public class JSDownloader {
 		
 		
 	}
+	
+	public static void getAltJSDetails() {
+	
+		Connection c = null;
+		Statement stmt = null;
+		String sql = "select appName, intefaceObject from webview_prime order by appName;";
+		String jsString = new String();
+		ArrayList<String> ifcObj = new ArrayList();
+		String appName = "";
+		String dummy  = "";
+		boolean flag = true;
+		
+		try {
+		Class.forName("org.sqlite.JDBC");
+		c = DriverManager.getConnection(GenericConstants.DB_NAME);
+		c.setAutoCommit(false);
+
+		stmt = c.createStatement();
+		
+		ResultSet rs = stmt.executeQuery(sql);
+		
+		while(rs.next()) {
+			
+			ifcObj.add(rs.getString("intefaceObject"));
+			appName = rs.getString("appName");
+			
+			if(flag) {
+				dummy = appName;
+				flag = false;
+			}
+			if(!dummy.contains(appName)) {
+				extractAltJS(ifcObj, dummy);
+				ifcObj.clear();
+				dummy = appName;
+			}	
+			
+		}
+			extractAltJS(ifcObj, dummy);
+		
+		
+		 stmt.close();
+		 c.commit();
+		 c.close();
+		
+		
+		}catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+		
+	}
+	
+	public static void extractAltJS(ArrayList<String> ifcObj, String appName) {
+		
+		String path = "output/intermediate/";
+		path = path.concat(appName+"/");
+		ArrayList<String> jsFilePath = findJSscript(path, appName);
+		String ifcFileName = "";
+
+		ifcObj = duplicateRemover(ifcObj);
+		
+		
+		for(String ifcobj:ifcObj) {
+			ifcFileName = ifcFileName.concat(ifcobj + "#");	
+		}
+		ifcFileName = ifcFileName.replaceAll("#$", "");
+		
+		for(String jsFile: jsFilePath) {
+			copyJsFromApp(jsFile, ifcFileName, appName);
+		}
+		
+		
+		
+		
+	}
+	
+	public static ArrayList<String> duplicateRemover(ArrayList<String> ifcObj){
+		
+		Set<String> set = new LinkedHashSet<>();
+		set.addAll(ifcObj);
+		ifcObj.clear();
+		ifcObj.addAll(set);
+		
+		return ifcObj;
+	}
+	
+	public static ArrayList<String> findJSscript(String path, String appName) {
+		
+		ArrayList<String> jsFilePath = new ArrayList();
+		try {
+			//Use apktool to extract the source
+			ProcessBuilder pb = new ProcessBuilder("find", path, "-name", "*.js");
+			Process p = pb.start();
+
+				BufferedReader reader = 
+				         new BufferedReader(new InputStreamReader(p.getInputStream()));
+				
+				BufferedReader errReader = 
+				         new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		       
+				String line = "";
+				while((line = reader.readLine()) != null) {
+					jsFilePath.add(line);
+					System.out.print("File path is " + line + "\n");
+		        }
+				while((line = errReader.readLine()) != null) {
+		            System.out.print(line + "\n");
+		        }
+				 p.waitFor();
+		        
+		} catch (IOException | InterruptedException e1) {
+	        e1.printStackTrace();
+	    }
+		return jsFilePath;
+	}
+
 	
 	public static void extractJS(String jsString, String ifcObj, String appName) {
 		
