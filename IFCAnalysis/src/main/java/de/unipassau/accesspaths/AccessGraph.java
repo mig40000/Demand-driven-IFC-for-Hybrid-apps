@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AccessGraph implements Datafact {
+public class AccessGraph {
 
   private int baseVariable;
   private FieldGraph graph;
@@ -29,6 +29,12 @@ public class AccessGraph implements Datafact {
     this.graph = graph;
   }
 
+  public AccessGraph(AccessGraph other) {
+    this.baseVariable = other.baseVariable;
+    this.graph = other.fieldGraph();
+    this.cgNode = other.cgNode;
+  }
+
   public int getBaseVariable() {
     return baseVariable;
   }
@@ -45,11 +51,11 @@ public class AccessGraph implements Datafact {
   public AccessGraph clone() {
     try {
       AccessGraph clone = (AccessGraph) super.clone();
-      clone.graph = (this.graph == null) ? null : (FieldGraph) this.graph.clone();
+      clone.graph = (this.graph == null) ? null : this.graph.clone();
       clone.baseVariable = this.baseVariable;
       return clone;
     } catch (CloneNotSupportedException e) {
-      logger.error("Failed to clone accessgraph [ " + e.getMessage() + "]");
+      logger.error("Failed to clone accessgraph [ {} ]", e.getMessage());
       e.printStackTrace();
       return null;
     }
@@ -81,7 +87,6 @@ public class AccessGraph implements Datafact {
     return graphs;
   }
 
-  @Override
   public FieldGraph fieldGraph() {
     return this.graph;
   }

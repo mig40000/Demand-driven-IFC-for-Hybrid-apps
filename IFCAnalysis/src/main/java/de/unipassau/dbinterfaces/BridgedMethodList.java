@@ -5,16 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-public class BridgedMethodList implements Iterable<BridgedMethod> {
+public class BridgedMethodList extends ArrayList<BridgedMethod> implements Iterable<BridgedMethod> {
     private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
 
-    private final static Logger logger = LoggerFactory.getLogger(Config.ToolName);
+    private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
         for (String bridgeMethod : bridgeMethods.split("\n")) {
@@ -34,7 +32,7 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
     public static BridgedMethodList load(String dbPath) {
         BridgedMethodList webViewsList = new BridgedMethodList();
         String url = "jdbc:sqlite:" + dbPath;
-        logger.info("Reading Bridge Interfaces from database " + dbPath);
+        logger.info("Reading Bridge Interfaces from database {}", dbPath);
         try (Connection connection = DriverManager.getConnection(url)) {
             Statement stmt = connection.createStatement();
             ResultSet rows = stmt.executeQuery("SELECT * from webview_prime");
@@ -52,7 +50,7 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
                     bridgeClass = bridgeClass.substring(0, bridgeClass.length() - 1);
                     webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
                 } else {
-                    logger.warn("Could not found initialingClass and bridge class for " + appName);
+                    logger.warn("Could not found initialingClass and bridge class for {}", appName);
                 }
             }
         } catch (SQLException e) {
@@ -60,28 +58,6 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
         }
         return webViewsList;
     }
-
-
-//    private String extractMethodName(String methodSignature) {
-//        int indxOpenBracnes = methodSignature.indexOf('(');
-//        return methodSignature.substring(0, indxOpenBracnes);
-//    }
-//
-//    private String extractMethodReturnType(String methodSignature) {
-//        int indxClosedBraces = methodSignature.indexOf(')');
-//        String returnType = methodSignature.substring(indxClosedBraces+1);
-//        if (returnType.equals("V")) {
-//            return "Void";
-//        } else {
-//            return returnType;
-//        }
-//    }
-//
-//    private String[] extractArguments(String methodSignature) {
-//        int indxOpenBraces = methodSignature.indexOf('(');
-//        int idxClosedBraces = methodSignature.indexOf(')');
-//        return methodSignature.substring(indxOpenBraces+1,idxClosedBraces).split(";");
-//    }
 
     @Override
     public String toString() {
@@ -111,12 +87,20 @@ public class BridgedMethodList implements Iterable<BridgedMethod> {
     }
 
     @Override
-    public void forEach(Consumer<? super BridgedMethod> action) {
-        Iterable.super.forEach(action);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BridgedMethodList that = (BridgedMethodList) o;
+        return Objects.equals(bridgedMethods, that.bridgedMethods);
     }
 
     @Override
-    public Spliterator<BridgedMethod> spliterator() {
-        return Iterable.super.spliterator();
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), bridgedMethods);
+    }
+
+    public List<BridgedMethod> getBridgeMethodsInClass(String clazz) {
+        return this.bridgedMethods.stream().filter(method -> clazz.equals(method.clazz())).collect(Collectors.toList());
     }
 }

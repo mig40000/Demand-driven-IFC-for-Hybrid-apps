@@ -1,13 +1,12 @@
 package de.unipassau.ifc;
 
-import com.ibm.wala.core.util.strings.Atom;
 import com.ibm.wala.dataflow.IFDS.*;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
-import com.ibm.wala.util.collections.Pair;
 import de.unipassau.dbinterfaces.BridgedMethod;
+import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -15,9 +14,9 @@ import java.util.Set;
 
 public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInContext<IExplodedBasicBlock>, CGNode, IFCAnalysisFactDomain> {
 
-    protected HashMap<BridgedMethod, BridgeFuncIfcSummary> bridgesummaries;
+    protected HashMap<BridgedMethod, BridgeMethodIFCSummaryDriver> bridgesummaries;
 
-    protected JavaScriptIFCAnalysis(CGNode bridgeNode, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, HashMap<BridgedMethod, BridgeFuncIfcSummary> bridgesummaries) {
+    protected JavaScriptIFCAnalysis(CGNode bridgeNode, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, HashMap<BridgedMethod, BridgeMethodIFCSummaryDriver> bridgesummaries, SourceSinkManager manager) {
         super(bridgeNode, domain, supergraph);
         this.bridgesummaries = bridgesummaries;
     }
@@ -26,8 +25,8 @@ public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInCont
     private class JSAnalysisFunction extends IfcAnalysisFlowFunctions {
 
 
-        public JSAnalysisFunction(CGNode entryPoint, IFCAnalysisFactDomain domain) {
-            super(entryPoint, domain);
+        public JSAnalysisFunction(CGNode entryPoint, IFCAnalysisFactDomain domain, SourceSinkManager sourcesinkmanager) {
+            super(entryPoint, domain, sourcesinkmanager);
         }
 
         @Override
@@ -42,7 +41,6 @@ public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInCont
                 Optional<BridgedMethod> targetMethod = getBridgeMethods().stream().filter(method -> method.matchClassAndMethodSign(clazz, methodSignature)).findFirst();
                 if (targetMethod.isPresent()) {
                     var summary = bridgesummaries.get(targetMethod.get());
-
 
                 } else {
                     System.err.println("Failed to find bridge methods");

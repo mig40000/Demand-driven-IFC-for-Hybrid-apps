@@ -148,15 +148,9 @@ public class FieldGraph implements Cloneable {
 
   @Override
   public String toString() {
-    return "FieldGraph{"
-        + "head="
-        + head
-        + ", tail="
-        + tail
-        + ", fieldGraph="
-        + fieldGraph
-        + ", fieldtoIntMap="
-        + fieldtoIntMap
-        + '}';
+    StringBuilder str = new StringBuilder("FieldGraph[");
+    fieldGraph.edges().forEach(str::append);
+    str.append("]");
+    return str.toString();
   }
 }

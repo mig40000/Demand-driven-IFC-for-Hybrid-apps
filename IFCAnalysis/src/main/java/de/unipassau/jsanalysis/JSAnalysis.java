@@ -6,6 +6,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 import de.unipassau.ifc.ForwardIFCAnalysisProblem;
 import de.unipassau.ifc.IFCAnalysisFactDomain;
 import de.unipassau.ifc.IfcAnalysisFlowFunctions;
+import de.unipassau.utils.SourceSinkManager;
 
 public class JSAnalysis {
     private ICFGSupergraph supergraph = null;
@@ -13,13 +14,13 @@ public class JSAnalysis {
     CGNode entrypoint;
     IFCAnalysisFactDomain domain = null;
 
-    public JSAnalysis(CallGraph jsCallG, CGNode entrypoint) {
+    public JSAnalysis(CallGraph jsCallG, CGNode entrypoint, SourceSinkManager manager) {
         this.supergraph = JSSupergraph.make(jsCallG);
         domain = new IFCAnalysisFactDomain();
-        flowFunctions = new IfcAnalysisFlowFunctions(entrypoint, domain);
+        flowFunctions = new IfcAnalysisFlowFunctions(entrypoint, domain, manager);
     }
 
     public void run() {
-        ForwardIFCAnalysisProblem analysis = new ForwardIFCAnalysisProblem(entrypoint, domain, supergraph);
+//        ForwardIFCAnalysisProblem analysis = new ForwardIFCAnalysisProblem(entrypoint, domain, supergraph);
     }
 }

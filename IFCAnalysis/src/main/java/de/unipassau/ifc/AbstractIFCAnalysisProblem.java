@@ -4,6 +4,7 @@ import com.ibm.wala.dataflow.IFDS.*;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
+import de.unipassau.utils.SourceSinkManager;
 
 public abstract class AbstractIFCAnalysisProblem implements TabulationProblem<BasicBlockInContext<IExplodedBasicBlock>, CGNode, IfcAnalysisFact> {
 
@@ -12,10 +13,11 @@ public abstract class AbstractIFCAnalysisProblem implements TabulationProblem<Ba
     protected IfcAnalysisFlowFunctions flowFunctions;
     protected ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph;
 
-    protected AbstractIFCAnalysisProblem(CGNode node, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph) {
+    protected AbstractIFCAnalysisProblem(CGNode node, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, SourceSinkManager manager) {
+        super();
         this.entrypoint = node;
         this.domain = domain;
-        this.flowFunctions = new IfcAnalysisFlowFunctions(node, domain);
+        this.flowFunctions = new IfcAnalysisFlowFunctions(node, domain, manager);
         this.supergraph = supergraph;
     }
 

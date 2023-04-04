@@ -45,4 +45,12 @@ public class IfcAnalysisFact {
     public int hashCode() {
         return Objects.hash(graph, taintinfo);
     }
+
+    @Override
+    public String toString() {
+        return "<" +
+                "graph=" + graph +
+                "label=" + taintinfo +
+                ">";
+    }
 }

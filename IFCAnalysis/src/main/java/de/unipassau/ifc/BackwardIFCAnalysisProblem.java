@@ -6,14 +6,15 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
+import de.unipassau.utils.SourceSinkManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class BackwardIFCAnalysisProblem extends AbstractIFCAnalysisProblem {
 
-    protected BackwardIFCAnalysisProblem(CGNode entrypoint, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph) {
-        super(entrypoint, domain, supergraph);
+    protected BackwardIFCAnalysisProblem(CGNode entrypoint, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, SourceSinkManager ssm) {
+        super(entrypoint, domain, supergraph, ssm);
     }
 
     @Override

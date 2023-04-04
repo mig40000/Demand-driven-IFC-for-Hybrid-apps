@@ -11,6 +11,7 @@ import de.unipassau.ifc.AbstractIFCAnalysisProblem;
 import de.unipassau.ifc.IFCAnalysisFactDomain;
 import de.unipassau.ifc.IFCLabel;
 import de.unipassau.ifc.IfcAnalysisFact;
+import de.unipassau.utils.SourceSinkManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +19,8 @@ import java.util.Collection;
 public class JSIfcAnalysis extends AbstractIFCAnalysisProblem  {
 
     Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> bridgesummaries;
-    protected JSIfcAnalysis(CGNode entrypoint, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> bridgesummaries) {
-        super(entrypoint, domain, supergraph);
+    protected JSIfcAnalysis(CGNode entrypoint, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> bridgesummaries, SourceSinkManager manager) {
+        super(entrypoint, domain, supergraph, manager);
         this.bridgesummaries = bridgesummaries;
     }
 

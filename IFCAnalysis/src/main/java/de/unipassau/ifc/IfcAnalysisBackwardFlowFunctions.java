@@ -9,11 +9,12 @@ import com.ibm.wala.ssa.SSAPutInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
+import de.unipassau.utils.SourceSinkManager;
 
 public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions {
 
-    public IfcAnalysisBackwardFlowFunctions(CGNode entryPoint, IFCAnalysisFactDomain domain) {
-        super(entryPoint, domain);
+    public IfcAnalysisBackwardFlowFunctions(CGNode entryPoint, IFCAnalysisFactDomain domain, SourceSinkManager manager) {
+        super(entryPoint, domain, manager);
     }
 
     /**
@@ -23,9 +24,9 @@ public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions 
      * @return
      */
     @Override
-    protected IUnaryFlowFunction buildPutInstructionFunction(SSAPutInstruction inst, CGNode node) {
+    protected IUnaryFlowFunction buildPutInstructionFunction(SSAPutInstruction inst, CGNode node, MutableIntSet entry) {
         return d1 -> {
-            MutableIntSet result = MutableSparseIntSet.makeEmpty();
+            MutableIntSet result = MutableSparseIntSet.make(entry);
             result.add(d1);
 
             int src = inst.getUse(1);
@@ -46,9 +47,9 @@ public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions 
      * @return
      */
     @Override
-    protected IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node) {
+    protected IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node, MutableIntSet entry) {
         return d1 -> {
-            MutableIntSet result = MutableSparseIntSet.makeEmpty();
+            MutableIntSet result = MutableSparseIntSet.make(entry);
             result.add(d1);
 
             int src = inst.getUse(1);

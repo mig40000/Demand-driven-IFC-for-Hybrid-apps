@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f4e95812-d293-408a-80d7-c31a1715fbb0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/AndroidAnalysisTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/AndroidAnalysisTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/BridgeMethodTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/BridgeMethodTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +14,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
@@ -86,6 +88,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -103,6 +106,7 @@
       <workItem from="1547210009250" duration="1633000" />
       <workItem from="1554204825729" duration="1170000" />
       <workItem from="1679918077387" duration="8000" />
+      <workItem from="1679918602079" duration="389000" />
     </task>
     <servers />
   </component>
