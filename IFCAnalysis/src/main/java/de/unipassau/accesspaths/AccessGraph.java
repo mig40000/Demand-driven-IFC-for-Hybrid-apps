@@ -93,13 +93,13 @@ public class AccessGraph {
 
   @Override
   public String toString() {
-    return "AccessGraph{" +
-            "baseVariable=" + baseVariable +
-            ", graph=" + graph +
+    return "AG{" +
+            "base=" + baseVariable +
+            ", fields=" + graph +
             '}';
   }
 
-  public CGNode getCgNode() {
+  public CGNode getCGNode() {
     return cgNode;
   }
 }

@@ -49,6 +49,8 @@ public class TestHelloHybrid {
         var summary = BridgeMethodIFCSummaryDriver.make(analysis, method, manager);
         summary.buildresults();
         summary.printResultsEntryNode();
+        System.out.println("=======================================");
+        summary.collectSummaryPaths().forEach(System.out::println);
 //        System.out.println(summary.);
 //        summary.printResultsForentrynode().forEach(System.err::println);
 //        summary.pathEdges().forEach(System.out::println);

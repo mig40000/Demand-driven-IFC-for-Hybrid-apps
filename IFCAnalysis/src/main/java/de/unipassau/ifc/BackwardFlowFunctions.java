@@ -11,9 +11,9 @@ import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.utils.SourceSinkManager;
 
-public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions {
+public class BackwardFlowFunctions extends ForwardAnalysisFlowFunctions {
 
-    public IfcAnalysisBackwardFlowFunctions(CGNode entryPoint, IFCAnalysisFactDomain domain, SourceSinkManager manager) {
+    public BackwardFlowFunctions(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager manager) {
         super(entryPoint, domain, manager);
     }
 
@@ -31,9 +31,9 @@ public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions 
 
             int src = inst.getUse(1);
             int dst = inst.getUse(0);
-            IfcAnalysisFact dstFact = domain.getMappedObject(d1);
+            FlowFact dstFact = domain.getMappedObject(d1);
             if (dstFact.getBase() == dst) {
-                IfcAnalysisFact srcFact = new IfcAnalysisFact(node, src, dstFact.fieldgraph(), dstFact.ifclabel());
+                FlowFact srcFact = new FlowFact(node, src, dstFact.fieldgraph(), dstFact.ifclabel());
                 result.add(domain.add(srcFact));
             }
             return result;
@@ -56,7 +56,7 @@ public class IfcAnalysisBackwardFlowFunctions extends  IfcAnalysisFlowFunctions 
             int dst = inst.getDef();
             var srcFact = domain.getMappedObject(d1);
             if (srcFact.getBase() == src) {
-                IfcAnalysisFact dstFact = new IfcAnalysisFact(node, dst, srcFact.fieldgraph(), srcFact.ifclabel());
+                FlowFact dstFact = new FlowFact(node, dst, srcFact.fieldgraph(), srcFact.ifclabel());
                 result.add(domain.add(dstFact));
             }
             return result;

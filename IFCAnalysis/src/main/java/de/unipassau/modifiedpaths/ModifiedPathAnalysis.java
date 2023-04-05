@@ -115,7 +115,7 @@ public class ModifiedPathAnalysis {
             return d1 -> {
                 AccessGraph ag = domain.getMappedObject(d1);
                 if (uses.contains(ag.getBaseVariable())) {
-                    AccessGraph dst = new AccessGraph(ag.getCgNode(), v1);
+                    AccessGraph dst = new AccessGraph(ag.getCGNode(), v1);
                     int id = domain.add(dst);
                     entry.add(id);
                 }

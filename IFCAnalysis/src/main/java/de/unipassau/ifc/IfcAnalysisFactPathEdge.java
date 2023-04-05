@@ -3,19 +3,19 @@ package de.unipassau.ifc;
 import java.util.Objects;
 
 public class IfcAnalysisFactPathEdge {
-    private final IfcAnalysisFact u;
-    private final IfcAnalysisFact v;
+    private final FlowFact u;
+    private final FlowFact v;
 
-    protected IfcAnalysisFactPathEdge(IfcAnalysisFact u, IfcAnalysisFact v) {
+    protected IfcAnalysisFactPathEdge(FlowFact u, FlowFact v) {
         this.u = u;
         this.v = v;
     }
 
-    public IfcAnalysisFact getU() {
+    public FlowFact getU() {
         return u;
     }
 
-    public IfcAnalysisFact getV() {
+    public FlowFact getV() {
         return v;
     }
 
@@ -37,7 +37,7 @@ public class IfcAnalysisFactPathEdge {
         return "< " + u + "-->" + v + " >";
     }
 
-    public static IfcAnalysisFactPathEdge make(IfcAnalysisFact u, IfcAnalysisFact v) {
+    public static IfcAnalysisFactPathEdge make(FlowFact u, FlowFact v) {
         return new IfcAnalysisFactPathEdge(u, v);
     }
 }

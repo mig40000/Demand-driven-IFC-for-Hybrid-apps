@@ -5,20 +5,25 @@ import de.unipassau.accesspaths.AccessGraph;
 import de.unipassau.accesspaths.FieldGraph;
 
 import java.util.Objects;
+import java.util.StringJoiner;
 
-public class IfcAnalysisFact {
+public class FlowFact {
 
     private final AccessGraph graph;
     private final IFCLabel taintinfo;
 
-    public IfcAnalysisFact(AccessGraph graph, IFCLabel taintinfo) {
+    public FlowFact(AccessGraph graph, IFCLabel taintinfo) {
         this.graph = graph;
         this.taintinfo = taintinfo;
     }
 
-    public IfcAnalysisFact(CGNode node, int base, FieldGraph graph, IFCLabel taint) {
+    public FlowFact(CGNode node, int base, FieldGraph graph, IFCLabel taint) {
         this.graph = new AccessGraph(node, base, graph);
         this.taintinfo = taint;
+    }
+
+    public CGNode getCGNode() {
+        return graph.getCGNode();
     }
 
     public int getBase() {
@@ -37,7 +42,7 @@ public class IfcAnalysisFact {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IfcAnalysisFact that = (IfcAnalysisFact) o;
+        FlowFact that = (FlowFact) o;
         return Objects.equals(graph, that.graph) && taintinfo == that.taintinfo;
     }
 
@@ -48,9 +53,10 @@ public class IfcAnalysisFact {
 
     @Override
     public String toString() {
-        return "<" +
-                "graph=" + graph +
-                "label=" + taintinfo +
-                ">";
+        return new StringJoiner(" ", "FF{", "}")
+                .add("CGNODE=" + graph.getCGNode().toString())
+                .add("VAR=" + graph.getBaseVariable())
+                .add("FIELD=" + graph.fieldGraph())
+                .add("LABEL=" + taintinfo).toString();
     }
 }

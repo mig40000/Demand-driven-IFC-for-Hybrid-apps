@@ -12,26 +12,26 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 
-public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInContext<IExplodedBasicBlock>, CGNode, IFCAnalysisFactDomain> {
+public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFactDomain> {
 
     protected HashMap<BridgedMethod, BridgeMethodIFCSummaryDriver> bridgesummaries;
 
-    protected JavaScriptIFCAnalysis(CGNode bridgeNode, IFCAnalysisFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, HashMap<BridgedMethod, BridgeMethodIFCSummaryDriver> bridgesummaries, SourceSinkManager manager) {
+    protected JavaScriptIFCAnalysis(CGNode bridgeNode, FlowFactDomain domain, ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, HashMap<BridgedMethod, BridgeMethodIFCSummaryDriver> bridgesummaries, SourceSinkManager manager) {
         super(bridgeNode, domain, supergraph);
         this.bridgesummaries = bridgesummaries;
     }
 
 
-    private class JSAnalysisFunction extends IfcAnalysisFlowFunctions {
+    private class JSAnalysisFunction extends ForwardAnalysisFlowFunctions {
 
 
-        public JSAnalysisFunction(CGNode entryPoint, IFCAnalysisFactDomain domain, SourceSinkManager sourcesinkmanager) {
+        public JSAnalysisFunction(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager sourcesinkmanager) {
             super(entryPoint, domain, sourcesinkmanager);
         }
 
         @Override
         public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
-            SSAInvokeInstruction invoke = (SSAInvokeInstruction) getInstruction(src);
+            SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
             // In the case of call to bridge interfaces, then directly insert the summaries
             // Otherwise, handle it like a normal flow function to the the called function
             if (isInvocation2bridgeMethod(invoke)) {

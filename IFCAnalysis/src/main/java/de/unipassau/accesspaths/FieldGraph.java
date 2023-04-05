@@ -148,6 +148,7 @@ public class FieldGraph implements Cloneable {
 
   @Override
   public String toString() {
+//    StringJoiner result = new StringJoiner(";","fields[","]");
     StringBuilder str = new StringBuilder("FieldGraph[");
     fieldGraph.edges().forEach(str::append);
     str.append("]");
