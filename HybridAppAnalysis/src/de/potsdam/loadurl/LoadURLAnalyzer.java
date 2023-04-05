@@ -24,13 +24,25 @@ public class LoadURLAnalyzer {
 		SmaliContent smaliData = appAnalyzer.getSmaliData();
 		String className = null;
 		int index;
+		boolean addJsflag = false;
 		try{
 		for (List<String> fileContentInSmaliFormat : smaliData.class_content){
 			co++;
 			index =0;
 			String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
-			
+			addJsflag = false;
 			//className = classNameExtractor(fileContentInArray[0]);
+			for(String line: fileContentInArray){
+				if(line.contains(GenericConstants.ADDJSInterface)){
+					addJsflag = true;
+				}
+			}
+			
+			if(!addJsflag) {
+				continue;
+			}
+			
+			
 			className = classNameExtractorAlt(fileContentInArray[0]);
 			for(String line: fileContentInArray){
 				if(line.contains(GenericConstants.LOAD_URL)){

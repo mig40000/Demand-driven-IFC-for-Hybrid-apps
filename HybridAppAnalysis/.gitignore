@@ -1,0 +1,3 @@
+output/intermediate/
+*.apk
+input/testset1/*
