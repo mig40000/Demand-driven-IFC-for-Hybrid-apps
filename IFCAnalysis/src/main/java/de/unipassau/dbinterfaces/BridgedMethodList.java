@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BridgedMethodList extends ArrayList<BridgedMethod> implements Iterable<BridgedMethod> {
     private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
@@ -102,5 +103,16 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
 
     public List<BridgedMethod> getBridgeMethodsInClass(String clazz) {
         return this.bridgedMethods.stream().filter(method -> clazz.equals(method.clazz())).collect(Collectors.toList());
+    }
+
+    @Override
+    public Stream<BridgedMethod> stream() {
+        return bridgedMethods.stream();
+    }
+
+    public static BridgedMethodList make(Collection<BridgedMethod> methods) {
+        BridgedMethodList newlist = new BridgedMethodList();
+        newlist.bridgedMethods.addAll(methods);
+        return newlist;
     }
 }

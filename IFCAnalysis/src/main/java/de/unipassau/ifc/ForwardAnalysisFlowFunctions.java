@@ -19,6 +19,7 @@ import de.unipassau.accesspaths.FieldGraph;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashMap;
+import java.util.concurrent.Flow;
 
 public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
 
@@ -222,8 +223,16 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
     @Override
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
+
+        if (call == null) {
+            return FlowFunctionUtils.identityFunction();
+        }
         SSAInvokeInstruction callInstruction = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(call);
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
+
+        if (callInstruction == null) {
+            return FlowFunctionUtils.emptyFunction();
+        }
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {

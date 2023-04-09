@@ -32,12 +32,16 @@ public class FlowPathFact implements Iterable<FlowFact> {
         flowfacts.add(fact);
     }
 
-    public FlowFact peek() {
+    public FlowFact last() {
         if (flowfacts.isEmpty()) {
             return null;
         }
         int id = flowfacts.size()-1;
         return flowfacts.get(id);
+    }
+
+    public FlowFact init() {
+        return flowfacts.isEmpty() ? null : flowfacts.get(0);
     }
 
     @Override
@@ -68,6 +72,7 @@ public class FlowPathFact implements Iterable<FlowFact> {
     }
 
     public IFCLabel computeFlowLabel() {
+        // since the lattice is simple l <= h, so we don't need to join the security labels
         boolean secret = flowfacts.stream().anyMatch(flowFact -> flowFact.ifclabel()==IFCLabel.SECRET);
         return (secret) ? IFCLabel.SECRET : IFCLabel.PUBLIC;
     }

@@ -5,42 +5,57 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
+import com.ibm.wala.util.intset.IntSet;
+import com.ibm.wala.util.intset.MutableIntSet;
+import com.ibm.wala.util.intset.MutableSparseIntSet;
+import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class BackwardIFCAnalysisProblem implements TabulationProblem<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> {
+public class InvokingMethodFlowProblem implements TabulationProblem<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> {
 
-    private final CGNode entrypoint;
-    private final FlowFactDomain domain;
-    private final BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph;
-    private SourceSinkManager ssm;
-    private IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> flowfunctions;
 
-    protected BackwardIFCAnalysisProblem(CGNode entrypoint, FlowFactDomain domain, BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph, SourceSinkManager ssm, IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> flowfunctions) {
+    protected CGNode entrypoint;
+    protected FlowFactDomain domain;
+    protected BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph;
+    protected SourceSinkManager ssm;
+    protected InvokingFunctionFlowFunction flowfunctions;
+    protected BridgedMethodList bridgedMethods;
+
+    public InvokingMethodFlowProblem(CGNode entrypoint,
+                                     FlowFactDomain domain,
+                                     BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
+                                     SourceSinkManager ssm,
+                                     InvokingFunctionFlowFunction flowfunctions,
+                                     BridgedMethodList bridgedMethods) {
         this.entrypoint = entrypoint;
         this.domain = domain;
         this.supergraph = supergraph;
         this.ssm = ssm;
         this.flowfunctions = flowfunctions;
+        this.bridgedMethods = bridgedMethods;
     }
 
     @Override
     public ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> getSupergraph() {
-        return null;
+        return this.supergraph;
     }
 
     @Override
     public TabulationDomain<FlowFact, BasicBlockInContext<IExplodedBasicBlock>> getDomain() {
-        return domain;
+        return this.domain;
     }
 
     @Override
     public IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> getFunctionMap() {
-        return null;
+        return this.flowfunctions;
     }
 
+    /**
+     * Define the set of path edges to start propagation with.
+     */
     @Override
     public Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> initialSeeds() {
         Collection<PathEdge<BasicBlockInContext<IExplodedBasicBlock>>> pathEdges = new ArrayList<>();

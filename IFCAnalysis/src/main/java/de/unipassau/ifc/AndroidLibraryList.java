@@ -43,6 +43,7 @@ public class AndroidLibraryList {
     public void populate() {
         libraries.add(LibraryFunc.make("Landroid/os/Handler", "sendMessage"));
         libraries.add(LibraryFunc.make("Landroid/os/Handler", "obtainMessage"));
+        libraries.add(LibraryFunc.make("Landroid/support/v7/app/ActionBarActivity", "onCreate"));
     }
 
     public boolean contains(String className, String method) {

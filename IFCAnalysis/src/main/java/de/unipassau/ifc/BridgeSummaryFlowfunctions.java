@@ -108,7 +108,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
             int src = returnInst.getUse(0);
             FlowPathFact path = domain.getMappedObject(d1);
-            FlowFact fact = path.peek();
+            FlowFact fact = path.last();
             if (fact.getBase() == src) {
                 FlowFact newFact = new FlowFact(node, RETURN_VALUE, null, fact.ifclabel());
                 FlowPathFact newPath = FlowPathFact.make(path);
@@ -131,7 +131,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             result.add(d1);
 
             FlowPathFact pathfact = domain.getMappedObject(d1);
-            FlowFact fact = pathfact.peek();
+            FlowFact fact = pathfact.last();
             if (fact.getBase() == src) {
                 FlowFact newFact = new FlowFact(node, dst, fact.fieldgraph(), fact.ifclabel());
                 FlowPathFact pathFact = FlowPathFact.make(pathfact);
@@ -152,7 +152,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             IField field = FlowFunctionUtils.resolveField(getClassHierarchy(), inst.getDeclaredField());
             result.add(d1);
             FlowPathFact srcPath = domain.getMappedObject(d1);
-            FlowFact fact = srcPath.peek();
+            FlowFact fact = srcPath.last();
             if (fact.getBase() == src) {
                 FlowFact newFact = new FlowFact(node, dst, FieldGraph.of(field), fact.ifclabel());
                 FlowPathFact newPath = FlowPathFact.make(srcPath);
@@ -210,7 +210,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
             var path = domain.getMappedObject(d1);
-            var fact = path.peek();
+            var fact = path.last();
             for (int i = 0; i < invoke.getNumberOfPositionalParameters(); ++i) {
                 int use = invoke.getUse(i);
                 if (use == fact.getBase()) {
@@ -261,7 +261,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
             // if the use of d1 is reachable
             var flowPath = domain.getMappedObject(d1);
-            var flowFact = flowPath.peek();
+            var flowFact = flowPath.last();
             if (flowFact.getBase() == returnInst.getUse(0)) {
                 int def = callInstruction.getDef();
                 if (def != -1) {

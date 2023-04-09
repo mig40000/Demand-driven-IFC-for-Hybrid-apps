@@ -1,7 +1,5 @@
 package de.unipassau.ifc;
 
-import com.ibm.wala.classLoader.IClass;
-import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph;
 import com.ibm.wala.dataflow.IFDS.ISupergraph;
 import com.ibm.wala.dataflow.IFDS.TabulationResult;
@@ -9,9 +7,6 @@ import com.ibm.wala.dataflow.IFDS.TabulationSolver;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
-import com.ibm.wala.types.ClassLoaderReference;
-import com.ibm.wala.types.Selector;
-import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
 import de.unipassau.analysis.AndroidAnalysis;
@@ -19,7 +14,6 @@ import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public class BridgeMethodIFCSummaryDriver {
@@ -174,18 +168,14 @@ public class BridgeMethodIFCSummaryDriver {
 //    }
 
 
-    private static Optional<CGNode> findCGNodeForBridgeMethod(BridgedMethod method, AndroidAnalysis analysis) throws CancelException {
-        IClass clazz = analysis.getCha().lookupClass(TypeReference.find(ClassLoaderReference.Application, method.clazz()));
-        assert clazz != null;
-        IMethod entrypointmethod = clazz.getMethod(Selector.make(method.signature()));
-        assert entrypointmethod != null;
-        return analysis.callgraph().stream().filter(node -> node.getMethod().equals(entrypointmethod)).findFirst();
-    }
-
     public static BridgeMethodIFCSummaryDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm) throws CancelException {
         var supergraph = ICFGSupergraph.make(analysis.callgraph());
-        var entrypoint = findCGNodeForBridgeMethod(method, analysis);
+        var entrypoint = FlowFunctionUtils.findCGNodeForBridgeMethod(method, analysis);
         System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
         return entrypoint.map(cgNode -> new BridgeMethodIFCSummaryDriver(cgNode, supergraph, new FlowPathFactDomain(), ssm)).orElse(null);
+    }
+
+    public CGNode getCgNode() {
+        return bridgeNode;
     }
 }
