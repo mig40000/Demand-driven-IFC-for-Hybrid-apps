@@ -10,8 +10,6 @@ import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.ssa.*;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.collections.HashMapFactory;
-import com.ibm.wala.util.intset.IntIterator;
-import com.ibm.wala.util.intset.IntSet;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.accesspaths.AccessGraph;
@@ -75,25 +73,6 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         }
         return result;
 //        return compose(entryblock, result);
-    }
-
-    public IUnaryFlowFunction compose(IUnaryFlowFunction f1, IUnaryFlowFunction f2) {
-        if (f1 == null) {
-            return f2;
-        } else if (f2 == null) {
-            return f1;
-        } else {
-            return d1 -> {
-                MutableSparseIntSet result = MutableSparseIntSet.makeEmpty();
-                IntSet imF1 = f1.getTargets(d1);
-                IntIterator iterator = imF1.intIterator();
-                while (iterator.hasNext()) {
-                    int f11 = iterator.next();
-                    result.addAll(f2.getTargets(f11));
-                }
-                return result;
-            };
-        }
     }
 
     protected IUnaryFlowFunction buildPhiInstruction(SSAPhiInstruction inst, CGNode node, MutableIntSet entryfacts) {
