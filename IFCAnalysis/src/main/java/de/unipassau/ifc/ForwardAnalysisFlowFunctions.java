@@ -71,7 +71,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         } else if (inst instanceof SSAPhiInstruction phiInst) {
             result = buildPhiInstruction(phiInst, src.getNode(), entryfacts);
         } else {
-            result = FlowFunctionUtils.identityFunction();
+            result = IdentityFunction.make();
         }
         return result;
 //        return compose(entryblock, result);
@@ -190,7 +190,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (invoke == null) {
-            return FlowFunctionUtils.emptyFunction();
+            return EmptyFunction.make();
         }
 
         if (FlowFunctionUtils.isSensitiveSource(sensitiveSourcesManager, invoke.getCallSite())) {
@@ -221,7 +221,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
                     return result;
                 };
             } else {
-                return FlowFunctionUtils.emptyFunction();
+                return EmptyFunction.make();
             }
         }
 
@@ -245,7 +245,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
 
         if (call == null) {
-            return FlowFunctionUtils.identityFunction();
+            return IdentityFunction.make();
         }
 
 
@@ -253,12 +253,12 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (callInstruction == null) {
-            return FlowFunctionUtils.emptyFunction();
+            return EmptyFunction.make();
         }
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {
-            return FlowFunctionUtils.emptyFunction();
+            return EmptyFunction.make();
         }
 
         if (FlowFunctionUtils.isLibraryCall(callInstruction.getCallSite())) {
@@ -290,12 +290,12 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
     @Override
     public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return FlowFunctionUtils.identityFunction();
+        return IdentityFunction.make();
     }
 
     @Override
     public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return FlowFunctionUtils.identityFunction();
+        return IdentityFunction.make();
     }
 
     public FlowFactDomain getDomain() {

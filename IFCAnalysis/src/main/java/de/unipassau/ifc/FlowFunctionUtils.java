@@ -4,7 +4,6 @@ import com.ibm.wala.classLoader.CallSiteReference;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.classLoader.IMethod;
-import com.ibm.wala.dataflow.IFDS.IUnaryFlowFunction;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
@@ -15,12 +14,9 @@ import com.ibm.wala.types.FieldReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
-import com.ibm.wala.util.intset.MutableIntSet;
-import com.ibm.wala.util.intset.MutableSparseIntSet;
 import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.utils.SourceSinkManager;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -34,20 +30,6 @@ public class FlowFunctionUtils {
             return null;
         }
         return block.getDelegate().getInstruction();
-    }
-
-    @Contract(pure = true)
-    public static @NotNull IUnaryFlowFunction identityFunction() {
-        return d1 -> {
-            MutableIntSet results = MutableSparseIntSet.makeEmpty();
-            results.add(d1);
-            return results;
-        };
-    }
-
-    @Contract(pure = true)
-    public static @NotNull IUnaryFlowFunction emptyFunction() {
-        return d1 -> MutableSparseIntSet.makeEmpty();
     }
 
     protected static IField resolveField(@NotNull IClassHierarchy cha, FieldReference f) {

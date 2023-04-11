@@ -22,6 +22,11 @@ public class FlowFact {
         this.taintinfo = taint;
     }
 
+    public FlowFact(FlowFact other) {
+        this.graph = new AccessGraph(other.getCGNode(), other.getBase(), other.fieldgraph());
+        this.taintinfo = other.taintinfo;
+    }
+
     public CGNode getCGNode() {
         return graph.getCGNode();
     }

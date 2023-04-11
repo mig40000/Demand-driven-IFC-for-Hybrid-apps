@@ -73,7 +73,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         } else if (inst instanceof SSAPhiInstruction phiInst) {
             result = buildPhiInstruction(phiInst, src.getNode(), entryfacts);
         } else {
-            result = FlowFunctionUtils.identityFunction();
+            result = IdentityFunction.make();
         }
         return result;
     }
@@ -203,7 +203,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
             // propagate library calls by replqcing it with identity functions
-            return FlowFunctionUtils.emptyFunction();
+            return EmptyFunction.make();
         }
 
         // skip analysing these calls and replace it with identity functions
@@ -240,7 +240,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {
-            return FlowFunctionUtils.emptyFunction();
+            return EmptyFunction.make();
         }
 
         if (FlowFunctionUtils.isLibraryCall(callInstruction.getCallSite())) {
@@ -282,7 +282,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        return FlowFunctionUtils.identityFunction();
+        return IdentityFunction.make();
     }
 
     /**
@@ -293,7 +293,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        return FlowFunctionUtils.identityFunction();
+        return IdentityFunction.make();
     }
 
     protected IClassHierarchy getClassHierarchy() {

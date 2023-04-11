@@ -89,9 +89,10 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
 
 
     /**
-     * Here, call behaves like a return.
+     * Here, call behaves like a return. src is the current instruction. dst is the exit node for the predecessor function
+     * and ret is the predecessor instruction of the called instruction (so called return site).
      * @param src --> current instruction (return)
-     * @param dst --> exit node instruction
+     * @param dst --> exit node instruction of predecessor block
      * @param ret --> the instruction before the return instruction -- not required
      * @return
      */
@@ -134,7 +135,7 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
             };
         }
 
-        return FlowFunctionUtils.emptyFunction();
+        return EmptyFunction.make();
         // create a new return node for the
 //        return d1 -> {
 //
@@ -183,7 +184,8 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
     }
 
     /**
-     *
+     * Here the edges are reversed. So the call refers tot he return instruction. src is the entry node of the called function
+     * dest is the return-site, or the predecessor of the return
      * @param call --> the call block
      * @param src --> destinat
      * @param dest --> instruction
@@ -193,16 +195,29 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
     @Override
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(dest);
-        System.out.println("JP.... getReturnFlowFunction    " + call);
-        if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
-            System.out.println("JP....  crating empty function " + call + " " + dest.getLastInstruction());
-            return FlowFunctionUtils.emptyFunction();
-        }
-        if (isBridgeCall(invoke))
-            return transformSummaryToFlowFunction(dest.getNode(), invoke);
-        else
-            return FlowFunctionUtils.emptyFunction();
-//            return super.getCallFlowFunction(call, src , dest);
+        assert invoke != null;
 
+        if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
+            return EmptyFunction.make();
+        }
+
+        if (isBridgeCall(invoke)) {
+            return transformSummaryToFlowFunction(dest.getNode(), invoke);
+        }
+
+        SSAInstruction returnInst = FlowFunctionUtils.getInstruction(call);
+        assert returnInst != null;
+
+        return (IUnaryFlowFunction) d1 -> {
+            MutableIntSet result = MutableSparseIntSet.makeEmpty();
+            FlowFact reachableFact = domain.getMappedObject(d1);
+            for (int i=0; i < returnInst.getNumberOfUses(); ++i) {
+                int vn = returnInst.getUse(i);
+                if (vn == reachableFact.getBase()) {
+                    result.add(d1);
+                }
+            }
+            return result;
+        };
     }
 }
