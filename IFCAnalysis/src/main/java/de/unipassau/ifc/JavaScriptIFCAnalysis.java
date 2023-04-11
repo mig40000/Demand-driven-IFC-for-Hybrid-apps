@@ -22,47 +22,4 @@ public class JavaScriptIFCAnalysis extends  AbstractIfcAnalysis<BasicBlockInCont
     }
 
 
-    private class JSAnalysisFunction extends ForwardAnalysisFlowFunctions {
-
-
-        public JSAnalysisFunction(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager sourcesinkmanager) {
-            super(entryPoint, domain, sourcesinkmanager);
-        }
-
-        @Override
-        public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
-            SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
-            // In the case of call to bridge interfaces, then directly insert the summaries
-            // Otherwise, handle it like a normal flow function to the the called function
-            if (isInvocation2bridgeMethod(invoke)) {
-                // get the methods of the bridge summaries and propagate the summaries for the bridge methods
-                String clazz = invoke.getDeclaredTarget().getDeclaringClass().getName().getClassName().toString();
-                String methodSignature = invoke.getDeclaredTarget().getSignature();
-                Optional<BridgedMethod> targetMethod = getBridgeMethods().stream().filter(method -> method.matchClassAndMethodSign(clazz, methodSignature)).findFirst();
-                if (targetMethod.isPresent()) {
-                    var summary = bridgesummaries.get(targetMethod.get());
-
-                } else {
-                    System.err.println("Failed to find bridge methods");
-                }
-            }
-            return null;
-        }
-
-
-
-        private Set<BridgedMethod> getBridgeMethods() {
-            return bridgesummaries.keySet();
-        }
-
-        private boolean isInvocation2bridgeMethod(SSAInvokeInstruction instruction) {
-            var target = instruction.getDeclaredTarget();
-            if (target == null) {
-                return false;
-            }
-            var targetMethod = target.getSignature();
-            return getBridgeMethods().stream().anyMatch(method -> targetMethod.equalsIgnoreCase(method.signature()));
-        }
-
-    } // JSAnalysisFunction
 }
