@@ -34,9 +34,11 @@ public class AndroidLibraryList {
     }
 
     protected List<LibraryFunc> libraries;
+    protected List<String> libraryPatterns;
 
     public AndroidLibraryList() {
         libraries = new ArrayList<>();
+        libraryPatterns = new ArrayList<>();
         populate();
     }
 
@@ -44,10 +46,13 @@ public class AndroidLibraryList {
         libraries.add(LibraryFunc.make("Landroid/os/Handler", "sendMessage"));
         libraries.add(LibraryFunc.make("Landroid/os/Handler", "obtainMessage"));
         libraries.add(LibraryFunc.make("Landroid/support/v7/app/ActionBarActivity", "onCreate"));
+        libraryPatterns.add("Landroid");
+        libraryPatterns.add("Ljava");
     }
 
     public boolean contains(String className, String method) {
-        return libraries.contains(LibraryFunc.make(className, method));
+        return libraryPatterns.stream().anyMatch(className::startsWith)
+                || libraries.contains(LibraryFunc.make(className, method));
     }
 
     @Override

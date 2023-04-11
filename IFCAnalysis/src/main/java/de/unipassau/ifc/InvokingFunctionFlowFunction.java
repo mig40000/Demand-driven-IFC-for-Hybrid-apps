@@ -4,10 +4,7 @@ import com.ibm.wala.dataflow.IFDS.IFlowFunction;
 import com.ibm.wala.dataflow.IFDS.IUnaryFlowFunction;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
-import com.ibm.wala.ssa.SSAGetInstruction;
-import com.ibm.wala.ssa.SSAInvokeInstruction;
-import com.ibm.wala.ssa.SSAPutInstruction;
-import com.ibm.wala.ssa.SSAReturnInstruction;
+import com.ibm.wala.ssa.*;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.intset.MutableIntSet;
@@ -63,11 +60,23 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
      */
     @Override
     protected IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node, MutableIntSet entry) {
+        if (inst.isStatic()) {
+            int dst = inst.getDef();
+
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                result.add(d1);
+                int newFact = domain.add(new FlowFact(node, dst, null, IFCLabel.PUBLIC));
+                result.add(newFact);
+                return result;
+            };
+        }
+
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.make(entry);
             result.add(d1);
 
-            int src = inst.getUse(1);
+            int src = inst.getUse(0);
             int dst = inst.getDef();
             var srcFact = domain.getMappedObject(d1);
             if (srcFact.getBase() == src) {
@@ -81,44 +90,65 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
 
     /**
      * Here, call behaves like a return.
-     * @param src
-     * @param dst
-     * @param ret
+     * @param src --> current instruction (return)
+     * @param dst --> exit node instruction
+     * @param ret --> the instruction before the return instruction -- not required
      * @return
      */
     @Override
-    public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ret,
-                                                  BasicBlockInContext<IExplodedBasicBlock> calledFunc,
-                                                  BasicBlockInContext<IExplodedBasicBlock> src) {
-        if (ret.isExitBlock()) {
-            return FlowFunctionUtils.emptyFunction();
-        }
-        if (ret == null) {
-            return FlowFunctionUtils.emptyFunction();
+    public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src,
+                                                  BasicBlockInContext<IExplodedBasicBlock> dest,
+                                                  BasicBlockInContext<IExplodedBasicBlock> ret) {
+
+        SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
+
+        if (inst instanceof SSAInvokeInstruction invokeInst) {
+            if (FlowFunctionUtils.isLibraryCall(invokeInst.getCallSite())) {
+                //get the parameters passed to this function and
+                return d1 -> {
+                    MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                    if (!invokeInst.isStatic()) {
+                        FlowFact thisFact = new FlowFact(src.getNode(), invokeInst.getUse(0), null, IFCLabel.SECRET);
+                        result.add(domain.add(thisFact));
+                    }
+                    for (int i=1; i < invokeInst.getNumberOfUses(); ++i) {
+                        FlowFact paramI = new FlowFact(src.getNode(), invokeInst.getUse(i), null, IFCLabel.SECRET);
+                        result.add(domain.add(paramI));
+                    }
+                    return result;
+                };
+            }
         }
 
-//        SSAReturnInstruction invoke = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
-//        if (invoke == null) {
+        if (inst instanceof SSAReturnInstruction returnInst) {
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                result.add(d1);
+
+                // map the return value if it exists
+                for (int i = 0; i < returnInst.getNumberOfUses(); ++i) {
+                    int newFactId = domain.add(new FlowFact(src.getNode(), returnInst.getUse(i), null, IFCLabel.PUBLIC));
+                    result.add(newFactId);
+                }
+                return result;
+            };
+        }
+
+        return FlowFunctionUtils.emptyFunction();
+        // create a new return node for the
+//        return d1 -> {
+//
+//        };
+//        if (ret == null) {
 //            return FlowFunctionUtils.emptyFunction();
 //        }
-
-        return (IUnaryFlowFunction) super.getReturnFlowFunction(src, calledFunc, ret);
-//        SSAReturnInstruction returnInstruction = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(ret);
 //
-//        if (returnInstruction == null) {
-//            return FlowFunctionUtils.identityFunction();
+//        if (ret.isExitBlock()) {
+//            return FlowFunctionUtils.emptyFunction();
 //        }
 //
-//        return d1 -> {
-//            MutableIntSet result = MutableSparseIntSet.makeEmpty();
-//            result.add(d1);
-//
-//            for (int vn = 1; vn < returnInstruction.getNumberOfUses(); ++vn) {
-//                int newFact = domain.add(new FlowFact(src.getNode(), vn, null, IFCLabel.PUBLIC));
-//                result.add(newFact);
-//            }
-//            return result;
-//        };
+//        return FlowFunctionUtils.emptyFunction();
+//        return (IUnaryFlowFunction) super.getReturnFlowFunction(src, calledFunc, ret);
     }
 
     public IUnaryFlowFunction transformSummaryToFlowFunction(CGNode targetNode, SSAInvokeInstruction invoke) {
@@ -152,13 +182,27 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
         return bridgedMethods.stream().anyMatch(method -> method.signature().equals(signature) && method.clazz().equals(klass));
     }
 
+    /**
+     *
+     * @param call --> the call block
+     * @param src --> destinat
+     * @param dest --> instruction
+     * @return
+     */
 
     @Override
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(call);
+        SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(dest);
+        System.out.println("JP.... getReturnFlowFunction    " + call);
+        if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
+            System.out.println("JP....  crating empty function " + call + " " + dest.getLastInstruction());
+            return FlowFunctionUtils.emptyFunction();
+        }
         if (isBridgeCall(invoke))
             return transformSummaryToFlowFunction(dest.getNode(), invoke);
         else
-            return super.getCallFlowFunction(src, dest, call);
+            return FlowFunctionUtils.emptyFunction();
+//            return super.getCallFlowFunction(call, src , dest);
+
     }
 }

@@ -19,7 +19,6 @@ import de.unipassau.accesspaths.FieldGraph;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashMap;
-import java.util.concurrent.Flow;
 
 public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
 
@@ -53,7 +52,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
     @Override
     public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst) {
-    //        System.out.println("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
+        //        System.out.println("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
         SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
         if (src.isEntryBlock()) {
@@ -184,17 +183,27 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     }
 
     @Override
-    public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
+    public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src,
+                                                  BasicBlockInContext<IExplodedBasicBlock> dst,
+                                                  BasicBlockInContext<IExplodedBasicBlock> ret) {
+        System.err.println("JP .... in getCallFlowFunction " + src.getNode() + src.getDelegate().getInstruction());
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
+
+        if (invoke == null) {
+            return FlowFunctionUtils.emptyFunction();
+        }
+
         if (FlowFunctionUtils.isSensitiveSource(sensitiveSourcesManager, invoke.getCallSite())) {
             return d1 -> {
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
-                int def = invoke.getDef();
-                if (def != -1) {
-                    FlowFact fact = new FlowFact(src.getNode(), def, null, IFCLabel.SECRET);
-                    result.add(domain.add(fact));
-                } else {
+
+                if (invoke.hasDef()) {
                     result.add(d1);
+                    int def = invoke.getDef();
+                    if (def != -1) {
+                        int newFactId = domain.add(new FlowFact(src.getNode(), def, null, IFCLabel.SECRET));
+                        result.add(newFactId);
+                    }
                 }
                 return result;
             };
@@ -202,7 +211,18 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
             // propagate library calls by replqcing it with identity functions
-            return FlowFunctionUtils.emptyFunction();
+            if (invoke.hasDef()) {
+                return d1 -> {
+                    MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                    result.add(d1);
+                    int def = invoke.getDef();
+                    int newFactId = domain.add(new FlowFact(src.getNode(), def, null, IFCLabel.SECRET));
+                    result.add(newFactId);
+                    return result;
+                };
+            } else {
+                return FlowFunctionUtils.emptyFunction();
+            }
         }
 
         // skip analysing these calls and replace it with identity functions
@@ -227,6 +247,8 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         if (call == null) {
             return FlowFunctionUtils.identityFunction();
         }
+
+
         SSAInvokeInstruction callInstruction = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(call);
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
 

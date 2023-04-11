@@ -64,6 +64,10 @@ public class FlowFunctionUtils {
     protected static boolean isLibraryCall(CallSiteReference callSite) {
         String methodName = callSite.getDeclaredTarget().getName().toString();
         String className = callSite.getDeclaredTarget().getDeclaringClass().getName().toString();
+
+        if (className.startsWith("Landroid/support/v4/")) {
+            return true;
+        }
         return new AndroidLibraryList().contains(className, methodName);
     }
 
