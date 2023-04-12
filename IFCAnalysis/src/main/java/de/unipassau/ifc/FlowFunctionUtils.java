@@ -62,12 +62,6 @@ public class FlowFunctionUtils {
     }
 
     static public Optional<CGNode> findCGNodeForBridgeMethod(String sclazz, String method, AndroidAnalysis analysis) throws CancelException {
-
-//        analysis.getCha().forEach(c -> {
-//            if (c.getName().toString().contains("MainActivity")) {
-//                System.err.println(c.getName());
-//            }
-//        });
         IClass clazz = analysis.getCha().lookupClass(TypeReference.find(ClassLoaderReference.Application, sclazz));
         assert clazz != null : "Class is null";
         IMethod entrypointmethod = clazz.getMethod(Selector.make(method));

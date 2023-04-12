@@ -1,9 +1,7 @@
 package de.unipassau.main;
 
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import de.unipassau.analysis.AndroidAnalysis;
-import de.unipassau.analysis.BridgeMethodIR;
-import de.unipassau.dbinterfaces.BridgedMethodList;
+import com.ibm.wala.util.CancelException;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,15 +39,6 @@ public class Analyzer {
         formatter.printHelp("de.unipassau.main.HybridIFCAnalyzer", options);
     }
 
-    public static void run(Config config) throws ClassHierarchyException, IOException {
-        AndroidAnalysis analysis = new AndroidAnalysis();
-        BridgedMethodList methods = BridgedMethodList.load(config.getDatabase());
-        for (var bridgeMethod : methods) {
-            var methodIr = new BridgeMethodIR(bridgeMethod, analysis.getCha(), analysis.getCache()).makeIR();
-            System.out.println(methodIr);
-        }
-    }
-
     public static void main(String[] args) {
 
         String sdkRoot = System.getenv("ANDROID_SDK_ROOT");
@@ -81,9 +70,13 @@ public class Analyzer {
             System.exit(100);
         }
 
-        if (!sourceSinkFile.hasArg()) {
-            logger.error("Unspecified source sink files");
-            System.exit(100);
+        if (cmd.hasOption(sourceSinkFile)) {
+            if (!sourceSinkFile.hasArg() ) {
+                logger.error("Unspecified source sink files");
+                System.exit(100);
+            }
+        } else {
+            logger.info("Using sourcefile {}", "src/main/resources/SourcesAndSinks.txt");
         }
 
         Config.getInstance().setApilevel(api);
@@ -93,8 +86,9 @@ public class Analyzer {
         Config.getInstance().setSourceSinkFile(sourceSinkFile.getValue());
 
         try {
-            run(Config.getInstance());
-        } catch (ClassHierarchyException | IOException e) {
+            AnalyzerMain analyzer = new AnalyzerMain();
+            analyzer.run();
+        } catch (ClassHierarchyException | IOException | CancelException e) {
             e.printStackTrace();
         }
     }

@@ -10,7 +10,6 @@ import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.ifc.*;
-import de.unipassau.main.Config;
 import de.unipassau.utils.SourceSinkManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,16 +27,16 @@ public class TestHelloHybrid {
     String androidJar = "/Users/jyotiprakash/Library/Android/sdk/platforms/android-29/android.jar";
     AndroidAnalysis analysis = null;
     private String sourceSinkFile = "src/main/resources/SourcesAndSinks.txt";
-    private SourceSinkManager manager;
+    private SourceSinkManager ssm;
 
     @BeforeEach
     public void setUp() throws ClassHierarchyException, IOException {
         var bridgemethods = BridgedMethodList.load("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/Database/Intent-new.sqlite");
         methods = bridgemethods.getBridgeMethodsInClass("Lcom/example/hellohybrid/JavascriptBridge");
-        Config.getInstance().setApk(apkfile);
-        Config.getInstance().setAndroidJarpath(androidJar);
-        analysis = new AndroidAnalysis();
-        manager = SourceSinkManager.make("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/src/main/resources/SourcesAndSinks.txt");
+//        Config.getInstance().setApk(apkfile);
+//        Config.getInstance().setAndroidJarpath(androidJar);
+        analysis = new AndroidAnalysis(androidJar, apkfile);
+        ssm = SourceSinkManager.make("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/src/main/resources/SourcesAndSinks.txt");
     }
 
 
@@ -45,7 +44,7 @@ public class TestHelloHybrid {
     public void testGetName() throws CancelException {
         var method = methods.get(0);
         System.err.println(method.signature());
-        var summary = BridgeMethodIFCSummaryDriver.make(analysis, method, manager);
+        var summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
 //        summary.printResults();
     }
 
@@ -53,7 +52,7 @@ public class TestHelloHybrid {
     public void testSendName() throws CancelException {
         var method = methods.get(1);
         System.err.println(method.signature());
-        var summary = BridgeMethodIFCSummaryDriver.make(analysis, method, manager);
+        var summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
         summary.buildresults();
         summary.printResultsEntryNode();
         System.out.println("=======================================");
@@ -73,16 +72,16 @@ public class TestHelloHybrid {
 
         var bmethod = methods.get(1);
         System.err.println(bmethod.signature());
-        var summary = BridgeMethodIFCSummaryDriver.make(analysis, bmethod, manager);
+        var summary = BridgeMethodIFCSummaryDriver.make(analysis, bmethod, ssm);
         summary.buildresults();
 //        summary.printResultsEntryNode();
-        functionSummaries.put(summary.getCgNode(), summary.collectSummaryPaths());
+        functionSummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
         System.out.println("=======================================");
 
         var bmethod1 = methods.get(0);
-        var summary1 = BridgeMethodIFCSummaryDriver.make(analysis, bmethod1, manager);
+        var summary1 = BridgeMethodIFCSummaryDriver.make(analysis, bmethod1, ssm);
         summary1.buildresults();
-        functionSummaries.put(summary1.getCgNode(), summary1.collectSummaryPaths());
+        functionSummaries.put(summary1.getBridgeNode(), summary1.collectSummaryPaths());
 
         functionSummaries.forEach((key, value) -> System.out.println(value));
 
@@ -94,7 +93,7 @@ public class TestHelloHybrid {
                 cgNode.get(),
                 new FlowFactDomain(),
                 BackwardsSupergraph.make(supergraph),
-                manager,
+                ssm,
                 BridgedMethodList.make(methods),
                 functionSummaries
         );

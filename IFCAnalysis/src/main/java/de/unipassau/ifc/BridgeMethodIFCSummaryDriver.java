@@ -106,7 +106,7 @@ public class BridgeMethodIFCSummaryDriver {
         return entrypoint.map(cgNode -> new BridgeMethodIFCSummaryDriver(cgNode, supergraph, new FlowPathFactDomain(), ssm)).orElse(null);
     }
 
-    public CGNode getCgNode() {
+    public CGNode getBridgeNode() {
         return bridgeNode;
     }
 }

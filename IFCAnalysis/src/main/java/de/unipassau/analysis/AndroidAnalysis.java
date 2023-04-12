@@ -18,7 +18,6 @@ import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
-import de.unipassau.main.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +40,11 @@ public class AndroidAnalysis {
 
     private static final Logger logger = LoggerFactory.getLogger(AndroidAnalysis.class.getName());
 
-    public AndroidAnalysis() throws ClassHierarchyException, IOException {
+    public AndroidAnalysis(String androidJar, String apkfile) throws ClassHierarchyException, IOException {
         logger.info("Setting up android analysis environment");
-        this.androidJar = Config.getInstance().getAndroidJarpath();
+        this.androidJar = androidJar;
         logger.info("Using {}", this.androidJar);
-        this.apkfile = Config.getInstance().getApk();
+        this.apkfile = apkfile;
         logger.info("APK: {}", this.apkfile);
         this.cache = new AnalysisCacheImpl(new DexIRFactory());
         AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();

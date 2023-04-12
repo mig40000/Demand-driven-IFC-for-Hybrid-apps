@@ -21,7 +21,7 @@ public class TestBridgeMethodIR {
     void setup() throws ClassHierarchyException, IOException {
         Config.getInstance().setAndroidJarpath(androidJar);
         Config.getInstance().setApk(apkfile);
-        analysis = new AndroidAnalysis();
+        analysis = new AndroidAnalysis(androidJar, apkfile);
         bridgedMethods = BridgedMethodList.load(database);
     }
 
