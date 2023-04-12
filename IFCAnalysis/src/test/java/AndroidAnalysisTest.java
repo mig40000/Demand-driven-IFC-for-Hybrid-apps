@@ -1,8 +1,7 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.main.Config;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

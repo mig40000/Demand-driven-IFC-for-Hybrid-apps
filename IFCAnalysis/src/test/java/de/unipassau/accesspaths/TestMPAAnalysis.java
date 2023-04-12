@@ -3,7 +3,7 @@ package de.unipassau.accesspaths;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.util.CancelException;
-import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.modifiedpaths.ModifiedPathAnalysis;

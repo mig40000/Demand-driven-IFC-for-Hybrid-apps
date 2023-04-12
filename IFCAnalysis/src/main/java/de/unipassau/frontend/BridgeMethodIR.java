@@ -1,4 +1,4 @@
-package de.unipassau.analysis;
+package de.unipassau.frontend;
 
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;

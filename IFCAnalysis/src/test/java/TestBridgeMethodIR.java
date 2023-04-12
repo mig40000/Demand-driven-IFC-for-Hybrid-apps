@@ -1,6 +1,6 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import de.unipassau.analysis.AndroidAnalysis;
-import de.unipassau.analysis.BridgeMethodIR;
+import de.unipassau.frontend.AndroidAnalysis;
+import de.unipassau.frontend.BridgeMethodIR;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.main.Config;
 import org.junit.jupiter.api.Assertions;

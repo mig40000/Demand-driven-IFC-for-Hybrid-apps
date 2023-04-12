@@ -1,6 +1,6 @@
 package de.unipassau.accesspaths;
 
-import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.utils.SourceSinkManager;
 import org.junit.jupiter.api.BeforeEach;

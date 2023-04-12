@@ -14,7 +14,7 @@ import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
-import de.unipassau.analysis.AndroidAnalysis;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.utils.SourceSinkManager;

@@ -6,6 +6,8 @@ public class Config {
     private String androidJarpath;
     private String database;
     private String sourceSinkFile;
+    private String jsDir;
+    private String jsFilepath;
 
     private static Config config = null;
 
@@ -64,5 +66,21 @@ public class Config {
 
     public static void setConfig(Config config) {
         Config.config = config;
+    }
+
+    public String getJsDir() {
+        return jsDir;
+    }
+
+    public void setJsDir(String jsDir) {
+        this.jsDir = jsDir;
+    }
+
+    public String getJsFilepath() {
+        return jsFilepath;
+    }
+
+    public void setJsFilepath(String jsFilepath) {
+        this.jsFilepath = jsFilepath;
     }
 }

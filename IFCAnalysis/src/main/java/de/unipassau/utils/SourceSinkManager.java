@@ -20,7 +20,7 @@ public class SourceSinkManager {
     }
 
     public static SourceSinkManager make(String file) {
-        SourceSinkManager manager = new SourceSinkManager(Config.getConfig().getSourceSinkFile());
+        SourceSinkManager manager = new SourceSinkManager(file);
         manager.parseSourcefile();
         System.out.printf("Loaded %d sources from %s %n", manager.sources.size(), file);
         System.out.printf("Loaded %d sinks from %s %n", manager.sinks.size(), file);
