@@ -1,10 +1,9 @@
 package de.unipassau.accesspaths;
 
-import com.google.common.graph.Graph;
 import com.google.common.graph.GraphBuilder;
 import com.google.common.graph.MutableGraph;
 import com.ibm.wala.classLoader.IField;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

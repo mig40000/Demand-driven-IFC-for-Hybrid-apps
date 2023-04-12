@@ -8,6 +8,8 @@ import com.ibm.wala.ssa.DefUse;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
@@ -21,7 +23,8 @@ public class JSSupergraph extends ICFGSupergraph {
         super(cfg);
     }
 
-    public static JSSupergraph make(ExplodedInterproceduralCFG cfg) {
+    @Contract("_ -> new")
+    public static @NotNull JSSupergraph make(ExplodedInterproceduralCFG cfg) {
         return new JSSupergraph(cfg);
     }
 

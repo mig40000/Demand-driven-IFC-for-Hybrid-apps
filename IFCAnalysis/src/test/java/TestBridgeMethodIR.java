@@ -2,7 +2,7 @@ import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.analysis.BridgeMethodIR;
 import de.unipassau.dbinterfaces.BridgedMethodList;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,9 +19,9 @@ public class TestBridgeMethodIR {
 
     @BeforeEach
     void setup() throws ClassHierarchyException, IOException {
-        Config.getConfig().androidJarpath = androidJar;
-        Config.getConfig().Apk = apkfile;
-        analysis = new AndroidAnalysis(Config.getConfig());
+        Config.getInstance().setAndroidJarpath(androidJar);
+        Config.getInstance().setApk(apkfile);
+        analysis = new AndroidAnalysis();
         bridgedMethods = BridgedMethodList.load(database);
     }
 

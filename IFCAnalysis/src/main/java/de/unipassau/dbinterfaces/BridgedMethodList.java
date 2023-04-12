@@ -1,12 +1,11 @@
 package de.unipassau.dbinterfaces;
 
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

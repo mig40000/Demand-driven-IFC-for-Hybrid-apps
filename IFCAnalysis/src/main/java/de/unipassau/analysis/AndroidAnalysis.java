@@ -15,12 +15,10 @@ import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.ipa.cha.ClassHierarchyFactory;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.types.ClassLoaderReference;
-import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
-import com.ibm.wala.util.collections.Pair;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,12 +41,12 @@ public class AndroidAnalysis {
 
     private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
 
-    public AndroidAnalysis(Config config) throws ClassHierarchyException, IOException {
+    public AndroidAnalysis() throws ClassHierarchyException, IOException {
         logger.info("Setting up android analysis environment");
-        this.androidJar = Config.getConfig().androidJarpath;
-        logger.info("Using " + this.androidJar);
-        this.apkfile = config.Apk;
-        logger.info("APK: " + this.apkfile);
+        this.androidJar = Config.getInstance().getAndroidJarpath();
+        logger.info("Using {}", this.androidJar);
+        this.apkfile = Config.getInstance().getApk();
+        logger.info("APK: {}", this.apkfile);
         this.cache = new AnalysisCacheImpl(new DexIRFactory());
         AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
         scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");

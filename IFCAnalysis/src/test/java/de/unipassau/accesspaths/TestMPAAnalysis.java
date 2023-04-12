@@ -7,7 +7,7 @@ import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.modifiedpaths.ModifiedPathAnalysis;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,9 +23,9 @@ public class TestMPAAnalysis {
 
     @BeforeEach
     void setup() throws ClassHierarchyException, IOException {
-        Config.getConfig().androidJarpath = androidJar;
-        Config.getConfig().Apk = apkfile;
-        analysis = new AndroidAnalysis(Config.getConfig());
+        Config.getInstance().setAndroidJarpath(androidJar);
+        Config.getInstance().setApk(apkfile);
+        analysis = new AndroidAnalysis();
         bridgedMethods = BridgedMethodList.load(database);
     }
 

@@ -10,7 +10,7 @@ import de.unipassau.analysis.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.ifc.*;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import de.unipassau.utils.SourceSinkManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,9 +34,9 @@ public class TestHelloHybrid {
     public void setUp() throws ClassHierarchyException, IOException {
         var bridgemethods = BridgedMethodList.load("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/Database/Intent-new.sqlite");
         methods = bridgemethods.getBridgeMethodsInClass("Lcom/example/hellohybrid/JavascriptBridge");
-        Config.getConfig().Apk = apkfile;
-        Config.getConfig().androidJarpath = androidJar;
-        analysis = new AndroidAnalysis(Config.getConfig());
+        Config.getInstance().setApk(apkfile);
+        Config.getInstance().setAndroidJarpath(androidJar);
+        analysis = new AndroidAnalysis();
         manager = SourceSinkManager.make("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/src/main/resources/SourcesAndSinks.txt");
     }
 

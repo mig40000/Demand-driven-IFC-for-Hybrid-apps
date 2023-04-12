@@ -1,8 +1,6 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import com.ibm.wala.util.CancelException;
 import de.unipassau.analysis.AndroidAnalysis;
-import de.unipassau.utils.Config;
-import org.junit.jupiter.api.BeforeEach;
+import de.unipassau.main.Config;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,9 +14,9 @@ public class AndroidAnalysisTest {
 
     @Test
     void setUp() throws ClassHierarchyException, IOException {
-        Config.getConfig().Apk = apkfile;
-        Config.getConfig().androidJarpath = androidJar;
-        analysis = new AndroidAnalysis(Config.getConfig());
+        Config.getInstance().setApk(apkfile);
+        Config.getInstance().setAndroidJarpath(androidJar);
+        analysis = new AndroidAnalysis();
     }
 
 }

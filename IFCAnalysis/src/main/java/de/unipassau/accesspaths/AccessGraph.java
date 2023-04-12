@@ -2,7 +2,7 @@ package de.unipassau.accesspaths;
 
 import com.ibm.wala.classLoader.IField;
 import com.ibm.wala.ipa.callgraph.CGNode;
-import de.unipassau.utils.Config;
+import de.unipassau.main.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
