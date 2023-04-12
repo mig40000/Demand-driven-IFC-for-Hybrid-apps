@@ -17,7 +17,7 @@ public class FieldGraph implements Cloneable {
 
   private MutableGraph<Integer> fieldGraph = GraphBuilder.directed().build();
 
-  private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+  private static final Logger logger = LoggerFactory.getLogger(FieldGraph.class.getName());
 
   private List<IField> fieldtoIntMap = new LinkedList<>();
 

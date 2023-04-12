@@ -15,7 +15,7 @@ public class AccessGraph {
   private FieldGraph graph;
   private CGNode cgNode;
 
-  private final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+  private final Logger logger = LoggerFactory.getLogger(AccessGraph.class.getName());
 
   public AccessGraph(CGNode node, int baseVariable) {
     this.cgNode = node;

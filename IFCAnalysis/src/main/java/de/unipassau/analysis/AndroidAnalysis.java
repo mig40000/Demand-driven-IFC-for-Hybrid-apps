@@ -39,7 +39,7 @@ public class AndroidAnalysis {
     private CallGraph callGraph = null;
     private PointerAnalysis<InstanceKey> pa = null;
 
-    private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+    private static final Logger logger = LoggerFactory.getLogger(AndroidAnalysis.class.getName());
 
     public AndroidAnalysis() throws ClassHierarchyException, IOException {
         logger.info("Setting up android analysis environment");

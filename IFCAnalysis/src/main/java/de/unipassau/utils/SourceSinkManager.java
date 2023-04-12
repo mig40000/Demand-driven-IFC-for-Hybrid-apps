@@ -1,5 +1,7 @@
 package de.unipassau.utils;
 
+import de.unipassau.main.Config;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +20,7 @@ public class SourceSinkManager {
     }
 
     public static SourceSinkManager make(String file) {
-        SourceSinkManager manager = new SourceSinkManager(file);
+        SourceSinkManager manager = new SourceSinkManager(Config.getConfig().getSourceSinkFile());
         manager.parseSourcefile();
         System.out.printf("Loaded %d sources from %s %n", manager.sources.size(), file);
         System.out.printf("Loaded %d sinks from %s %n", manager.sinks.size(), file);

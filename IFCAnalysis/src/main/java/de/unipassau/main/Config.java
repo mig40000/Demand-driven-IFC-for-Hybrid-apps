@@ -7,9 +7,7 @@ public class Config {
     private String database;
     private String sourceSinkFile;
 
-    public static String ToolName = "HiDemandFlow";
-
-    private static Config config;
+    private static Config config = null;
 
     private Config() {}
 
@@ -58,14 +56,6 @@ public class Config {
 
     public void setSourceSinkFile(String sourceSinkFile) {
         this.sourceSinkFile = sourceSinkFile;
-    }
-
-    public static String getToolName() {
-        return ToolName;
-    }
-
-    public static void setToolName(String toolName) {
-        ToolName = toolName;
     }
 
     public static Config getConfig() {

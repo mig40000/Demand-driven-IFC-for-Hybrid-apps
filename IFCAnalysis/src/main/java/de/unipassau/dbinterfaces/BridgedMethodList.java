@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public class BridgedMethodList extends ArrayList<BridgedMethod> implements Iterable<BridgedMethod> {
     private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
 
-    private static final Logger logger = LoggerFactory.getLogger(Config.ToolName);
+    private static final Logger logger = LoggerFactory.getLogger(BridgedMethodList.class.getName());
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
         for (String bridgeMethod : bridgeMethods.split("\n")) {
