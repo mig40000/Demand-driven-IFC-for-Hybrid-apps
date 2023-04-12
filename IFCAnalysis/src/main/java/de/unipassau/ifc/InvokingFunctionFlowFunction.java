@@ -135,7 +135,7 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
             };
         }
 
-        return EmptyFunction.make();
+        return EmptyFunction.function();
         // create a new return node for the
 //        return d1 -> {
 //
@@ -198,7 +198,7 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
         assert invoke != null;
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         if (isBridgeCall(invoke)) {

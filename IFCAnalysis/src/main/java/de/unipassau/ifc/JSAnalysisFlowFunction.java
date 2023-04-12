@@ -7,21 +7,18 @@ import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
-import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 
 
     private final HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries;
 
-    public JSAnalysisFlowFunction(JavaScriptIFCAnalysis javaScriptIFCAnalysis, CGNode entryPoint, FlowFactDomain domain, SourceSinkManager sourcesinkmanager, HashMap<CGNode, Set<FlowPathFact>> bridgesummaries) {
-        super(entryPoint, domain, sourcesinkmanager);
+    public JSAnalysisFlowFunction(CGNode entryPoint, FlowFactDomain domain, HashMap<CGNode, Set<FlowPathFact>> bridgesummaries) {
+        super(entryPoint, domain, null);
         this.bridgeSummaries = bridgesummaries;
     }
 
@@ -30,13 +27,48 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         assert invoke != null;
-        // In the case of call to bridge interfaces, then directly insert the summaries
-        // Otherwise, handle it like a normal flow function to the the called function
-        if (invokesBridgeMethod(invoke)) {
-            // get the methods of the bridge summaries and propagate the summaries for the bridge methods
+        // check if the invoking method is a bridge method. In this case propagate the summaries
+        if (isBridgeMethod(invoke)) {
             return generateBridgeSummaryFunction(bridgeSummaries.get(dst.getNode()), src, dst);
         }
-        return null;
+
+        if (isJsLib(invoke)) {
+            // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
+            if (!invoke.hasDef()) {
+                return EmptyFunction.function();
+            } else {
+                int def = invoke.getDef();
+                return d1 -> {
+                    MutableSparseIntSet result = MutableSparseIntSet.makeEmpty();
+                    int newFactId = domain.add(new FlowFact(src.getNode(), def, null, IFCLabel.PUBLIC));
+                    result.add(newFactId);
+                    result.add(d1);
+                    return result;
+                };
+            }
+        } else {
+            // else propagate the parameters from caller to called function
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                result.add(d1);
+
+                for (int paramI = 0; paramI < invoke.getNumberOfPositionalParameters(); ++paramI) {
+                    int actualArg = invoke.getUse(paramI);
+                    FlowFact f = domain.getMappedObject(d1);
+                    if (f.getBase() == actualArg) {
+                        int newFactId = domain.add(new FlowFact(dst.getNode(), paramI+1, f.fieldgraph(), IFCLabel.PUBLIC));
+                        result.add(newFactId);
+                    }
+                }
+                return result;
+            };
+        }
+
+        //
+    }
+
+    private boolean isJsLib(SSAInvokeInstruction invoke) {
+        return JSCoreLibrary.exists(invoke.getDeclaredTarget().getDeclaringClass().toString());
     }
 
     private IUnaryFlowFunction generateBridgeSummaryFunction(Set<FlowPathFact> flowPathFacts,
@@ -77,7 +109,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
     }
 
 
-    private boolean invokesBridgeMethod(SSAInvokeInstruction instruction) {
+    private boolean isBridgeMethod(SSAInvokeInstruction instruction) {
         var target = instruction.getDeclaredTarget();
         return getBridgeMethods().stream().anyMatch(method -> method.getMethod().getReference().equals(target));
     }

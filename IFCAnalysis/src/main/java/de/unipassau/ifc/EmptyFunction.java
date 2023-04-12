@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EmptyFunction {
     @Contract(pure = true)
-    public static @NotNull IUnaryFlowFunction make() {
+    public static @NotNull IUnaryFlowFunction function() {
         return d1 -> MutableSparseIntSet.makeEmpty();
     }
 

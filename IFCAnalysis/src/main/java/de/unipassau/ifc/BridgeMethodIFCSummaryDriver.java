@@ -95,77 +95,8 @@ public class BridgeMethodIFCSummaryDriver {
                 reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
             }
         }
-//        for (int i=0; i < entrynodes.length; ++i) {
-//            var entrynode = entrynodes[i];
-//            Queue<BasicBlockInContext<IExplodedBasicBlock>> worklist = new ArrayDeque<>();
-//            nodes.add(entrynode);
-//
-//            while (!worklist.isEmpty()) {
-//                var node = worklist.remove();
-//                System.out.println(result.getResult(node));
-//
-//            }
-//        }
     }
 
-//    public List<IfcAnalysisFactPathEdge> getResultsEntryNode() {
-//        buildresults();
-//        var entrynodes = supergraph.getEntriesForProcedure(bridgeNode);
-//        ArrayList<IfcAnalysisFactPathEdge> edges = new ArrayList<>();
-//        for (var entrynode : entrynodes) {
-//            int entrynodeNb = supergraph.getLocalBlockNumber(entrynode);
-//            var pathedges = solver.getLocalPathEdges(entrynode);
-//            var reachableFacts = result.getResult(entrynode);
-////            reachableFacts.foreach(d1 -> System.out.println(pathedges.getReachable(entrynodeNb, d1)));
-//            reachableFacts.foreach(d1 -> {
-//                var factU = domain.getMappedObject(d1);
-//                var reachFactPrime = pathedges.getReachable(entrynodeNb, d1);
-//                reachFactPrime.foreach(d2 -> {
-//                    var factV = domain.getMappedObject(d2);
-//                    edges.add(IfcAnalysisFactPathEdge.make(factU, factV));
-//                });
-//            });
-//        }
-//        return edges;
-//    }
-
-
-//    public ArrayList<DataflowPathEdge> getEntryNodeSummaryEdges() {
-//        cacheresults();
-//        ArrayList<DataflowPathEdge> edges = new ArrayList<>();
-//        var entrynodes = supergraph.getEntriesForProcedure(bridgeNode);
-//        ArrayDeque<BasicBlockInContext<IExplodedBasicBlock>> queue = new ArrayDeque<>(Arrays.asList(entrynodes));
-//        List<BasicBlockInContext<IExplodedBasicBlock>> visited = new ArrayList<>();
-//
-//        System.out.println(domain);
-//        while (!queue.isEmpty()) {
-//            var bbNode = queue.pop();
-//            visited.add(bbNode);
-//            for (var successor : new Iterator2Iterable<>(supergraph.getSuccNodes(bbNode))) {
-//                if (Arrays.stream(entrynodes).anyMatch(entrynode -> entrynode.getNode().equals(bbNode.getNode()))) {
-////                    System.out.println(successor);
-//                    var reachablefacts = result.getResult(bbNode);
-//                    reachablefacts.foreach(di -> {
-//                        var ifcFactU = domain.getMappedObject(di);
-//                        var summary = result.getSummaryTargets(bbNode, di, successor);
-//                        if (summary != null) {
-//                            for (int dj = 0; dj < summary.size(); ++dj) {
-//                                if (summary.contains(dj)) {
-//                                    var ifcFactV = domain.getMappedObject(dj);
-//                                    System.out.println("Added fact " + ifcFactU + " and " + ifcFactV);
-//                                    edges.add(DataflowPathEdge.of(ifcFactU, ifcFactV));
-//                                }
-//                            }
-//                        }
-//                    });
-//                    if (!visited.contains(successor)) {
-//                        queue.add(successor);
-//                    }
-//                }
-//            }
-//        }
-//        return edges;
-//    }
 
 
     public static BridgeMethodIFCSummaryDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm) throws CancelException {

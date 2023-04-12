@@ -169,7 +169,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (invoke == null) {
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         if (FlowFunctionUtils.isSensitiveSource(sensitiveSourcesManager, invoke.getCallSite())) {
@@ -200,7 +200,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
                     return result;
                 };
             } else {
-                return EmptyFunction.make();
+                return EmptyFunction.function();
             }
         }
 
@@ -232,12 +232,12 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (callInstruction == null) {
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         if (FlowFunctionUtils.isLibraryCall(callInstruction.getCallSite())) {

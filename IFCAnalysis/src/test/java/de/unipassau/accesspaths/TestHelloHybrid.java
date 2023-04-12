@@ -99,5 +99,11 @@ public class TestHelloHybrid {
                 functionSummaries
         );
         methodanalysis.buildresults();
+        methodanalysis.collectSummaryPaths().forEach(System.err::println);
+    }
+
+    @Test
+    void JSAnalysis() {
+
     }
 }

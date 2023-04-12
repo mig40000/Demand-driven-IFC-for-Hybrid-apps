@@ -203,7 +203,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
             // propagate library calls by replqcing it with identity functions
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         // skip analysing these calls and replace it with identity functions
@@ -240,7 +240,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {
-            return EmptyFunction.make();
+            return EmptyFunction.function();
         }
 
         if (FlowFunctionUtils.isLibraryCall(callInstruction.getCallSite())) {
