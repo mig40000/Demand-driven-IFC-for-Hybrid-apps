@@ -165,7 +165,7 @@ public class JSDownloader {
 				String line = "";
 				while((line = reader.readLine()) != null) {
 					jsFilePath.add(line);
-					System.out.print("File path is " + line + "\n");
+				//	System.out.print("File path is " + line + "\n");
 		        }
 				while((line = errReader.readLine()) != null) {
 		            System.out.print(line + "\n");
@@ -203,7 +203,7 @@ public class JSDownloader {
 				path = path.replace("android_asset", "assets");
 			else
 				path = path.replace("asset", "assets");
-			System.out.println("Correct path is " + path);
+		//	System.out.println("Correct path is " + path);
 			parseHtml(path, ifcObj, appName);
 		}
 		

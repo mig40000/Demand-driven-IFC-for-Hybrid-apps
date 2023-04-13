@@ -43,7 +43,7 @@ public class LoadUrlDB {
 			sql = sql + "'" + className +  "'" + ", ";
 			sql = sql + "'" + rawJsString +  "'" + " );";
 			appAnalyzer.getLogger().getLogger().info(sql);
-			System.out.println("sql is " + sql);
+			//System.out.println("sql is " + sql);
 			stmt.executeUpdate(sql);
 			
 			 stmt.close();
@@ -70,7 +70,7 @@ public class LoadUrlDB {
 			c.setAutoCommit(false);
 
 			stmt = c.createStatement();
-			System.out.println("sql is " + sql);
+		//	System.out.println("sql is " + sql);
 			stmt.executeUpdate(sql);
 			
 			 stmt.close();
