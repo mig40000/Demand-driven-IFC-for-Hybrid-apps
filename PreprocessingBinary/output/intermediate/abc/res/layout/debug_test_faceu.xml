@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout n1:id="@id/root_view" n1:layout_width="fill_parent" n1:layout_height="fill_parent"
+  xmlns:n1="http://schemas.android.com/apk/res/android">
+    <com.selfie.camerapro.pro.glessential.GLRootView n1:id="@id/test_camera_view" n1:layout_width="fill_parent" n1:layout_height="fill_parent" />
+    <android.support.v7.widget.RecyclerView n1:id="@id/effect_list" n1:background="#88000000" n1:padding="5.0dip" n1:scrollbars="none" n1:layout_width="fill_parent" n1:layout_height="76.0dip" n1:layout_alignParentBottom="true" />
+</RelativeLayout>

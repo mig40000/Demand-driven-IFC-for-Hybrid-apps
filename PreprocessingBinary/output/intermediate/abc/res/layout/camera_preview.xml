@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout n1:id="@id/activity_main" n1:background="#ff000000" n1:layout_width="fill_parent" n1:layout_height="fill_parent"
+  xmlns:n1="http://schemas.android.com/apk/res/android">
+    <com.selfie.camerapro.pro.glessential.GLRootView n1:id="@id/camera_view" n1:layout_width="fill_parent" n1:layout_height="fill_parent" />
+    <com.selfie.camerapro.pro.ui.CaptureAnimation n1:id="@id/capture_animation_view" n1:visibility="visible" n1:layout_width="fill_parent" n1:layout_height="fill_parent" />
+    <RelativeLayout n1:id="@id/camera_tool" n1:layout_width="fill_parent" n1:layout_height="wrap_content" n1:layout_alignParentTop="true" n1:layout_centerHorizontal="true">
+        <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_switch_camera" n1:background="@drawable/bg_camera" n1:layout_width="55.0dip" n1:layout_height="55.0dip" n1:layout_alignParentRight="true" />
+        <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_app_setting" n1:background="@drawable/app_setting" n1:visibility="gone" n1:layout_width="55.0dip" n1:layout_height="55.0dip" n1:layout_alignParentLeft="true" />
+    </RelativeLayout>
+    <RelativeLayout n1:id="@id/rl_camera_setting_content" n1:visibility="gone" n1:layout_width="fill_parent" n1:layout_height="wrap_content" n1:layout_marginTop="47.0dip">
+        <ImageView n1:id="@id/iv_camera_setting_content_arrow" n1:background="@drawable/camera_setting_content_background_arrow" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_alignParentTop="true" n1:layout_centerHorizontal="true" />
+        <LinearLayout n1:orientation="horizontal" n1:id="@id/ll_camera_setting_content" n1:background="@drawable/camera_setting_content_background" n1:paddingLeft="10.0dip" n1:paddingRight="10.0dip" n1:layout_width="325.0dip" n1:layout_height="120.0dip" n1:layout_below="@id/iv_camera_setting_content_arrow" n1:layout_centerHorizontal="true">
+            <RelativeLayout n1:layout_width="0.0dip" n1:layout_height="fill_parent" n1:layout_weight="1.0">
+                <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_camera_touch" n1:background="@drawable/camera_flash_touch_selector" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginTop="16.0dip" n1:checked="false" n1:layout_centerHorizontal="true" />
+                <TextView n1:textSize="11.0dip" n1:textColor="@drawable/setting_color_selector" n1:id="@id/tv_camera_touch" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginBottom="6.0dip" n1:text="@string/touch_take_photo" n1:layout_alignBottom="@id/btn_camera_touch" n1:layout_centerHorizontal="true" />
+            </RelativeLayout>
+            <RelativeLayout n1:layout_width="0.0dip" n1:layout_height="fill_parent" n1:layout_weight="1.0">
+                <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_camera_time_lapse" n1:background="@drawable/camera_flash_time_selector" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginTop="16.0dip" n1:checked="false" n1:layout_centerHorizontal="true" />
+                <TextView n1:textSize="11.0dip" n1:textColor="@drawable/setting_color_selector" n1:id="@id/tv_camera_time_lapse" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginBottom="6.0dip" n1:text="@string/time_take_photo" n1:layout_alignBottom="@id/btn_camera_time_lapse" n1:layout_centerHorizontal="true" />
+            </RelativeLayout>
+            <RelativeLayout n1:layout_width="0.0dip" n1:layout_height="fill_parent" n1:layout_weight="1.0">
+                <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_camera_light" n1:background="@drawable/camera_flash_light_selector" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginTop="16.0dip" n1:checked="false" n1:layout_centerHorizontal="true" />
+                <TextView n1:textSize="11.0dip" n1:textColor="@drawable/setting_color_selector" n1:id="@id/tv_camera_light" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginBottom="6.0dip" n1:text="@string/flashlight" n1:layout_alignBottom="@id/btn_camera_light" n1:layout_centerHorizontal="true" />
+            </RelativeLayout>
+            <RelativeLayout n1:layout_width="0.0dip" n1:layout_height="fill_parent" n1:layout_weight="1.0">
+                <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_camera_picture_type" n1:background="@drawable/border_camera" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginTop="16.0dip" n1:checked="false" n1:layout_centerHorizontal="true" />
+                <TextView n1:textSize="11.0dip" n1:textColor="@drawable/setting_color_selector" n1:id="@id/tv_camera_picture_type" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginBottom="6.0dip" n1:text="@string/small_window" n1:layout_alignBottom="@id/btn_camera_picture_type" n1:layout_centerHorizontal="true" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+    <android.support.v7.widget.RecyclerView n1:id="@id/filter_list" n1:background="#88000000" n1:padding="5.0dip" n1:visibility="gone" n1:scrollbars="none" n1:layout_width="fill_parent" n1:layout_height="94.0dip" n1:layout_alignParentBottom="true" />
+    <android.support.v7.widget.RecyclerView n1:id="@id/effect_list" n1:background="#88000000" n1:padding="5.0dip" n1:visibility="gone" n1:scrollbars="none" n1:layout_width="fill_parent" n1:layout_height="76.0dip" n1:layout_alignParentBottom="true" />
+    <LinearLayout n1:orientation="horizontal" n1:id="@id/test_layout" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_alignParentTop="true">
+        <Button n1:textColor="#ffdddddd" n1:id="@id/record_btn" n1:background="#44000000" n1:padding="3.0dip" n1:visibility="invisible" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:text="record" />
+    </LinearLayout>
+    <RelativeLayout n1:id="@id/bottom_control_panel" n1:layout_width="fill_parent" n1:layout_height="fill_parent">
+        <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_switch_filter" n1:background="@drawable/ic_choose_filter" n1:layout_width="85.0dip" n1:layout_height="85.0dip" n1:checked="true" n1:layout_alignParentRight="true" n1:layout_alignParentBottom="true" />
+        <ImageView n1:id="@id/iv_new_filter_tip" n1:background="@drawable/effect_red_point" n1:visibility="gone" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginTop="12.0dip" n1:layout_marginRight="12.0dip" n1:layout_alignTop="@id/btn_switch_filter" n1:layout_alignRight="@id/btn_switch_filter" />
+        <com.selfie.camerapro.pro.ui.module.EffectsButton n1:id="@id/btn_switch_face" n1:background="@drawable/ic_choose_face" n1:layout_width="85.0dip" n1:layout_height="85.0dip" n1:layout_alignParentLeft="true" n1:layout_alignParentBottom="true" />
+        <com.selfie.camerapro.pro.ui.module.RecordButton n1:id="@id/btn_takePicture" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginBottom="11.0dip" n1:layout_alignParentBottom="true" n1:layout_centerHorizontal="true" />
+    </RelativeLayout>
+    <ImageView n1:id="@id/iv_focus_anim_view" n1:background="@drawable/camera_btn_focus" n1:visibility="gone" n1:layout_width="101.0dip" n1:layout_height="101.0dip" />
+    <TextView n1:textSize="100.0dip" n1:textColor="@color/white" n1:id="@id/tv_frag_camera_time_lapse_number" n1:visibility="gone" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_centerInParent="true" />
+</RelativeLayout>

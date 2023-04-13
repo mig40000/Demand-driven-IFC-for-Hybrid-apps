@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.selfie.beauty.candy.camera.pro">
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SYSTEM_OVERLAY_WINDOW"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher2.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher2.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher3.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher3.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="org.adw.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="org.adw.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.htc.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.qihoo360.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.qihoo360.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.lge.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.lge.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="net.qihoo.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="net.qihoo.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="org.adwfreak.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="org.adwfreak.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="org.adw.launcher_donut.permission.READ_SETTINGS"/>
+    <uses-permission android:name="org.adw.launcher_donut.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.huawei.launcher3.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.huawei.launcher3.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.fede.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.fede.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.sec.android.app.twlauncher.settings.READ_SETTINGS"/>
+    <uses-permission android:name="com.sec.android.app.twlauncher.settings.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.anddoes.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.anddoes.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.tencent.qqlauncher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.tencent.qqlauncher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.huawei.launcher2.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.huawei.launcher2.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.android.mylauncher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.mylauncher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.ebproductions.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.ebproductions.android.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.oppo.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.oppo.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="com.huawei.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.huawei.android.launcher.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="telecom.mdesk.permission.READ_SETTINGS"/>
+    <uses-permission android:name="telecom.mdesk.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="dianxin.permission.ACCESS_LAUNCHER_DATA"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+    <permission android:name="com.selfie.beauty.candy.camera.pro.permission.C2D_MESSAGE" android:protectionLevel="signature"/>
+    <uses-permission android:name="com.selfie.beauty.candy.camera.pro.permission.C2D_MESSAGE"/>
+    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:name="com.tencent.StubShell.TxAppEntry" android:supportsRtl="true" android:theme="@style/Theme.AppCompat">
+        <meta-data android:name="TxAppEntry" android:value="com.selfie.camerapro.pro.TheApplication"/>
+        <activity android:excludeFromRecents="true" android:launchMode="singleInstance" android:name="com.selfie.camerapro.pro.ui.LoadActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.ui.LoadNextActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="com.selfie.beauty.candy.camera.pro.loading"/>
+            </intent-filter>
+        </activity>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.MainActivity" android:screenOrientation="portrait"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.ui.CameraPreviewActivity"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.ui.DecorateActivity"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.ui.EditActivity"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.debug.lab.FilterThumbActivity"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.debug.teststmobile.MultitrackerActivity"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:excludeFromRecents="true" android:label="@string/app_name" android:launchMode="singleTask" android:name="com.selfie.camerapro.testfaceu.faceu.ui.TestFaceUActivity" android:screenOrientation="portrait"/>
+        <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>
+        <activity android:excludeFromRecents="true" android:name="com.selfie.camerapro.pro.ui.ResultActivity"/>
+        <activity android:configChanges="keyboardHidden|orientation|screenSize" android:excludeFromRecents="true" android:launchMode="singleInstance" android:name="com.facebook.ads.AudienceNetworkActivity" android:noHistory="true"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode" android:excludeFromRecents="true" android:exported="false" android:launchMode="singleInstance" android:name="com.google.android.gms.ads.AdActivity" android:noHistory="true" android:theme="@android:style/Theme.Translucent"/>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-1864159251151763~4422612894"/>
+        <service android:name="com.selfie.camerapro.pro.service.InterstitialAdService"/>
+        <service android:name="com.selfie.camerapro.pro.service.LInterstitialService"/>
+        <service android:name="com.selfie.camerapro.pro.service.DService"/>
+        <service android:name="com.selfie.camerapro.pro.service.NInterstitialAdService"/>
+        <activity android:excludeFromRecents="true" android:launchMode="singleInstance" android:name="com.selfie.camerapro.pro.ui.SmActivity" android:screenOrientation="portrait" android:theme="@style/SmActivityStyle"/>
+        <activity android:excludeFromRecents="true" android:launchMode="singleInstance" android:name="com.selfie.camerapro.pro.ui.LoadAdActivity" android:screenOrientation="portrait" android:theme="@style/SmActivityStyle"/>
+        <receiver android:name="com.xdandroid.hellodaemon.WakeUpReceiver" android:process=":watch">
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+                <action android:name="com.xdandroid.hellodaemon.CANCEL_JOB_ALARM_SUB"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.xdandroid.hellodaemon.WakeUpReceiver$WakeUpAutoStartReceiver" android:process=":watch">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED"/>
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <data android:scheme="package"/>
+            </intent-filter>
+        </receiver>
+        <service android:name="com.xdandroid.hellodaemon.AbsWorkService$WorkNotificationService" android:stopWithTask="false"/>
+        <service android:enabled="true" android:exported="true" android:name="com.xdandroid.hellodaemon.JobSchedulerService" android:permission="android.permission.BIND_JOB_SERVICE" android:process=":watch" android:stopWithTask="false"/>
+        <service android:name="com.xdandroid.hellodaemon.WatchDogService" android:permission="android.permission.BIND_JOB_SERVICE" android:process=":watch" android:stopWithTask="false"/>
+        <service android:name="com.xdandroid.hellodaemon.WatchDogService$WatchDogNotificationService" android:process=":watch" android:stopWithTask="false"/>
+        <service android:name="com.selfie.camerapro.pro.daemon.DaemonWorkService" android:stopWithTask="false"/>
+        <meta-data android:name="android.support.VERSION" android:value="26.1.0"/>
+        <activity android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize" android:name="com.facebook.FacebookActivity" android:theme="@style/com_facebook_activity_theme"/>
+        <activity android:name="com.facebook.CustomTabMainActivity"/>
+        <provider android:authorities="com.selfie.beauty.candy.camera.pro.FacebookInitProvider" android:exported="false" android:name="com.facebook.internal.FacebookInitProvider"/>
+        <receiver android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementReceiver"/>
+        <receiver android:enabled="true" android:exported="true" android:name="com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver" android:permission="android.permission.INSTALL_PACKAGES">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER"/>
+            </intent-filter>
+        </receiver>
+        <service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementService"/>
+        <service android:enabled="true" android:exported="false" android:name="com.google.android.gms.measurement.AppMeasurementJobService" android:permission="android.permission.BIND_JOB_SERVICE"/>
+        <activity android:exported="false" android:name="com.google.android.gms.common.api.GoogleApiActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <receiver android:exported="true" android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+                <category android:name="com.selfie.beauty.candy.camera.pro"/>
+            </intent-filter>
+        </receiver>
+        <service android:exported="true" android:name="com.google.firebase.iid.FirebaseInstanceIdService">
+            <intent-filter android:priority="-500">
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <provider android:authorities="com.selfie.beauty.candy.camera.pro.firebaseinitprovider" android:exported="false" android:initOrder="100" android:name="com.google.firebase.provider.FirebaseInitProvider"/>
+        <meta-data android:name="android.arch.lifecycle.VERSION" android:value="27.0.0-SNAPSHOT"/>
+        <meta-data android:name="com.android.vending.derived.apk.id" android:value="1"/>
+    </application>
+</manifest>

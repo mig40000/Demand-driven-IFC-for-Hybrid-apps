@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout n1:orientation="vertical" n1:id="@id/activity_main" n1:layout_width="fill_parent" n1:layout_height="fill_parent"
+  xmlns:n1="http://schemas.android.com/apk/res/android">
+    <android.support.constraint.Guideline n1:orientation="horizontal" n1:id="@id/h_0" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n2:layout_constraintGuide_percent="0.43" xmlns:n2="http://schemas.android.com/apk/res-auto" />
+    <LinearLayout n1:orientation="vertical" n1:id="@id/native_ad" n1:tag="saa" n1:background="#ffffffff" n1:visibility="gone" n1:layout_width="0.0dip" n1:layout_height="0.0dip" n3:layout_constraintBottom_toBottomOf="@id/h_0" n3:layout_constraintLeft_toLeftOf="parent" n3:layout_constraintRight_toRightOf="parent" n3:layout_constraintTop_toTopOf="parent" xmlns:n3="http://schemas.android.com/apk/res-auto">
+        <LinearLayout n1:orientation="vertical" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n1:layout_weight="1.0">
+            <LinearLayout n1:gravity="left" n1:orientation="horizontal" n1:tag="ad_choices_container" n1:layout_width="fill_parent" n1:layout_height="wrap_content" />
+            <RelativeLayout n1:layout_width="fill_parent" n1:layout_height="wrap_content">
+                <com.facebook.ads.MediaView n1:gravity="center" n1:tag="big_img" n1:layout_width="fill_parent" n1:layout_height="135.0dip" />
+                <ImageView n1:layout_width="30.0dip" n1:layout_height="wrap_content" n1:src="@drawable/ic_tag_ad" />
+            </RelativeLayout>
+            <LinearLayout n1:orientation="vertical" n1:tag="textLayout" n1:layout_width="fill_parent" n1:layout_height="wrap_content">
+                <TextView n1:textSize="14.0sp" n1:textColor="#ff494b4c" n1:gravity="center" n1:layout_gravity="center_horizontal" n1:tag="title" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginLeft="8.0dip" n1:layout_marginTop="2.0dip" n1:layout_marginRight="8.0dip" n1:text=" " n1:lines="2" />
+                <TextView n1:textSize="12.0sp" n1:gravity="center" n1:layout_gravity="center" n1:tag="desc" n1:layout_width="wrap_content" n1:layout_height="wrap_content" n1:layout_marginLeft="8.0dip" n1:layout_marginTop="8.0dip" n1:layout_marginRight="8.0dip" n1:text=" " n1:maxLines="4" n1:lines="4" />
+            </LinearLayout>
+        </LinearLayout>
+        <TextView n1:textSize="18.0sp" n1:textColor="#ffffffff" n1:gravity="center" n1:layout_gravity="bottom|center" n1:tag="action_text" n1:background="@drawable/btn_ad" n1:layout_width="fill_parent" n1:layout_height="38.0dip" n1:layout_marginLeft="8.0dip" n1:layout_marginRight="8.0dip" n1:layout_marginBottom="3.0dip" n1:text="Install" />
+    </LinearLayout>
+    <android.support.constraint.ConstraintLayout n1:paddingTop="10.0dip" n1:layout_width="356.0dip" n1:layout_height="0.0dip" n4:layout_constraintBottom_toBottomOf="parent" n4:layout_constraintLeft_toLeftOf="parent" n4:layout_constraintRight_toRightOf="parent" n4:layout_constraintTop_toTopOf="@id/h_0" n4:layout_constraintVertical_bias="0.0" xmlns:n4="http://schemas.android.com/apk/res-auto">
+        <android.support.constraint.Guideline n1:orientation="vertical" n1:id="@id/v_0" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n4:layout_constraintGuide_percent="0.1" />
+        <android.support.constraint.Guideline n1:orientation="vertical" n1:id="@id/v_1" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n4:layout_constraintGuide_percent="0.9" />
+        <android.support.constraint.Guideline n1:orientation="horizontal" n1:id="@id/h_4" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n4:layout_constraintGuide_percent="0.3" />
+        <android.support.constraint.Guideline n1:orientation="horizontal" n1:id="@id/h_5" n1:layout_width="fill_parent" n1:layout_height="fill_parent" n4:layout_constraintGuide_percent="0.6" />
+        <Button n1:textSize="18.0sp" n1:gravity="start|center" n1:id="@id/take" n1:background="@drawable/take_button" n1:paddingLeft="20.0dip" n1:layout_width="0.0dip" n1:layout_height="0.0dip" n1:text="CAMERA" n1:layout_centerHorizontal="true" n4:layout_constraintBottom_toBottomOf="@id/h_4" n4:layout_constraintLeft_toLeftOf="@id/v_0" n4:layout_constraintRight_toRightOf="@id/v_1" n4:layout_constraintTop_toTopOf="parent" />
+        <RelativeLayout n1:id="@id/choose_container" n1:background="@drawable/choose_button" n1:layout_width="0.0dip" n1:layout_height="0.0dip" n1:layout_marginTop="13.0dip" n1:layout_weight="2.0" n1:layout_below="@id/take" n1:layout_centerHorizontal="true" n4:layout_constraintBottom_toBottomOf="@id/h_5" n4:layout_constraintLeft_toLeftOf="@id/v_0" n4:layout_constraintRight_toRightOf="@id/v_1" n4:layout_constraintTop_toTopOf="@id/h_4">
+            <Button n1:textSize="18.0dip" n1:gravity="start|center" n1:id="@id/choose" n1:background="@null" n1:paddingLeft="20.0dip" n1:layout_width="180.0dip" n1:layout_height="fill_parent" n1:text="EDIT" />
+            <ImageView n1:background="@mipmap/photo" n1:layout_width="43.0dip" n1:layout_height="43.0dip" n1:layout_marginRight="28.0dip" n1:scaleType="centerCrop" n1:layout_alignParentRight="true" n1:layout_centerVertical="true" />
+        </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
+    <com.smart.adlibrary.view.SmartBannerAdView n1:id="@id/smt_ad" n1:layout_width="fill_parent" n1:layout_height="wrap_content" n5:layout_constraintBottom_toBottomOf="parent" xmlns:n5="http://schemas.android.com/apk/res-auto" />
+</android.support.constraint.ConstraintLayout>

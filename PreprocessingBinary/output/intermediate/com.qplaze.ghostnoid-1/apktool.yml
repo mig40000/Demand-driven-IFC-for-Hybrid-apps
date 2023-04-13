@@ -1,0 +1,32 @@
+!!brut.androlib.meta.MetaInfo
+apkFileName: com.qplaze.ghostnoid-1.apk
+compressionType: false
+doNotCompress:
+- resources.arsc
+- png
+- assets/bin/Data/PlayerConnectionConfigFile
+- assets/bin/Data/sharedassets2.assets.split10
+- assets/bin/Data/sharedassets2.assets.split9
+- assets/bin/Data/sharedassets28.assets.split0
+- assets/bin/Data/sharedassets28.assets.split1
+- assets/bin/Data/sharedassets54.assets.split0
+- assets/bin/Data/sharedassets54.assets.split1
+- assets/bin/Data/sharedassets1.assets.resS
+isFrameworkApk: false
+packageInfo:
+  forcedPackageId: '127'
+  renameManifestPackage: null
+sdkInfo:
+  minSdkVersion: '9'
+  targetSdkVersion: '21'
+sharedLibrary: false
+sparseResources: false
+unknownFiles: {}
+usesFramework:
+  ids:
+  - 1
+  tag: null
+version: 2.6.1
+versionInfo:
+  versionCode: '1'
+  versionName: '1.0'

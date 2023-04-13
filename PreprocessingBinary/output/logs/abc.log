@@ -1,0 +1,144 @@
+Apr 13, 2023 12:56:07 PM de.potsdam.main.ApplicationAnalysis extractApplicationDetails
+INFO: Application name is abc
+Apr 13, 2023 12:56:07 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Using Apktool 2.6.1 on abc.apk
+
+Apr 13, 2023 12:56:07 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Loading resource table...
+
+Apr 13, 2023 12:56:07 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Decoding AndroidManifest.xml with resources...
+
+Apr 13, 2023 12:56:07 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Loading resource table from file: /Users/abhishektiwari/Library/apktool/framework/1.apk
+
+Apr 13, 2023 12:56:08 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Regular manifest package...
+
+Apr 13, 2023 12:56:08 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Decoding file-resources...
+
+Apr 13, 2023 12:56:08 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Decoding values */* XMLs...
+
+Apr 13, 2023 12:56:08 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Baksmaling classes.dex...
+
+Apr 13, 2023 12:56:08 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Copying assets and libs...
+
+Apr 13, 2023 12:56:09 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Copying unknown files...
+
+Apr 13, 2023 12:56:09 PM de.potsdam.extract.ApkToolHandler dissembeApk
+INFO: I: Copying original files...
+
+Apr 13, 2023 12:56:09 PM de.potsdam.extract.ApkToolHandler dissembeApk
+WARNING: W: Cant find 9patch chunk in file: "drawable/fake_cardview.9.png". Renaming it to *.png.
+
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Inside parseManifest
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Path of Manifest file : output/intermediate/abc/AndroidManifest.xml
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Package Namecom.selfie.beauty.candy.camera.pro
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/LoadActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.MAIN
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/LoadNextActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.VIEW
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: com.selfie.beauty.candy.camera.pro.loading
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/MainActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/CameraPreviewActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/DecorateActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/EditActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FilterThumbActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/MultitrackerActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/TestFaceUActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/ResultActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AudienceNetworkActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AdActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/InterstitialAdService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/LInterstitialService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/DService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/NInterstitialAdService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/SmActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/LoadAdActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/WakeUpReceiver
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.USER_PRESENT
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.ACTION_POWER_CONNECTED
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.ACTION_POWER_DISCONNECTED
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: com.xdandroid.hellodaemon.CANCEL_JOB_ALARM_SUB
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/WakeUpReceiver$WakeUpAutoStartReceiver
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.BOOT_COMPLETED
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.net.conn.CONNECTIVITY_CHANGE
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.PACKAGE_ADDED
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: android.intent.action.PACKAGE_REMOVED
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AbsWorkService$WorkNotificationService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/JobSchedulerService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/WatchDogService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/WatchDogService$WatchDogNotificationService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/DaemonWorkService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FacebookActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/CustomTabMainActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FacebookInitProvider
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AppMeasurementReceiver
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AppMeasurementInstallReferrerReceiver
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: com.android.vending.INSTALL_REFERRER
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AppMeasurementService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/AppMeasurementJobService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/GoogleApiActivity
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FirebaseInstanceIdReceiver
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: com.google.android.c2dm.intent.RECEIVE
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FirebaseInstanceIdService
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: Target Action for this activity: com.google.firebase.INSTANCE_ID_EVENT
+Apr 13, 2023 12:56:09 PM de.potsdam.ManifestParser.ManifestParser parseManifest
+INFO: App actvity/service/receiver/provider/FirebaseInitProvider

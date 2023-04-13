@@ -1,0 +1,53 @@
+{
+  "ad_placements": {
+    "ad_placementids": {
+      "edit": {
+        "Facebook": ""
+      }
+    }
+  },
+  "app_update": {
+    "description": "",
+    "hard": false,
+    "link": "",
+    "update": false,
+    "version": "1.4",
+    "versioncode": 6
+  },
+  "charge_ad": {
+    "away_from_install": 3600000,
+    "enable": false
+  },
+  "mediated": {
+    "primary": "Facebook"
+  },
+  "yyw_interstitial": {
+    "away_from_install": 2000000,
+    "enable": false,
+    "interval": 14400000
+  },
+  "lyyw_interstitial": {
+    "away_from_install": 1800000,
+    "enable": true,
+    "interval": 2000
+  },
+  "shortcut": {
+    "enable": false
+  },
+  "version": 3,
+  "direct_link": {
+    "away_from_install": 4000000,
+    "enable": false,
+    "interval": 21600000,
+    "link": ""
+  },
+  "limit": {
+    "fb_max": 20,
+    "max": 30
+  },
+  "ad_log": {
+    "away_from_install": 1800000,
+    "enable": true,
+    "placement_id": ""
+  }
+}

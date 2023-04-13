@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout n1:orientation="vertical" n1:id="@id/activity_main" n1:layout_width="fill_parent" n1:layout_height="fill_parent"
+  xmlns:n1="http://schemas.android.com/apk/res/android">
+    <RelativeLayout n1:id="@id/banner" n1:background="@color/colorPrimaryDark" n1:layout_width="fill_parent" n1:layout_height="50.0dip" />
+    <RelativeLayout n1:id="@id/imp" n1:background="@color/colorPrimaryDark" n1:layout_width="1.0dip" n1:layout_height="1.0dip" />
+</FrameLayout>
