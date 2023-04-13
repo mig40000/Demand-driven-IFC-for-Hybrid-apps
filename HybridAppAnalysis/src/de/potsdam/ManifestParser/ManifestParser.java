@@ -133,7 +133,7 @@ public class ManifestParser {
 			activity += "/";
 			activityRemovalCounter--;
 		}
-		//System.out.println("activity is "+ activity);
+		System.out.println("activity is "+ activity);
 		activity_path.add(activity);
 	 }
 }
