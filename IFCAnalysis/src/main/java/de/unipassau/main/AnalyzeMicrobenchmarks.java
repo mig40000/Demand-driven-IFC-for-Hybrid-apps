@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class AnalyzeMicrobenchmarks {
 
 
-    private static Logger logger = LoggerFactory.getLogger(AnalyzeMicrobenchmarks.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AnalyzeMicrobenchmarks.class.getName());
 
     private final String benchmarkRoot;
     private final String androidJarPath;
@@ -30,12 +30,8 @@ public class AnalyzeMicrobenchmarks {
     private final String intermediateDir;
 
 
-    private static final Option configProp = Option.builder().option("p").hasArg().desc("")
-    private static final Options options = new Options();
 
-    static {
-        options.addOption(configProp);
-    }
+
 
     AnalyzeMicrobenchmarks(String benchmarkRoot, String androidJarPath, String sourceSinkFile, String dbPath, String intermediateDir) {
         this.benchmarkRoot = benchmarkRoot;
@@ -54,7 +50,7 @@ public class AnalyzeMicrobenchmarks {
         }
     }
 
-    public void run() {
+    public void analyze() {
         List<String> benchmarkFiles = List.of(
                 "HelloCordova.apk",
                 "HelloHybrid.apk",
@@ -75,6 +71,7 @@ public class AnalyzeMicrobenchmarks {
                 "strongUpdatecaseB.apk",
                 "strongUpdatecaseC.apk"
         );
+
         for (var benchmark : benchmarkFiles) {
             Config config = Config.emptyConfig();
             config.setApkFile(Path.of(benchmarkRoot, benchmark).toAbsolutePath().toString());
@@ -114,26 +111,36 @@ public class AnalyzeMicrobenchmarks {
         return result;
     }
 
+
     public static void main(String[] args) {
+
+        final Option configProp = Option.builder().option("p").hasArg().desc("").build();
+        final Options options = new Options();
+        options.addOption(configProp);
+
         try {
             var cmdLine = DefaultParser.builder().build().parse(options, args);
             String propertyFile = cmdLine.getOptionValue(configProp);
-            try(var filestream = new FileInputStream(propertyFile)) {
-                Properties prop = new Properties();
-                prop.load(filestream);
-                String benchmarkRoot = prop.getProperty("benchmarkRoot");
-                String androidJarPath = prop.getProperty("androidJarPath");
-                String dbPath = prop.getProperty("dbPath");
-                String susiFile = prop.getProperty("susiFile");
-                String intermediateDir = prop.getProperty("intermediateDir");
-                var analysis = new AnalyzeMicrobenchmarks(benchmarkRoot, androidJarPath, susiFile, dbPath, intermediateDir);
-                analysis.run();
-            } catch (FileNotFoundException f) {
-                logger.error("Unable to find file {}", propertyFile);
-            }
+            run(propertyFile);
         } catch (ParseException | IOException e) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("BenchmarkAnalyzer", options);
+        }
+    }
+
+    private static void run(String propertyFile) throws IOException {
+        try(var filestream = new FileInputStream(propertyFile)) {
+            Properties prop = new Properties();
+            prop.load(filestream);
+            String benchmarkRoot = prop.getProperty("benchmarkRoot");
+            String androidJarPath = prop.getProperty("androidJarPath");
+            String dbPath = prop.getProperty("dbPath");
+            String susiFile = prop.getProperty("susiFile");
+            String intermediateDir = prop.getProperty("intermediateDir");
+            var analysis = new AnalyzeMicrobenchmarks(benchmarkRoot, androidJarPath, susiFile, dbPath, intermediateDir);
+            analysis.analyze();
+        } catch (FileNotFoundException f) {
+            logger.error("Unable to find file {}", propertyFile);
         }
     }
 
