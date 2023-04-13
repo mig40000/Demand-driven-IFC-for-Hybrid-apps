@@ -26,9 +26,9 @@ class FunctionSummaryTest {
 
     @BeforeEach
     void setup() throws ClassHierarchyException, IOException {
-        config = Config.makeEmpty();
+        config = Config.emptyConfig();
         config.setAndroidJarpath(androidJar);
-        config.setApk(apkfile);
+        config.setApkFile(apkfile);
         analysis = new AndroidAnalysis(androidJar, apkfile);
         bridgedMethods = BridgedMethodList.load(database);
     }

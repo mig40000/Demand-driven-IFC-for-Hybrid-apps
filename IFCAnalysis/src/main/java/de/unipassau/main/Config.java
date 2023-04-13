@@ -4,36 +4,28 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 public class Config {
-    private String apk;
+    private String apkFile;
     private int apilevel = -1;
     private String androidJarpath;
     private String database;
     private String sourceSinkFile;
     private String jsDir;
     private String jsFilepath;
+    private String appName;
 
-    private static Config config = null;
-
-    private Config() {}
+    protected Config() {}
 
     @Contract(value = " -> new", pure = true)
-    public static @NotNull Config makeEmpty() {
+    public static @NotNull Config emptyConfig() {
         return new Config();
     }
 
-//    public static Config getInstance() {
-//        if (config == null) {
-//            config = new Config();
-//        }
-//        return config;
-//    }
-
-    public String getApk() {
-        return apk;
+    public String getApkFile() {
+        return apkFile;
     }
 
-    public void setApk(String apk) {
-        this.apk = apk;
+    public void setApkFile(String apkFile) {
+        this.apkFile = apkFile;
     }
 
     public int getApilevel() {
@@ -68,10 +60,6 @@ public class Config {
         this.sourceSinkFile = sourceSinkFile;
     }
 
-    public static void setConfig(Config config) {
-        Config.config = config;
-    }
-
     public String getJsDir() {
         return jsDir;
     }
@@ -86,5 +74,13 @@ public class Config {
 
     public void setJsFilepath(String jsFilepath) {
         this.jsFilepath = jsFilepath;
+    }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 }

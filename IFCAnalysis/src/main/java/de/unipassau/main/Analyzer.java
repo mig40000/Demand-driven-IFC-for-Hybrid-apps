@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public class AnalyzerMain {
+public class Analyzer {
 
 
-    private final Logger logger = LoggerFactory.getLogger(AnalyzerMain.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(Analyzer.class.getName());
 
     private HashMap<CGNode, Set<FlowPathFact>> bridgesummaries;
 
@@ -38,7 +38,7 @@ public class AnalyzerMain {
         bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
     }
 
-    public AnalyzerMain(Config config) {
+    public Analyzer(Config config) {
         this.config = config;
     }
 
@@ -60,9 +60,10 @@ public class AnalyzerMain {
 
     public void run() throws WalaException, IOException, CancelException {
         String androidJar = config.getAndroidJarpath();
-        String apk = config.getApk();
-        List<BridgedMethod> bridgedMethods = BridgedMethodList.load(config.getDatabase()).selectByAppName(config.getApk());
+        String apk = config.getApkFile();
+        List<BridgedMethod> bridgedMethods = BridgedMethodList.load(config.getDatabase()).selectByAppName(config.getAppName());
         var ssm = SourceSinkManager.make(config.getSourceSinkFile());
+
         runAndroidAnalysis(androidJar, apk, bridgedMethods, ssm);
 
         Path jsDir = Path.of(config.getJsDir());

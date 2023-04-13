@@ -27,6 +27,7 @@ public class IwanDroid {
     private static final Option help = Option.builder().option("h").desc("help").build();
     private static final Option jsDir = Option.builder().option("d").desc("dir").hasArg().desc("directory containing JS files").required().build();
     private static final Option jsFilepath = Option.builder().option("f").desc("file").hasArg().desc("js file path").required().build();
+    private static final Option appName = Option.builder().option("n").desc("name").hasArg().desc("app name").required().build();
 
     static {
         options.addOption(apiLevel);
@@ -59,17 +60,18 @@ public class IwanDroid {
         }
 
         int api = getApi(cmd);
-        Config config = Config.makeEmpty();
+        Config config = Config.emptyConfig();
+        config.setAppName(cmd.getOptionValue(appName));
         config.setApilevel(api);
         config.setAndroidJarpath(getAndroidJarPath(sdkRoot, api));
         config.setSourceSinkFile(getSourceSinkFile(cmd));
-        config.setApk(cmd.getOptionValue(apk));
+        config.setApkFile(cmd.getOptionValue(apk));
         config.setDatabase(cmd.getOptionValue(db));
         config.setJsDir(getJsDir(cmd));
         config.setJsFilepath(getJsfilepath(cmd));
 
         try {
-            AnalyzerMain analyzer = new AnalyzerMain(config);
+            Analyzer analyzer = new Analyzer(config);
             analyzer.run();
         } catch (IOException | CancelException | WalaException e) {
             e.printStackTrace();
@@ -116,7 +118,7 @@ public class IwanDroid {
         return androidLib.toString();
     }
 
-    private static int getApi(CommandLine cmd) {
+    private static int getApi(@NotNull CommandLine cmd) {
         int api;
         if (cmd.hasOption(apiLevel)) {
             api = parseInt(cmd.getOptionValue(apiLevel));
