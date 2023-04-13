@@ -431,6 +431,8 @@ public class Slicer {
 
 		// searchRegister is something that will not be found for now
 		searchRegister = "x0";
+		
+		
 
 		while (it.hasNext()) {
 			currentSlice = it.next();
@@ -442,7 +444,7 @@ public class Slicer {
 				searchRegister = currentSlice.line.split(",")[1].substring(1);
 				objRegister = currentSlice.line.split(",")[2].substring(1);
 				objRegister = objRegister.replace("}", "");
-				System.out.println("Register is Abhi " + objRegister);
+			//	System.out.println("Register is Abhi " + objRegister);
 				flag = true;
 				this.injects = true;
 			}
@@ -456,6 +458,15 @@ public class Slicer {
 				this.interfaceObject = this.interfaceObject.trim();
 				flag = false;
 				//count++;
+			}
+			if (currentSlice.line.contains("const-string/jumbo " + objRegister) && flag) {
+				// this should be the instance register -- may not work in all cases
+				System.out.println("Current Slice is " + currentSlice.line);
+				System.out.println("Interface Object is " + currentSlice.line.split(",")[1].substring(1));
+				this.interfaceObject = currentSlice.line.split(",")[1].substring(1);
+				this.interfaceObject = this.interfaceObject.replace("\"", "");
+				this.interfaceObject = this.interfaceObject.trim();
+				flag = false;
 			}
 
 			if (currentSlice.line.contains("new-instance " + searchRegister)) {
