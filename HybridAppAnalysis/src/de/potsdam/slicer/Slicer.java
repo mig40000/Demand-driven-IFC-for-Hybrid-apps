@@ -139,10 +139,9 @@ public class Slicer {
 					
 
 			}
-		//	System.out.println("Here in Slicer " +  s.class_name);
 			
-			saveDB(s.class_name);
-			saveAltDB(s.class_name);
+		//	saveDB(s.class_name);
+			saveAltDB(s.class_name, s.method_name);
 			
 			clearSlice();
 	    
@@ -288,10 +287,10 @@ public class Slicer {
 	/**
 	 * Save new statistics in an sqlite3 database
 	 */
-	public void saveAltDB(String class_name) {
+	public void saveAltDB(String class_name, String method_name) {
 
-		String sql = "INSERT INTO webview_prime (appName, initiatingClass, bridgeClass, intefaceObject, bridgeMethods) VALUES (?,?,?,?,?)";
-
+		String sql = "INSERT INTO webview_prime (appName, initiatingClass, bridgeClass, intefaceObject, bridgeMethods, initiatingMethod) VALUES (?,?,?,?,?,?)";
+		
 		Connection conn = null;
 		if(this.currentWebView != null) {
 		try{
@@ -303,6 +302,7 @@ public class Slicer {
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			//stmt.setString(1, app.getAppName());
 			stmt.setString(1, this.app.getAppName());
+			stmt.setString(6, method_name);
 			stmt.setString(2, class_name);
 			stmt.setString(4, this.interfaceObject);
 			if (this.currentWebView == null) {
