@@ -1,6 +1,6 @@
 package de.unipassau.dbinterfaces;
 
-import de.unipassau.main.Config;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +14,7 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
 
     private static final Logger logger = LoggerFactory.getLogger(BridgedMethodList.class.getName());
 
-    private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, String bridgeMethods) {
+    private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, @NotNull String bridgeMethods, String initiatingMethod) {
         for (String bridgeMethod : bridgeMethods.split("\n")) {
             // [0]: .method keyword, [1]: access specifier, [2]: method signature
             String[] tokens = bridgeMethod.split(" ");
@@ -24,12 +24,12 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
 
             if (!tokenType.equals(".method"))
                 logger.error("Invalid method name");
-            BridgedMethod info = new BridgedMethod(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign);
+            BridgedMethod info = new BridgedMethod(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign, initiatingMethod);
             bridgedMethods.add(info);
         }
     }
 
-    public static BridgedMethodList load(String dbPath) {
+    public static @NotNull BridgedMethodList load(String dbPath) {
         BridgedMethodList webViewsList = new BridgedMethodList();
         String url = "jdbc:sqlite:" + dbPath;
         logger.info("Reading Bridge Interfaces from database {}", dbPath);
@@ -43,12 +43,12 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
                 var bridgeClass = rows.getString(++index);
                 var interfaceObject = rows.getString(++index);
                 var bridgeMethods = rows.getString(++index);
-
+                var initiatingMethod = rows.getString(++index);
                 // Exclude the last ';' from the class names
-                if (!initiatingClass.isEmpty() && !bridgeClass.isEmpty()) {
+                if (!initiatingClass.isEmpty() && !bridgeClass.isEmpty() && !initiatingMethod.isEmpty()) {
                     initiatingClass = initiatingClass.substring(0, initiatingClass.length() - 1);
                     bridgeClass = bridgeClass.substring(0, bridgeClass.length() - 1);
-                    webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods);
+                    webViewsList.add(appName, initiatingClass, bridgeClass, interfaceObject, bridgeMethods, initiatingMethod);
                 } else {
                     logger.warn("Could not found initialingClass and bridge class for {}", appName);
                 }
@@ -69,6 +69,7 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         return buffer.toString();
     }
 
+    @Override
     public int size() {
         return bridgedMethods.size();
     }
@@ -77,6 +78,7 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         return bridgedMethods;
     }
 
+    @Override
     public BridgedMethod get(int index) {
         return bridgedMethods.get(index);
     }
@@ -109,9 +111,13 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         return bridgedMethods.stream();
     }
 
-    public static BridgedMethodList make(Collection<BridgedMethod> methods) {
+    public static @NotNull BridgedMethodList make(Collection<BridgedMethod> methods) {
         BridgedMethodList newlist = new BridgedMethodList();
         newlist.bridgedMethods.addAll(methods);
         return newlist;
+    }
+
+    public List<BridgedMethod> selectByAppName(String appName) {
+        return bridgedMethods.stream().filter(method -> method.appName().equals(appName)).collect(Collectors.toList());
     }
 }

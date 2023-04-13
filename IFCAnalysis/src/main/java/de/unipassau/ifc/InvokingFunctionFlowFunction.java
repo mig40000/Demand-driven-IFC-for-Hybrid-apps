@@ -9,19 +9,19 @@ import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
-import de.unipassau.dbinterfaces.BridgedMethodList;
+import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
 
-    BridgedMethodList bridgedMethods;
     HashMap<CGNode, Set<FlowPathFact>> summaries = HashMapFactory.make();
+    List<BridgedMethod> bridgedMethods;
 
-
-    public InvokingFunctionFlowFunction(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager manager, BridgedMethodList bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) {
+    public InvokingFunctionFlowFunction(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager manager, List<BridgedMethod> bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) {
         super(entryPoint, domain, manager);
         this.bridgedMethods = bridgedMethods;
         this.summaries = summaries;

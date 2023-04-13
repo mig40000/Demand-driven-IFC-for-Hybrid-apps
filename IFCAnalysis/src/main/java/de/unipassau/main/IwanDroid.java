@@ -1,6 +1,5 @@
 package de.unipassau.main;
 
-import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
 import org.apache.commons.cli.*;
@@ -60,16 +59,17 @@ public class IwanDroid {
         }
 
         int api = getApi(cmd);
-        Config.getInstance().setApilevel(api);
-        Config.getInstance().setAndroidJarpath(getAndroidJarPath(sdkRoot, api));
-        Config.getInstance().setSourceSinkFile(getSourceSinkFile(cmd));
-        Config.getInstance().setApk(cmd.getOptionValue(apk));
-        Config.getInstance().setDatabase(cmd.getOptionValue(db));
-        Config.getInstance().setJsDir(getJsDir(cmd));
-        Config.getInstance().setJsFilepath(getJsfilepath(cmd));
+        Config config = Config.makeEmpty();
+        config.setApilevel(api);
+        config.setAndroidJarpath(getAndroidJarPath(sdkRoot, api));
+        config.setSourceSinkFile(getSourceSinkFile(cmd));
+        config.setApk(cmd.getOptionValue(apk));
+        config.setDatabase(cmd.getOptionValue(db));
+        config.setJsDir(getJsDir(cmd));
+        config.setJsFilepath(getJsfilepath(cmd));
 
         try {
-            AnalyzerMain analyzer = new AnalyzerMain();
+            AnalyzerMain analyzer = new AnalyzerMain(config);
             analyzer.run();
         } catch (IOException | CancelException | WalaException e) {
             e.printStackTrace();

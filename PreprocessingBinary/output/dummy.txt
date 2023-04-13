@@ -1,1 +1,1 @@
-Lcom/example/strongupdate/MainActivity; loadWeb()V 143 v0
+Lcom/example/jsUpdatecaseE/MainActivity; onCreate(Landroid/os/Bundle;)V 110 v0

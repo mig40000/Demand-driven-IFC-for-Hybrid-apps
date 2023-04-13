@@ -14,15 +14,12 @@ import com.ibm.wala.types.Selector;
 import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
-import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.utils.SourceSinkManager;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class InvokingMethodDriver {
 
@@ -34,7 +31,7 @@ public class InvokingMethodDriver {
     protected SourceSinkManager ssm;
     protected TabulationSolver<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> solver;
     protected InvokingFunctionFlowFunction flowfunctions;
-    protected BridgedMethodList bridgedMethods;
+    protected List<BridgedMethod> bridgedMethods;
     protected InvokingMethodFlowProblem problem;
 //    protected BackwardIFCAnalysisProblem problem;
 
@@ -42,15 +39,15 @@ public class InvokingMethodDriver {
                                 FlowFactDomain domain,
                                 BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
                                 SourceSinkManager ssm,
-                                BridgedMethodList bridgedMethods,
+                                List<BridgedMethod> bridgedMethods,
                                 HashMap<CGNode, Set<FlowPathFact>> summary) {
         this.entrypoint = entrypoint;
         this.domain = domain;
-        this.flowfunctions = new InvokingFunctionFlowFunction(entrypoint, domain, ssm, bridgedMethods, summary);
         this.ssm = ssm;
         this.supergraph = supergraph;
         this.bridgedMethods = bridgedMethods;
-        this.problem = new InvokingMethodFlowProblem(entrypoint, domain, supergraph, sourceSinkManager, flowfunctions, bridgedMethods);
+        this.flowfunctions = new InvokingFunctionFlowFunction(entrypoint, domain, ssm, bridgedMethods, summary);
+        this.problem = new InvokingMethodFlowProblem(entrypoint, domain, supergraph, sourceSinkManager, flowfunctions);
     }
 
 

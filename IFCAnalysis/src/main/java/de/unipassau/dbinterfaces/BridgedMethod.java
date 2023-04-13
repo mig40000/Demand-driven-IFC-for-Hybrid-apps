@@ -1,7 +1,7 @@
 package de.unipassau.dbinterfaces;
 
 public record BridgedMethod(String appName, String initiatingClass, String clazz, String interfaceObject, String accessSpecifier,
-                            String signature) {
+                            String signature, String initiatingMethod) {
 
     @Override
     public String toString() {

@@ -6,9 +6,9 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
-import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.dbinterfaces.BridgedMethod;
 import de.unipassau.dbinterfaces.BridgedMethodList;
+import de.unipassau.frontend.AndroidAnalysis;
 import de.unipassau.frontend.JSAnalysis;
 import de.unipassau.ifc.*;
 import de.unipassau.utils.SourceSinkManager;
@@ -16,12 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AnalyzerMain {
 
@@ -30,6 +29,8 @@ public class AnalyzerMain {
 
     private HashMap<CGNode, Set<FlowPathFact>> bridgesummaries;
 
+    private final Config config;
+
     private void computeBridgeMethodSummary(AndroidAnalysis analysis, BridgedMethod method,
                                             SourceSinkManager ssm) throws CancelException {
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
@@ -37,7 +38,11 @@ public class AnalyzerMain {
         bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
     }
 
-    private void computeInvokingMethodSummary(AndroidAnalysis analysis, CGNode invokingMethod, BridgedMethodList methods,
+    public AnalyzerMain(Config config) {
+        this.config = config;
+    }
+
+    private void computeInvokingMethodSummary(AndroidAnalysis analysis, CGNode invokingMethod, List<BridgedMethod> methods,
                                               SourceSinkManager ssm) throws CancelException {
         var supergraph = ICFGSupergraph.make(analysis.callgraph());
         var methodanalysis = new InvokingMethodDriver(
@@ -54,14 +59,14 @@ public class AnalyzerMain {
 
 
     public void run() throws WalaException, IOException, CancelException {
-        String androidJar = Config.getInstance().getAndroidJarpath();
-        String apk = Config.getInstance().getApk();
-        var bridgedMethods = BridgedMethodList.load(Config.getInstance().getDatabase());
-        var ssm = SourceSinkManager.make(Config.getConfig().getSourceSinkFile());
+        String androidJar = config.getAndroidJarpath();
+        String apk = config.getApk();
+        List<BridgedMethod> bridgedMethods = BridgedMethodList.load(config.getDatabase()).selectByAppName(config.getApk());
+        var ssm = SourceSinkManager.make(config.getSourceSinkFile());
         runAndroidAnalysis(androidJar, apk, bridgedMethods, ssm);
 
-        Path jsDir = Path.of(Config.getInstance().getJsDir());
-        Path jsFile = Path.of(Config.getInstance().getJsFilepath());
+        Path jsDir = Path.of(config.getJsDir());
+        Path jsFile = Path.of(config.getJsFilepath());
         runJsAnalysis(jsDir.toString(), jsFile.toString());
     }
 
@@ -76,11 +81,13 @@ public class AnalyzerMain {
     }
 
 
-    private void runAndroidAnalysis(String androidJar, String apk, BridgedMethodList bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {
+    private void runAndroidAnalysis(String androidJar, String apk, List<BridgedMethod> bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {
         // PHASE 1(a): compute the summary of the bridge methods
         var analysis = new AndroidAnalysis(androidJar, apk);
         for (var method : bridgedMethods) {
-            computeBridgeMethodSummary(analysis, method, ssm);
+            if (method.appName().equals(apk)) {
+                computeBridgeMethodSummary(analysis, method, ssm);
+            }
         }
         // PHASE 1(b): compute the summary of the ifc methods
         // TODO: Replace it with parameters from the database when avaialble

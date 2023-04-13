@@ -20,11 +20,13 @@ public class TestMPAAnalysis {
     String androidJar = System.getenv("ANDROID_SDK_ROOT")  + "/platforms/android-29/android.jar";
     String database = System.getProperty("user.dir") + "/src/test/resources/Intent.sqlite";
     BridgedMethodList bridgedMethods;
+    Config config;
 
     @BeforeEach
     void setup() throws ClassHierarchyException, IOException {
-        Config.getInstance().setAndroidJarpath(androidJar);
-        Config.getInstance().setApk(apkfile);
+        config = Config.makeEmpty();
+        config.setAndroidJarpath(androidJar);
+        config.setApk(apkfile);
         analysis = new AndroidAnalysis(androidJar, apkfile);
         bridgedMethods = BridgedMethodList.load(database);
     }

@@ -5,10 +5,6 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.SymbolTable;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
-import com.ibm.wala.util.intset.IntSet;
-import com.ibm.wala.util.intset.MutableIntSet;
-import com.ibm.wala.util.intset.MutableSparseIntSet;
-import de.unipassau.dbinterfaces.BridgedMethodList;
 import de.unipassau.utils.SourceSinkManager;
 
 import java.util.ArrayList;
@@ -22,20 +18,17 @@ public class InvokingMethodFlowProblem implements TabulationProblem<BasicBlockIn
     protected BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph;
     protected SourceSinkManager ssm;
     protected InvokingFunctionFlowFunction flowfunctions;
-    protected BridgedMethodList bridgedMethods;
 
     public InvokingMethodFlowProblem(CGNode entrypoint,
                                      FlowFactDomain domain,
                                      BackwardsSupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
                                      SourceSinkManager ssm,
-                                     InvokingFunctionFlowFunction flowfunctions,
-                                     BridgedMethodList bridgedMethods) {
+                                     InvokingFunctionFlowFunction flowfunctions) {
         this.entrypoint = entrypoint;
         this.domain = domain;
         this.supergraph = supergraph;
         this.ssm = ssm;
         this.flowfunctions = flowfunctions;
-        this.bridgedMethods = bridgedMethods;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package de.unipassau.main;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 public class Config {
     private String apk;
     private int apilevel = -1;
@@ -13,12 +16,17 @@ public class Config {
 
     private Config() {}
 
-    public static Config getInstance() {
-        if (config == null) {
-            config = new Config();
-        }
-        return config;
+    @Contract(value = " -> new", pure = true)
+    public static @NotNull Config makeEmpty() {
+        return new Config();
     }
+
+//    public static Config getInstance() {
+//        if (config == null) {
+//            config = new Config();
+//        }
+//        return config;
+//    }
 
     public String getApk() {
         return apk;
@@ -58,10 +66,6 @@ public class Config {
 
     public void setSourceSinkFile(String sourceSinkFile) {
         this.sourceSinkFile = sourceSinkFile;
-    }
-
-    public static Config getConfig() {
-        return config;
     }
 
     public static void setConfig(Config config) {
