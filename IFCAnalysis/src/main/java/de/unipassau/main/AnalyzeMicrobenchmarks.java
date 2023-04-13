@@ -2,16 +2,20 @@ package de.unipassau.main;
 
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 public class AnalyzeMicrobenchmarks {
@@ -19,11 +23,19 @@ public class AnalyzeMicrobenchmarks {
 
     private static Logger logger = LoggerFactory.getLogger(AnalyzeMicrobenchmarks.class.getName());
 
-    private String benchmarkRoot;
-    private String androidJarPath;
-    private String dbPath;
-    private String susiFile;
-    private String intermediateDir;
+    private final String benchmarkRoot;
+    private final String androidJarPath;
+    private final String dbPath;
+    private final String susiFile;
+    private final String intermediateDir;
+
+
+    private static final Option configProp = Option.builder().option("p").hasArg().desc("")
+    private static final Options options = new Options();
+
+    static {
+        options.addOption(configProp);
+    }
 
     AnalyzeMicrobenchmarks(String benchmarkRoot, String androidJarPath, String sourceSinkFile, String dbPath, String intermediateDir) {
         this.benchmarkRoot = benchmarkRoot;
@@ -88,12 +100,6 @@ public class AnalyzeMicrobenchmarks {
         }
     }
 
-    /**
-     * It returns the js files separated by ";". If it doesn't find a file then it returns None
-     *
-     * @param benchmark
-     * @return
-     */
     private List<File> searchJsFile(String benchmark) {
         Path directory = Paths.get(intermediateDir, benchmark);
         List<File> result = new ArrayList<>();
@@ -106,6 +112,29 @@ public class AnalyzeMicrobenchmarks {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        try {
+            var cmdLine = DefaultParser.builder().build().parse(options, args);
+            String propertyFile = cmdLine.getOptionValue(configProp);
+            try(var filestream = new FileInputStream(propertyFile)) {
+                Properties prop = new Properties();
+                prop.load(filestream);
+                String benchmarkRoot = prop.getProperty("benchmarkRoot");
+                String androidJarPath = prop.getProperty("androidJarPath");
+                String dbPath = prop.getProperty("dbPath");
+                String susiFile = prop.getProperty("susiFile");
+                String intermediateDir = prop.getProperty("intermediateDir");
+                var analysis = new AnalyzeMicrobenchmarks(benchmarkRoot, androidJarPath, susiFile, dbPath, intermediateDir);
+                analysis.run();
+            } catch (FileNotFoundException f) {
+                logger.error("Unable to find file {}", propertyFile);
+            }
+        } catch (ParseException | IOException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("BenchmarkAnalyzer", options);
+        }
     }
 
 }
