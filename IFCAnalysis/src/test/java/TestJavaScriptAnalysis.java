@@ -1,5 +1,5 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
-import de.unipassau.frontend.JavascriptAnalysis;
+import iwandroid.frontend.JavascriptAnalysis;
 import org.junit.jupiter.api.Test;
 
 public class TestJavaScriptAnalysis {

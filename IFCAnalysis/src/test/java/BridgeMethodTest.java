@@ -1,4 +1,4 @@
-import de.unipassau.dbinterfaces.BridgedMethodList;
+import iwandroid.dbinterfaces.BridgedMethodList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
