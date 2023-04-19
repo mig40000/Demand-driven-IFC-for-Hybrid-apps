@@ -3,6 +3,7 @@ package iwandroid.frontend;
 import com.ibm.wala.cast.js.translator.CAstRhinoTranslatorFactory;
 import com.ibm.wala.cast.js.util.JSCallGraphBuilderUtil;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
 
@@ -13,10 +14,18 @@ public class JSAnalysis {
     private Set<String> jsfiles;
     private String jsDir;
     CallGraph callGraph;
+    IClassHierarchy cha;
 
     public JSAnalysis(String jsDir, String jsfile) throws WalaException, IOException, CancelException {
         com.ibm.wala.cast.js.ipa.callgraph.JSCallGraphUtil.setTranslatorFactory(new CAstRhinoTranslatorFactory());
-         this.callGraph = JSCallGraphBuilderUtil.makeScriptCG("dir", jsfile);
+//        this.cha = makeHierarchyForScripts(jsfiles);
+//        JavaScriptLoaderFactory factory = new JavaScriptLoaderFactory(new CAstRhinoTranslatorFactory());
+//        AnalysisScope scope = JSCallGraphBuilderUtil.makeScope(jsfiles, factory, factory.getTheLoader().getLanguage());
+//        AnalysisOptions options = JSCallGraphBuilderUtil.makeOptions(scope, cha, )
+//        var util = new FieldBasedCallGraphBuilder(cha, makeOptions(scope, cha), new AnalysisCacheImpl(), )
+//        this.callGraph = FieldBasedCallGraphBuilder
+        var cgBuilder = JSCallGraphBuilderUtil.makeScriptCGBuilder(jsDir, jsfile);
+        this.callGraph = cgBuilder.makeCallGraph(cgBuilder.getOptions());
     }
 
     public CallGraph getCallGraph() {

@@ -9,8 +9,8 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
-import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.dbinterfaces.BridgedMethod;
+import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.utils.SourceSinkManager;
 
 import java.util.HashSet;
@@ -27,6 +27,8 @@ public class BridgeMethodIFCSummaryDriver {
     protected TabulationSolver<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowPathFact> solver;
     protected BridgeSummaryFlowfunctions flowfunctions;
     protected BridgeMethodPathSummaryProblem problem;
+
+    private static boolean DEBUG = false;
 
     protected BridgeMethodIFCSummaryDriver(CGNode bridgeNode,
                                            ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
@@ -98,11 +100,11 @@ public class BridgeMethodIFCSummaryDriver {
     }
 
 
-
     public static BridgeMethodIFCSummaryDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm) throws CancelException {
         var supergraph = ICFGSupergraph.make(analysis.callgraph());
         var entrypoint = FlowFunctionUtils.findCGNodeForBridgeMethod(method, analysis);
-        System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
+        if (DEBUG)
+            System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
         return entrypoint.map(cgNode -> new BridgeMethodIFCSummaryDriver(cgNode, supergraph, new FlowPathFactDomain(), ssm)).orElse(null);
     }
 

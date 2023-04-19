@@ -5,9 +5,9 @@ import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.util.CancelException;
 import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.dbinterfaces.BridgedMethod;
-import iwandroid.dbinterfaces.BridgedMethodList;
+import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.modifiedpaths.ModifiedPathAnalysis;
-import iwandroid.main.Config;
+import iwandroid.utils.Config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,7 +19,7 @@ public class TestMPAAnalysis {
     String apkfile =  System.getProperty("user.dir") + "/HybridAppAnalysis/input/app-debug.apk";
     String androidJar = System.getenv("ANDROID_SDK_ROOT")  + "/platforms/android-29/android.jar";
     String database = System.getProperty("user.dir") + "/src/test/resources/Intent.sqlite";
-    BridgedMethodList bridgedMethods;
+    BridgedMethodDb bridgedMethods;
     Config config;
 
     @BeforeEach
@@ -28,7 +28,7 @@ public class TestMPAAnalysis {
         config.setAndroidJarpath(androidJar);
         config.setApkFile(apkfile);
         analysis = new AndroidAnalysis(androidJar, apkfile);
-        bridgedMethods = BridgedMethodList.load(database);
+        bridgedMethods = BridgedMethodDb.load(database);
     }
 
 

@@ -1,7 +1,9 @@
-package iwandroid.main;
+package iwandroid;
 
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
+import iwandroid.main.Analyzer;
+import iwandroid.utils.Config;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,7 @@ import java.util.stream.Stream;
 public class Microbenchmarks {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(Microbenchmarks.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
     private final String benchmarkRoot;
     private final String androidJarPath;

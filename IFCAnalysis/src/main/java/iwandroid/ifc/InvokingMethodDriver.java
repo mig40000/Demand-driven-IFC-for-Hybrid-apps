@@ -15,7 +15,7 @@ import com.ibm.wala.types.TypeReference;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
 import iwandroid.dbinterfaces.BridgedMethod;
-import iwandroid.dbinterfaces.BridgedMethodList;
+import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.utils.SourceSinkManager;
 
@@ -119,7 +119,7 @@ public class InvokingMethodDriver {
     }
 
 
-    public static InvokingMethodDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm, BridgedMethodList bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) throws CancelException {
+    public static InvokingMethodDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm, BridgedMethodDb bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) throws CancelException {
         var supergraph = BackwardsSupergraph.make(ICFGSupergraph.make(analysis.callgraph()));
         var entrypoint = findCGNodeForBridgeMethod(method, analysis);
         System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));

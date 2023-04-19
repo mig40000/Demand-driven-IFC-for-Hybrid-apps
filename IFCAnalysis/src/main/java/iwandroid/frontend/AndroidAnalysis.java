@@ -3,8 +3,9 @@ package iwandroid.frontend;
 import com.ibm.wala.classLoader.IClass;
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.classLoader.Language;
-import com.ibm.wala.dalvik.classLoader.DexFileModule;
+import com.ibm.wala.core.tests.callGraph.CallGraphTestUtil;
 import com.ibm.wala.dalvik.classLoader.DexIRFactory;
+import com.ibm.wala.dalvik.util.AndroidAnalysisScope;
 import com.ibm.wala.ipa.callgraph.*;
 import com.ibm.wala.ipa.callgraph.impl.AllApplicationEntrypoints;
 import com.ibm.wala.ipa.callgraph.impl.Util;
@@ -24,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.jar.JarFile;
 
 public class AndroidAnalysis {
 
@@ -47,18 +47,27 @@ public class AndroidAnalysis {
         this.apkfile = apkfile;
         logger.info("APK: {}", this.apkfile);
         this.cache = new AnalysisCacheImpl(new DexIRFactory());
-        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
-        scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
-        try {
-            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(this.androidJar));
-            scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(this.apkfile)));
-            this.cha = ClassHierarchyFactory.make(scope);
-            this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
-            this.cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
-            logger.info("Analysis environment setup successful");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        AnalysisScope scope = AndroidAnalysisScope.setUpAndroidAnalysisScope(new File(this.apkfile).toURI(),
+                CallGraphTestUtil.REGRESSION_EXCLUSIONS,
+                CallGraphTestUtil.class.getClassLoader(),
+                new File(this.androidJar).toURI());
+        this.cha = ClassHierarchyFactory.make(scope);
+        this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
+        this.cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
+//        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
+//        AnalysisScope scope = AndroidAnalysisScope.setUpAndroidAnalysisScope()
+//        scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
+//        try {
+//            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(this.androidJar));
+//
+//            scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(this.apkfile)));
+//            this.cha = ClassHierarchyFactory.make(scope);
+//            this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
+//            this.cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
+//            logger.info("Analysis environment setup successful");
+//        } catch (IOException e) {
+//            logger.error(e.getMessage());
+//        }
     }
 
     public CallGraph callgraph() throws CancelException {

@@ -44,7 +44,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
             int id = domain.add(new FlowFact(src.getNode(), vn, null, IFCLabel.PUBLIC));
             intset.add(id);
         }
-        System.out.println("BuildEntryBlockFunction " + intset);
+//        System.out.println("BuildEntryBlockFunction " + intset);
         return intset;
     }
 
@@ -53,7 +53,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         //        System.out.println("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
         SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
-        if (src.isEntryBlock()) {
+        if (dst.isEntryBlock()) {
             entryfacts = buildEntryBlockFunction(src);
         }
 
@@ -69,7 +69,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         } else if (inst instanceof SSAPhiInstruction phiInst) {
             result = buildPhiInstruction(phiInst, src.getNode(), entryfacts);
         } else {
-            result = IdentityFunction.make();
+            result = IdentityFunction.identity();
         }
         return result;
 //        return compose(entryblock, result);
@@ -109,8 +109,24 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     }
 
     protected IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node, MutableIntSet entryfacts) {
+        if (inst.getNumberOfUses() == 0) {
+            // in case there aren't any variables in the use set, propagte the defined variable. $$undefined$$ value in
+            // use set
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+                result.add(d1);
+                int def = inst.getDef();
+                if (def != -1) {
+                    int newFactId = domain.add(new FlowFact(node, def, null, IFCLabel.PUBLIC));
+                    result.add(newFactId);
+                }
+                return result;
+            };
+
+        }
         return d1 -> {
 //            System.out.println("Get function " + inst + " d1 = " + d1);
+
             int src = inst.getUse(0);
             int dst = inst.getDef();
             IField field = FlowFunctionUtils.resolveField(node.getClassHierarchy(), inst.getDeclaredField());
@@ -131,6 +147,14 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     }
 
     protected IUnaryFlowFunction buildPutInstructionFunction(SSAPutInstruction inst, CGNode node, MutableIntSet entryfacts) {
+        if (inst.isStatic()) {
+            return d1 -> {
+                MutableIntSet result = MutableSparseIntSet.make(entryfacts);
+                result.add(d1);
+                return result;
+            };
+        }
+
         return d1 -> {
             int dst = inst.getUse(0);
             int src = inst.getUse(1);
@@ -169,7 +193,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (invoke == null) {
-            return EmptyFunction.function();
+            return EmptyFunction.empty();
         }
 
         if (FlowFunctionUtils.isSensitiveSource(sensitiveSourcesManager, invoke.getCallSite())) {
@@ -200,7 +224,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
                     return result;
                 };
             } else {
-                return EmptyFunction.function();
+                return EmptyFunction.empty();
             }
         }
 
@@ -224,20 +248,20 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
 
         if (call == null) {
-            return IdentityFunction.make();
+            return IdentityFunction.identity();
         }
 
 
-        SSAInvokeInstruction callInstruction = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(call);
+        SSAAbstractInvokeInstruction callInstruction = (SSAAbstractInvokeInstruction) FlowFunctionUtils.getInstruction(call);
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (callInstruction == null) {
-            return EmptyFunction.function();
+            return EmptyFunction.empty();
         }
 
         // In case the return instruction is null, pass the empty set
         if (returnInst == null) {
-            return EmptyFunction.function();
+            return EmptyFunction.empty();
         }
 
         if (FlowFunctionUtils.isLibraryCall(callInstruction.getCallSite())) {
@@ -269,12 +293,12 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
     @Override
     public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return IdentityFunction.make();
+        return IdentityFunction.identity();
     }
 
     @Override
     public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> ssaInstructions, BasicBlockInContext<IExplodedBasicBlock> t1) {
-        return IdentityFunction.make();
+        return IdentityFunction.identity();
     }
 
     public FlowFactDomain getDomain() {

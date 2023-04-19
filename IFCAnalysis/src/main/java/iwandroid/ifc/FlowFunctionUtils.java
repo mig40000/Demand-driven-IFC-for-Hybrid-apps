@@ -53,8 +53,14 @@ public class FlowFunctionUtils {
         return new AndroidLibraryList().contains(className, methodName);
     }
 
+//    protected static boolean isLibraryNode(CGNode node) {
+//
+//    }
+
     static public Optional<CGNode> findCGNodeForBridgeMethod(BridgedMethod method, AndroidAnalysis analysis) throws CancelException {
-        IClass clazz = analysis.getCha().lookupClass(TypeReference.find(ClassLoaderReference.Application, method.clazz()));
+        TypeReference reference = TypeReference.find(ClassLoaderReference.Application, method.clazz());
+        assert reference != null;
+        IClass clazz = analysis.getCha().lookupClass(reference);
         assert clazz != null;
         IMethod entrypointmethod = clazz.getMethod(Selector.make(method.signature()));
         assert entrypointmethod != null;

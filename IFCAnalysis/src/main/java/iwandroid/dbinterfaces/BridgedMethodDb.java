@@ -6,13 +6,11 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BridgedMethodList extends ArrayList<BridgedMethod> implements Iterable<BridgedMethod> {
+public class BridgedMethodDb extends ArrayList<BridgedMethod> implements Iterable<BridgedMethod> {
     private final List<BridgedMethod> bridgedMethods = new ArrayList<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(BridgedMethodList.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger("[IWANDROID]");
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, @NotNull String bridgeMethods, String initiatingMethod) {
         for (String bridgeMethod : bridgeMethods.split("\n")) {
@@ -29,8 +27,8 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         }
     }
 
-    public static @NotNull BridgedMethodList load(String dbPath) {
-        BridgedMethodList webViewsList = new BridgedMethodList();
+    public static @NotNull BridgedMethodDb load(String dbPath) {
+        BridgedMethodDb webViewsList = new BridgedMethodDb();
         String url = "jdbc:sqlite:" + dbPath;
         logger.info("Reading Bridge Interfaces from database {}", dbPath);
         try (Connection connection = DriverManager.getConnection(url)) {
@@ -94,7 +92,7 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        BridgedMethodList that = (BridgedMethodList) o;
+        BridgedMethodDb that = (BridgedMethodDb) o;
         return Objects.equals(bridgedMethods, that.bridgedMethods);
     }
 
@@ -104,7 +102,7 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
     }
 
     public List<BridgedMethod> getBridgeMethodsInClass(String clazz) {
-        return this.bridgedMethods.stream().filter(method -> clazz.equals(method.clazz())).collect(Collectors.toList());
+        return this.bridgedMethods.stream().filter(method -> clazz.equals(method.clazz())).toList();
     }
 
     @Override
@@ -112,13 +110,13 @@ public class BridgedMethodList extends ArrayList<BridgedMethod> implements Itera
         return bridgedMethods.stream();
     }
 
-    public static @NotNull BridgedMethodList make(Collection<BridgedMethod> methods) {
-        BridgedMethodList newlist = new BridgedMethodList();
+    public static @NotNull BridgedMethodDb make(Collection<BridgedMethod> methods) {
+        BridgedMethodDb newlist = new BridgedMethodDb();
         newlist.bridgedMethods.addAll(methods);
         return newlist;
     }
 
     public List<BridgedMethod> selectByAppName(String appName) {
-        return bridgedMethods.stream().filter(method -> method.appName().equals(appName)).collect(Collectors.toList());
+        return bridgedMethods.stream().filter(method -> method.appName().equals(appName)).toList();
     }
 }

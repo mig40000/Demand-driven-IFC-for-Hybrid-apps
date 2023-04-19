@@ -1,8 +1,8 @@
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.frontend.BridgeMethodIR;
-import iwandroid.dbinterfaces.BridgedMethodList;
-import iwandroid.main.Config;
+import iwandroid.dbinterfaces.BridgedMethodDb;
+import iwandroid.utils.Config;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ public class TestBridgeMethodIR {
     String apkfile =  System.getProperty("user.dir") + "/HybridAppAnalysis/input/app-debug.apk";
     String androidJar = System.getenv("ANDROID_SDK_ROOT")  + "/platforms/android-29/android.jar";
     String database = System.getProperty("user.dir") + "/src/test/resources/Intent.sqlite";
-    BridgedMethodList bridgedMethods;
+    BridgedMethodDb bridgedMethods;
     Config config;
 
     @BeforeEach
@@ -24,7 +24,7 @@ public class TestBridgeMethodIR {
         config.setAndroidJarpath(androidJar);
         config.setApkFile(apkfile);
         analysis = new AndroidAnalysis(androidJar, apkfile);
-        bridgedMethods = BridgedMethodList.load(database);
+        bridgedMethods = BridgedMethodDb.load(database);
     }
 
     @Test

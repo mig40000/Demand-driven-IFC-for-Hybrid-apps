@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class IdentityFunction {
     @Contract(pure = true)
-    public static @NotNull IUnaryFlowFunction make() {
+    public static @NotNull IUnaryFlowFunction identity() {
         return d1 -> {
             MutableIntSet results = MutableSparseIntSet.makeEmpty();
             results.add(d1);

@@ -1,8 +1,10 @@
 package iwandroid.ifc;
 
+import com.ibm.wala.cast.js.types.JavaScriptMethods;
 import com.ibm.wala.dataflow.IFDS.IUnaryFlowFunction;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
+import com.ibm.wala.ssa.SSAAbstractInvokeInstruction;
 import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.intset.MutableIntSet;
@@ -23,18 +25,33 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 
     @Override
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
-        SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
-
+        SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) FlowFunctionUtils.getInstruction(src);
+        System.out.println("JP .... " + invoke + " target is " + invoke.getDeclaredTarget());
         assert invoke != null;
         // check if the invoking method is a bridge method. In this case propagate the summaries
         if (isBridgeMethod(invoke)) {
             return generateBridgeSummaryFunction(bridgeSummaries.get(dst.getNode()), src, dst);
         }
 
+//        if (isConstructorReference(invoke)) {
+//            new AssertionError("unreachable");
+//        }
+
+//        if (isConstructorReference(invoke)) {
+//            return d1 -> {
+//                MutableIntSet result = MutableSparseIntSet.makeEmpty();
+//                if (invoke.hasDef()) {
+//
+//                }
+//            }
+////            return getConstructorFlowFunction(dst);
+//        }
+
         if (isJsLib(invoke)) {
             // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
+            System.out.println("JP.... " + invoke + "  is a JS library or constructor reference");
             if (!invoke.hasDef()) {
-                return EmptyFunction.function();
+                return EmptyFunction.empty();
             } else {
                 int def = invoke.getDef();
                 return d1 -> {
@@ -66,8 +83,12 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
         //
     }
 
-    private boolean isJsLib(SSAInvokeInstruction invoke) {
+    private boolean isJsLib(SSAAbstractInvokeInstruction invoke) {
         return JSCoreLibrary.exists(invoke.getDeclaredTarget().getDeclaringClass().toString());
+    }
+
+    private boolean isConstructorReference(SSAAbstractInvokeInstruction invoke) {
+        return invoke.getDeclaredTarget().equals(JavaScriptMethods.ctorReference);
     }
 
     private IUnaryFlowFunction generateBridgeSummaryFunction(Set<FlowPathFact> flowPathFacts,
@@ -108,7 +129,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
     }
 
 
-    private boolean isBridgeMethod(SSAInvokeInstruction instruction) {
+    private boolean isBridgeMethod(SSAAbstractInvokeInstruction instruction) {
         var target = instruction.getDeclaredTarget();
         return getBridgeMethods().stream().anyMatch(method -> method.getMethod().getReference().equals(target));
     }

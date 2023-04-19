@@ -1,4 +1,4 @@
-package iwandroid.main;
+package iwandroid.utils;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -118,4 +118,6 @@ public class Config {
                 ", susiFile='" + susiFile + '\'' +
                 '}';
     }
+
+    public static String TOOLNAME = "IWANDROID";
 }

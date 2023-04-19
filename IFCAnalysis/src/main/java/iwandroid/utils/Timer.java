@@ -1,7 +1,5 @@
 package iwandroid.utils;
 
-import iwandroid.main.Config;
-
 public class Timer {
     private Config config;
     private long starttime;

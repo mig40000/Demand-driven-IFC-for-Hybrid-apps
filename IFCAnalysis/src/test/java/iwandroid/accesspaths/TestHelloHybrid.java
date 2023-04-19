@@ -7,7 +7,7 @@ import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashMapFactory;
 import iwandroid.dbinterfaces.BridgedMethod;
-import iwandroid.dbinterfaces.BridgedMethodList;
+import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.ifc.*;
 import iwandroid.utils.SourceSinkManager;
@@ -31,7 +31,7 @@ public class TestHelloHybrid {
 
     @BeforeEach
     public void setUp() throws ClassHierarchyException, IOException {
-        var bridgemethods = BridgedMethodList.load("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/Database/Intent-new.sqlite");
+        var bridgemethods = BridgedMethodDb.load("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/Database/Intent-new.sqlite");
         methods = bridgemethods.getBridgeMethodsInClass("Lcom/example/hellohybrid/JavascriptBridge");
 //        Config.getInstance().setApk(apkfile);
 //        Config.getInstance().setAndroidJarpath(androidJar);
@@ -94,7 +94,7 @@ public class TestHelloHybrid {
                 new FlowFactDomain(),
                 BackwardsSupergraph.make(supergraph),
                 ssm,
-                BridgedMethodList.make(methods),
+                BridgedMethodDb.make(methods),
                 functionSummaries
         );
         methodanalysis.buildresults();

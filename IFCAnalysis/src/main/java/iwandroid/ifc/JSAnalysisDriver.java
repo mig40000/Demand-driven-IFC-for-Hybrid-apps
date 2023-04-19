@@ -24,10 +24,10 @@ public class JSAnalysisDriver {
         this.entrypoint = entrypoint;
         this.supergraph = supergraph;
         this.domain = new FlowFactDomain();
-        this.problem = new JSAnalysisProblem(entrypoint, supergraph,bridgesummaries);
+        this.problem = new JSAnalysisProblem(entrypoint, supergraph,bridgesummaries, this.domain);
     }
 
-    protected TabulationResult<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> analyze() {
+    public TabulationResult<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> analyze() {
         this.solver = TabulationSolver.make(this.problem);
         try {
             this.result = solver.solve();

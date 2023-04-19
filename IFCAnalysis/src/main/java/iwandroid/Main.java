@@ -1,7 +1,9 @@
-package iwandroid.main;
+package iwandroid;
 
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
+import iwandroid.main.Analyzer;
+import iwandroid.utils.Config;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +12,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ToolMain {
+public class Main {
 
-    private static final Logger logger = LoggerFactory.getLogger(ToolMain.class);
+    private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
 
     private static final Options options = new Options();
@@ -64,23 +66,12 @@ public class ToolMain {
             System.exit(100);
         }
 
-//        int api = getApi(cmd);
-//        Config config = Config.emptyConfig();
-//        config.setAppName(cmd.getOptionValue(appName));
-//        config.setApilevel(api);
-//        config.setAndroidJarpath(getAndroidJarPath(sdkRoot, api));
-//        config.setSusiFile(getSourceSinkFile(cmd));
-//        config.setApkFile(cmd.getOptionValue(apk));
-//        config.setDatabase(cmd.getOptionValue(db));
-//        config.setJsDir(getJsDir(cmd));
-//        config.setJsFilepath(getJsfilepath(cmd));
-
-
         try {
             Properties configProp = new Properties();
             try(var inputstream = new FileInputStream(cmd.getOptionValue(prop))) {
                 configProp.load(inputstream);
-                Analyzer analyzer = new Analyzer(Config.makeConfig(configProp));
+                Config config = Config.makeConfig(configProp);
+                Analyzer analyzer = new Analyzer(config);
                 analyzer.run();
             }
         } catch (IOException | CancelException | WalaException e) {
@@ -118,7 +109,7 @@ public class ToolMain {
 //
 //    }
 //
-//    @NotNull
+
 //    private static String getAndroidJarPath(String sdkRoot, int api) {
 //        Path androidLib = Paths.get(sdkRoot, "platforms", "android-" + api, "android.jar");
 //        if (!androidLib.toFile().exists()) {

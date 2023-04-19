@@ -21,16 +21,13 @@ public class JSAnalysisProblem implements TabulationProblem<BasicBlockInContext<
 
     public JSAnalysisProblem(CGNode node,
                              ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
-                             HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries) {
+                             HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries, FlowFactDomain domain) {
         this.supergraph = supergraph;
         this.bridgeSummaries  = bridgeSummaries;
+        this.flowFunctions = new JSAnalysisFlowFunction(node, domain, bridgeSummaries);
 //        this.flowFunctions = new JSAnalysisFlowFunction(t);
         this.entryNode = node;
         this.domain = new FlowFactDomain();
-    }
-
-    private void initFlowfunctions() {
-        this.flowFunctions = new JSAnalysisFlowFunction(this.entryNode, this.domain, this.bridgeSummaries);
     }
 
     @Override

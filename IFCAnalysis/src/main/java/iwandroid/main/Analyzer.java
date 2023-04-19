@@ -8,10 +8,11 @@ import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.collections.HashMapFactory;
 import iwandroid.dbinterfaces.BridgedMethod;
-import iwandroid.dbinterfaces.BridgedMethodList;
+import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.frontend.AndroidAnalysis;
 import iwandroid.frontend.JSAnalysis;
 import iwandroid.ifc.*;
+import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
 import iwandroid.utils.Timer;
 import org.slf4j.Logger;
@@ -19,14 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class Analyzer {
 
-    private final Logger logger = LoggerFactory.getLogger(Analyzer.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
     private final HashMap<CGNode, Set<FlowPathFact>> bridgesummaries;
 
@@ -34,6 +32,7 @@ public class Analyzer {
 
     private void computeBridgeMethodSummary(AndroidAnalysis analysis, BridgedMethod method,
                                             SourceSinkManager ssm) throws CancelException {
+        logger.info("Computing Bridge Method Summary for {}", method);
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
         summary.buildresults();
         bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
@@ -65,29 +64,34 @@ public class Analyzer {
         logger.info("Running {}", config);
         String androidJar = config.getAndroidJarpath();
         String apk = config.getApkFile();
-        List<BridgedMethod> bridgedMethods = BridgedMethodList.load(config.getDatabase()).selectByAppName(config.getAppName());
+        List<BridgedMethod> bridgedMethods = BridgedMethodDb.load(config.getDatabase()).selectByAppName(config.getAppName());
 
-        timer.startTimer();
+        if (bridgedMethods.isEmpty()) {
+            logger.info("Could not find bridge methods for {}. Terminating Analysis", apk);
+        } else {
+            var ssm = SourceSinkManager.make(config.getSusiFile());
+            timer.startTimer();
+            logger.info("Android Analysis Start:  {}", timer.lap());
+            runAndroidAnalysis(androidJar, apk, bridgedMethods, ssm);
 
-        var ssm = SourceSinkManager.make(config.getSusiFile());
-        runAndroidAnalysis(androidJar, apk, bridgedMethods, ssm);
-        logger.info("Android Analysis " + timer.lap());
+            Path jsDir = Path.of(config.getJsDir());
+            Path jsFile = Path.of(config.getJsFilepath());
+            runJsAnalysis(jsDir.toString(), jsFile.toString());
+            logger.info("Time taken for JS analysis (in sec) {}", timer.lap());
 
-        Path jsDir = Path.of(config.getJsDir());
-        Path jsFile = Path.of(config.getJsFilepath());
-        runJsAnalysis(jsDir.toString(), jsFile.toString());
-        logger.info("Time taken for JS analysis (in sec) {}", timer.lap());
-
-        timer.stopTimer();
-        logger.info("Time taken (in seconds) {}", timer.timeTaken());
+            timer.stopTimer();
+            logger.info("Time taken (in seconds) {}", timer.timeTaken());
+        }
     }
 
     private void runJsAnalysis(String jsDir, String jsFile) throws WalaException, IOException, CancelException {
         // PHASE 2: compute the summary of the javascript files
         var analysis = new JSAnalysis(jsDir, jsFile);
-        var entrynode = analysis.getCallGraph().getFakeRootNode();
+        var entrynodes = new ArrayList<>(analysis.getCallGraph().getEntrypointNodes());
         var supergraph = ICFGSupergraph.make(analysis.getCallGraph());
-        JSAnalysisDriver driver = new JSAnalysisDriver(entrynode, supergraph, bridgesummaries);
+        var appEntryNode = entrynodes.get(0);
+        JSAnalysisDriver driver = new JSAnalysisDriver(appEntryNode, supergraph, bridgesummaries);
+        driver.analyze();
         System.out.println(driver.getResults());
     }
 
@@ -96,9 +100,9 @@ public class Analyzer {
         // PHASE 1(a): compute the summary of the bridge methods
         var analysis = new AndroidAnalysis(androidJar, apk);
         for (var method : bridgedMethods) {
-            if (method.appName().equals(apk)) {
+//            if (method.appName().equals(apk)) {
                 computeBridgeMethodSummary(analysis, method, ssm);
-            }
+//            }
         }
         // PHASE 1(b): compute the summary of the ifc methods
         String clazz = bridgedMethods.get(0).initiatingClass();
