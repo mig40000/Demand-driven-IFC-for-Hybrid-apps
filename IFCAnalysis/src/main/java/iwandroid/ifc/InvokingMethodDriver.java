@@ -33,6 +33,8 @@ public class InvokingMethodDriver {
     protected InvokingFunctionFlowFunction flowfunctions;
     protected List<BridgedMethod> bridgedMethods;
     protected InvokingMethodFlowProblem problem;
+
+    private static boolean TRACE = false;
 //    protected BackwardIFCAnalysisProblem problem;
 
     public InvokingMethodDriver(CGNode entrypoint,
@@ -102,7 +104,7 @@ public class InvokingMethodDriver {
         assert result != null;
         for (var sgnode : supergraph) {
             var reachableNodes = result.getResult(sgnode);
-            if (sgnode.getNode().equals(entrypoint)) {
+            if (sgnode.getNode().equals(entrypoint) && TRACE) {
                 System.out.println(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
                 reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
             }
@@ -122,7 +124,8 @@ public class InvokingMethodDriver {
     public static InvokingMethodDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm, BridgedMethodDb bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) throws CancelException {
         var supergraph = BackwardsSupergraph.make(ICFGSupergraph.make(analysis.callgraph()));
         var entrypoint = findCGNodeForBridgeMethod(method, analysis);
-        System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
+        if (TRACE)
+            System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
 
         return entrypoint.map(cgNode -> new InvokingMethodDriver(
                 cgNode,

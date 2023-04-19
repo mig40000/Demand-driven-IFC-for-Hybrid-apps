@@ -16,6 +16,8 @@ import java.util.Set;
 public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 
 
+    private static final boolean TRACE = true;
+
     private final HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries;
 
     public JSAnalysisFlowFunction(CGNode entryPoint, FlowFactDomain domain, HashMap<CGNode, Set<FlowPathFact>> bridgesummaries) {
@@ -26,7 +28,9 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
     @Override
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
         SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) FlowFunctionUtils.getInstruction(src);
-        System.out.println("JP .... " + invoke + " target is " + invoke.getDeclaredTarget());
+        if (TRACE) {
+            System.out.println("JSAnalysisflowfunction.getCallFlowFunction " + invoke + " target is " + invoke.getDeclaredTarget());
+        }
         assert invoke != null;
         // check if the invoking method is a bridge method. In this case propagate the summaries
         if (isBridgeMethod(invoke)) {
@@ -48,8 +52,9 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 //        }
 
         if (isJsLib(invoke)) {
-            // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
-            System.out.println("JP.... " + invoke + "  is a JS library or constructor reference");
+            if (TRACE)
+                // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
+                System.out.println("JP.... " + invoke + "  is a JS library or constructor reference");
             if (!invoke.hasDef()) {
                 return EmptyFunction.empty();
             } else {
@@ -72,7 +77,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
                     int actualArg = invoke.getUse(paramI);
                     FlowFact f = domain.getMappedObject(d1);
                     if (f.getBase() == actualArg) {
-                        int newFactId = domain.add(new FlowFact(dst.getNode(), paramI+1, f.fieldgraph(), IFCLabel.PUBLIC));
+                        int newFactId = domain.add(new FlowFact(dst.getNode(), paramI + 1, f.fieldgraph(), IFCLabel.PUBLIC));
                         result.add(newFactId);
                     }
                 }

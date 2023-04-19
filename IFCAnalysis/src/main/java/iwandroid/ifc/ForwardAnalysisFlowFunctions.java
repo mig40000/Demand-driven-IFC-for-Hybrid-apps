@@ -26,6 +26,8 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     protected static final int RETURN_VALUE = Integer.MAX_VALUE;
     protected SourceSinkManager sensitiveSourcesManager;
 
+    private static final boolean TRACE = false;
+
     public ForwardAnalysisFlowFunctions(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager sources) {
         this.entryPoint = entryPoint;
         this.domain = domain;

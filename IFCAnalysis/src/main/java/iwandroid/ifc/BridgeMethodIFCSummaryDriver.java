@@ -92,9 +92,11 @@ public class BridgeMethodIFCSummaryDriver {
         assert result != null;
         for (var sgnode : supergraph) {
             var reachableNodes = result.getResult(sgnode);
-            if (sgnode.getNode().equals(bridgeNode)) {
-                System.out.println(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
-                reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
+            if (DEBUG) {
+                if (sgnode.getNode().equals(bridgeNode)) {
+                    System.out.println(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
+                    reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
+                }
             }
         }
     }
