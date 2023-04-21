@@ -36,6 +36,13 @@ public class Analyzer {
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
         summary.buildresults();
         bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
+        printInfluencedPaths(summary.getInfluencedVariables());
+    }
+
+    private void printInfluencedPaths(Set<FlowFact> influencedPaths) {
+        for (var path : influencedPaths) {
+            logger.warn("INFLUENCED PATH: {} {} {}", path.getCGNode(), path.getBase(), path.fieldgraph());
+        }
     }
 
     public Analyzer(Config config) {
@@ -84,6 +91,8 @@ public class Analyzer {
         }
     }
 
+
+
     private void runJsAnalysis(String jsDir, String jsFile) throws WalaException, IOException, CancelException {
         // PHASE 2: compute the summary of the javascript files
         var analysis = new JSAnalysis(jsDir, jsFile);
@@ -92,7 +101,7 @@ public class Analyzer {
         var appEntryNode = entrynodes.get(0);
         JSAnalysisDriver driver = new JSAnalysisDriver(appEntryNode, supergraph, bridgesummaries);
         driver.analyze();
-        System.out.println(driver.getResults());
+//        System.out.println(driver.getResults());
     }
 
 
@@ -100,9 +109,7 @@ public class Analyzer {
         // PHASE 1(a): compute the summary of the bridge methods
         var analysis = new AndroidAnalysis(androidJar, apk);
         for (var method : bridgedMethods) {
-//            if (method.appName().equals(apk)) {
-                computeBridgeMethodSummary(analysis, method, ssm);
-//            }
+            computeBridgeMethodSummary(analysis, method, ssm);
         }
         // PHASE 1(b): compute the summary of the ifc methods
         String clazz = bridgedMethods.get(0).initiatingClass();

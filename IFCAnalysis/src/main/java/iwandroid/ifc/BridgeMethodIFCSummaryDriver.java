@@ -6,6 +6,7 @@ import com.ibm.wala.dataflow.IFDS.TabulationResult;
 import com.ibm.wala.dataflow.IFDS.TabulationSolver;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cfg.BasicBlockInContext;
+import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
@@ -100,6 +101,26 @@ public class BridgeMethodIFCSummaryDriver {
             }
         }
     }
+
+    public Set<FlowFact> getInfluencedVariables() {
+        Set<FlowFact> vars = HashSetFactory.make();
+        var paths = collectSummaryPaths();
+        IR ir = bridgeNode.getIR();
+        int nbParamters = ir.getNumberOfParameters();
+
+        for (int i=0; i < nbParamters; ++i) {
+            int param = ir.getParameter(i);
+            for (var path : paths) {
+                FlowFact init = path.init();
+                if (init.getBase() == param && init.getCGNode().equals(bridgeNode)) {
+                    vars.addAll(path.tail());
+                }
+            }
+        }
+        return vars;
+    }
+
+
 
 
     public static BridgeMethodIFCSummaryDriver make(AndroidAnalysis analysis, BridgedMethod method, SourceSinkManager ssm) throws CancelException {

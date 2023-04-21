@@ -2,9 +2,9 @@ package iwandroid.utils;
 
 public class Timer {
     private Config config;
-    private long starttime;
-    private long endtime;
-    private long lastRecord;
+    private float starttime;
+    private float endtime;
+    private float lastRecord;
 
     public Timer(Config config) {
         this.config = config;
@@ -14,21 +14,21 @@ public class Timer {
     }
 
     public void startTimer() {
-        this.starttime = System.currentTimeMillis()/1000;
+        this.starttime = System.currentTimeMillis()/1000.0f;
     }
 
     public void stopTimer() {
-        this.endtime = System.currentTimeMillis()/1000;
+        this.endtime = System.currentTimeMillis()/1000.0f;
     }
 
-    public long lap() {
-        long now = System.currentTimeMillis()/1000;
-        long diff = now - this.lastRecord;
+    public float lap() {
+        float now = System.currentTimeMillis()/1000.0f;
+        float diff = now - this.lastRecord;
         this.lastRecord = now;
         return diff;
     }
 
-    public long timeTaken() {
+    public float timeTaken() {
         return this.endtime-this.starttime;
     }
 }

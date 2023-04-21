@@ -14,9 +14,13 @@ import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
 import iwandroid.accesspaths.AccessGraph;
 import iwandroid.accesspaths.FieldGraph;
+import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockInContext<IExplodedBasicBlock>> {
 
@@ -26,7 +30,9 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     protected static final int RETURN_VALUE = Integer.MAX_VALUE;
     protected SourceSinkManager ssm;
 
-    public static boolean TRACE = true;
+    private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
+
+    public static boolean TRACE = false;
 
     public BridgeSummaryFlowfunctions(FlowPathFactDomain domain, CGNode entryPoint, SourceSinkManager ssm) {
         this.domain = domain;
@@ -214,6 +220,8 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest, BasicBlockInContext<IExplodedBasicBlock> ret) {
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
+        assert invoke != null;
+
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
             if (TRACE) {
                 System.out.println("BridgeSummaryFlowFunction::getCallFlowFunction ... invoke = " + invoke);
@@ -303,6 +311,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (FlowFunctionUtils.isSensitiveSource(ssm, invoke.getCallSite())) {
+            logger.warn("Data leaked at the {} ".toUpperCase(Locale.ROOT), invoke);
             return d1 -> {
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
                 result.add(d1);
@@ -310,6 +319,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
                 int def = invoke.getDef();
                 if (def != -1) {
                     FlowFact fact = new FlowFact(src.getNode(), def, null, IFCLabel.SECRET);
+
                     FlowPathFact pathFact = FlowPathFact.make(fact);
                     int id = domain.add(pathFact);
                     result.add(id);

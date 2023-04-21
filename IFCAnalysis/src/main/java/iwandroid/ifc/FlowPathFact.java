@@ -28,6 +28,15 @@ public class FlowPathFact implements Iterable<FlowFact> {
         return pathfact;
     }
 
+    public List<FlowFact> tail() {
+        if (flowfacts.size() <= 1) {
+            return Collections.emptyList();
+        } else {
+            int last = flowfacts.size()-1;
+            return flowfacts.subList(2, last);
+        }
+    }
+
     public void append(FlowFact fact) {
         flowfacts.add(fact);
     }
