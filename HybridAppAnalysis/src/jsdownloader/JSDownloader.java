@@ -37,7 +37,7 @@ public class JSDownloader {
 
 			stmt = c.createStatement();
 			
-			System.out.println("sql is " + sql);
+		//	System.out.println("sql is " + sql);
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
@@ -172,7 +172,7 @@ public class JSDownloader {
 		}
 		ifcFileName = ifcFileName.replaceAll("#$", "");
 		
-		System.out.println("Size is " + jsFilePath.size());
+	//	System.out.println("Size is " + jsFilePath.size());
 		
 		for(String jsFile: jsFilePath) {
 			dummyName = appName + Integer.toString(counter);
@@ -255,7 +255,7 @@ public class JSDownloader {
 		}
 		
 		if(jsString.contains("javascript:")) {
-			System.out.println("jsString is " + jsString);
+		//	System.out.println("jsString is " + jsString);
 			String array[] = jsString.split("javascript:");
 			
 			for(String token : array) {
@@ -350,8 +350,8 @@ public class JSDownloader {
 	
 	public static void copyJsFromApp(String jsFilePath, String ifcObj, String appName) {
 		String destination = "../JSCode/" + appName + "#" + ifcObj + ".js";  
-		System.out.print("source is " + jsFilePath + "\n");
-		System.out.print("destination is " + destination + "\n");
+		//System.out.print("source is " + jsFilePath + "\n");
+		//System.out.print("destination is " + destination + "\n");
 		try {
 			//Use apktool to extract the source
 			ProcessBuilder pb = new ProcessBuilder("cp", jsFilePath, destination);
