@@ -62,6 +62,47 @@ public class JSDownloader {
 		
 	}
 	
+	public static void removeDuplicates() {
+		
+		Connection c = null;
+		Statement stmt = null;
+		String sql = "insert into webview_new select distinct * from webview_prime;";
+		
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection(GenericConstants.DB_NAME);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+		//	System.out.println("sql is " + sql);
+			stmt.executeUpdate(sql);
+			
+			 stmt.close();
+			 c.commit();
+			 
+			 
+			 sql = "delete from webview_prime;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
+			 sql = "insert into webview_prime select distinct * from webview_new;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
+			 c.close();
+			
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void getAltJSDetails() {
 	
 		Connection c = null;
@@ -117,9 +158,11 @@ public class JSDownloader {
 	public static void extractAltJS(ArrayList<String> ifcObj, String appName) {
 		
 		String path = "output/intermediate/";
+		Integer counter = 0;
 		path = path.concat(appName+"/");
 		ArrayList<String> jsFilePath = findJSscript(path, appName);
 		String ifcFileName = "";
+		String dummyName = "";
 
 		ifcObj = duplicateRemover(ifcObj);
 		
@@ -129,11 +172,15 @@ public class JSDownloader {
 		}
 		ifcFileName = ifcFileName.replaceAll("#$", "");
 		
+		System.out.println("Size is " + jsFilePath.size());
+		
 		for(String jsFile: jsFilePath) {
-			copyJsFromApp(jsFile, ifcFileName, appName);
+			dummyName = appName + Integer.toString(counter);
+			copyJsFromApp(jsFile, ifcFileName, dummyName);
+			counter++;
 		}
 		
-		
+		//counter = 0;
 		
 		
 	}

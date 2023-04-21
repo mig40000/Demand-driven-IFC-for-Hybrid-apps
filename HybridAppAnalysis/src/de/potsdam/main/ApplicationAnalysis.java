@@ -162,7 +162,9 @@ public class ApplicationAnalysis {
 					this.reInitialize();
 					e.printStackTrace(System.out);
 				}
+			//	System.exit(0);
 				
+				JSDownloader.removeDuplicates();
 				//System.out.println("came out of loop");
 				//Find raw JS passed to loadurl, Store them in a DB
 				//Requirement number 2
@@ -172,7 +174,7 @@ public class ApplicationAnalysis {
 			//	EvaluateJavaScriptHandler.checkEvaluateJavaScript(this);
 				
 				JSDownloader.getJSDetails();
-				JSDownloader.getAltJSDetails();
+			//	JSDownloader.getAltJSDetails();
 				//re-initialize 
 				this.reInitialize();
 				//app Analyzed successfully
@@ -185,6 +187,8 @@ public class ApplicationAnalysis {
 				e.printStackTrace(System.out);
 			}
 		}
+		//copy remaining JS
+		JSDownloader.getAltJSDetails();
 	}
 	
 	public void removeDuplicate(List<String> activity_path){

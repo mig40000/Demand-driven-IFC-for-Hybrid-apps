@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import java.util.LinkedHashSet;  
 
 import de.potsdam.ApplicationDetails.ApplicationDetails;
 
@@ -298,6 +300,7 @@ public class Slicer {
 		} catch (SQLException e1) {
 			System.out.println(e1.getMessage());
 		}
+		this.methodNames = removeRedundantBridgeMethod(this.methodNames);
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			//stmt.setString(1, app.getAppName());
@@ -332,6 +335,29 @@ public class Slicer {
 
 	}
 	
+	public String removeRedundantBridgeMethod(String bridgeMethods) {
+		String[] methods = bridgeMethods.split("\n");
+		String newMethods = "";
+		
+		ArrayList<String> tempList = new ArrayList<String>();
+		
+		for(String method: methods) {
+			//System.out.println("methods now are " + method);
+			tempList.add(method);
+		}
+		
+		Set<String> s = new LinkedHashSet<String>(tempList);
+	//	System.out.println("set now is " + s);
+		
+		 Iterator<String> i=s.iterator();  
+		 
+		 while(i.hasNext())  
+         {  
+			 newMethods = newMethods.concat(i.next());
+         }  
+		
+		 return newMethods;
+	}
 	
 
 	/**
@@ -545,8 +571,9 @@ public class Slicer {
 						this.extraMethods.add(s);
 						
 						if(s.contains(".method ")) {
+							this.methodNames = this.methodNames.concat("\n");
 							this.methodNames = this.methodNames.concat(s);
-							this.methodNames = this.methodNames.concat("\n");		
+									
 							
 						}
 						
