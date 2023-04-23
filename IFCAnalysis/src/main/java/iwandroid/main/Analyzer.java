@@ -15,6 +15,7 @@ import iwandroid.ifc.*;
 import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
 import iwandroid.utils.Timer;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,18 +106,23 @@ public class Analyzer {
     }
 
 
-    private void runAndroidAnalysis(String androidJar, String apk, List<BridgedMethod> bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {
+    private void runAndroidAnalysis(String androidJar, String apk, @NotNull List<BridgedMethod> bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {
         // PHASE 1(a): compute the summary of the bridge methods
         var analysis = new AndroidAnalysis(androidJar, apk);
-        for (var method : bridgedMethods) {
-            computeBridgeMethodSummary(analysis, method, ssm);
+        for (var bridgeMethod : bridgedMethods) {
+            computeBridgeMethodSummary(analysis, bridgeMethod, ssm);
+            String clazz = bridgeMethod.initiatingClass();
+            String method = bridgeMethod.initiatingMethod();
+            // PHASE 1(b): compute the summary of the ifc methods
+            Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
+            assert invokingMethod.isPresent();
+            computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
         }
-        // PHASE 1(b): compute the summary of the ifc methods
-        String clazz = bridgedMethods.get(0).initiatingClass();
-        String method = bridgedMethods.get(0).initiatingMethod();
-
-        Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
-        assert invokingMethod.isPresent();
-        computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
+//        String clazz = bridgedMethods.get(0).initiatingClass();
+//        String method = bridgedMethods.get(0).initiatingMethod();
+//
+//        Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
+//        assert invokingMethod.isPresent();
+//        computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
     }
 }

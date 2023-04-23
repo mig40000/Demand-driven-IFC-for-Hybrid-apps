@@ -116,7 +116,13 @@ public class BridgedMethodDb extends ArrayList<BridgedMethod> implements Iterabl
         return newlist;
     }
 
+
     public List<BridgedMethod> selectByAppName(String appName) {
         return bridgedMethods.stream().filter(method -> method.appName().equals(appName)).toList();
+    }
+
+    public List<BridgedMethod> selectByBridgeMethodAndInitiatingMethod(String appName, String initiatingMethod) {
+        var appNameMethods = selectByAppName(appName);
+        return appNameMethods.stream().filter(method -> method.initiatingMethod().equals(initiatingMethod)).toList();
     }
 }
