@@ -162,6 +162,7 @@ public class ApplicationAnalysis {
 					this.reInitialize();
 					e.printStackTrace(System.out);
 				}
+			//	System.exit(0);
 				
 				//System.out.println("came out of loop");
 				//Find raw JS passed to loadurl, Store them in a DB
@@ -171,8 +172,8 @@ public class ApplicationAnalysis {
 			// Checking for evaluateJavaScript
 			//	EvaluateJavaScriptHandler.checkEvaluateJavaScript(this);
 				
-				JSDownloader.getJSDetails();
-				JSDownloader.getAltJSDetails();
+			//	JSDownloader.getJSDetails();
+			//	JSDownloader.getAltJSDetails();
 				//re-initialize 
 				this.reInitialize();
 				//app Analyzed successfully
@@ -185,6 +186,9 @@ public class ApplicationAnalysis {
 				e.printStackTrace(System.out);
 			}
 		}
+		JSDownloader.removeDuplicates();
+		//copy remaining JS
+		JSDownloader.getAltJSDetails();
 	}
 	
 	public void removeDuplicate(List<String> activity_path){

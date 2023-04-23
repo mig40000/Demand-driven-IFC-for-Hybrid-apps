@@ -83,6 +83,12 @@ public class LoadUrlDB {
 			 stmt.close();
 			 c.commit();
 			 
+			 sql = "delete from webview_new;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
 			 c.close();
 			
 			

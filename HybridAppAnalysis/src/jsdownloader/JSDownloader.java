@@ -37,7 +37,7 @@ public class JSDownloader {
 
 			stmt = c.createStatement();
 			
-			System.out.println("sql is " + sql);
+		//	System.out.println("sql is " + sql);
 			
 			ResultSet rs = stmt.executeQuery(sql);
 			
@@ -59,6 +59,47 @@ public class JSDownloader {
 		}
 		
 		
+		
+	}
+	
+	public static void removeDuplicates() {
+		
+		Connection c = null;
+		Statement stmt = null;
+		String sql = "insert into webview_new select distinct * from webview_prime;";
+		
+		try {
+			Class.forName("org.sqlite.JDBC");
+			c = DriverManager.getConnection(GenericConstants.DB_NAME);
+			c.setAutoCommit(false);
+
+			stmt = c.createStatement();
+		//	System.out.println("sql is " + sql);
+			stmt.executeUpdate(sql);
+			
+			 stmt.close();
+			 c.commit();
+			 
+			 
+			 sql = "delete from webview_prime;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
+			 sql = "insert into webview_prime select distinct * from webview_new;";
+			 stmt = c.createStatement();
+			 stmt.executeUpdate(sql);
+			 stmt.close();
+			 c.commit();
+			 
+			 c.close();
+			
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -117,9 +158,11 @@ public class JSDownloader {
 	public static void extractAltJS(ArrayList<String> ifcObj, String appName) {
 		
 		String path = "output/intermediate/";
+		Integer counter = 0;
 		path = path.concat(appName+"/");
 		ArrayList<String> jsFilePath = findJSscript(path, appName);
 		String ifcFileName = "";
+		String dummyName = "";
 
 		ifcObj = duplicateRemover(ifcObj);
 		
@@ -129,11 +172,15 @@ public class JSDownloader {
 		}
 		ifcFileName = ifcFileName.replaceAll("#$", "");
 		
+	//	System.out.println("Size is " + jsFilePath.size());
+		
 		for(String jsFile: jsFilePath) {
-			copyJsFromApp(jsFile, ifcFileName, appName);
+			dummyName = appName + Integer.toString(counter);
+			copyJsFromApp(jsFile, ifcFileName, dummyName);
+			counter++;
 		}
 		
-		
+		//counter = 0;
 		
 		
 	}
@@ -208,7 +255,7 @@ public class JSDownloader {
 		}
 		
 		if(jsString.contains("javascript:")) {
-			System.out.println("jsString is " + jsString);
+		//	System.out.println("jsString is " + jsString);
 			String array[] = jsString.split("javascript:");
 			
 			for(String token : array) {
@@ -303,8 +350,8 @@ public class JSDownloader {
 	
 	public static void copyJsFromApp(String jsFilePath, String ifcObj, String appName) {
 		String destination = "../JSCode/" + appName + "#" + ifcObj + ".js";  
-		System.out.print("source is " + jsFilePath + "\n");
-		System.out.print("destination is " + destination + "\n");
+		//System.out.print("source is " + jsFilePath + "\n");
+		//System.out.print("destination is " + destination + "\n");
 		try {
 			//Use apktool to extract the source
 			ProcessBuilder pb = new ProcessBuilder("cp", jsFilePath, destination);
