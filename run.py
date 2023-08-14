@@ -142,6 +142,7 @@ def main() -> None:
     parser.add_argument("-apk", dest='apps_directory', type=str, help="android APKs")
     parser.add_argument("-s", dest='SUSI_FILE', type=str, help="sources/sinks file (default=SourcesSinks.txt)", default=os.path.join(".", "IFCAnalysis", "resource", "SourcesAndSinks.txt"))
     pre_processing(apps_directory)
+    runifc()
 
 if __name__ == '__main__':
     main()
