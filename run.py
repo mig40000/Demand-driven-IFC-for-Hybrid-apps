@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from argparse import ArgumentParser, RawTextHelpFormatter
 import os
 import logging
@@ -85,7 +86,7 @@ def ifc_analysis(config_file: str, logfile) -> None:
         print("timeout")
 
 
-def pre_processing(apps_path: str) -> None:
+def run_pre_processing(apps_path: str) -> None:
     if apps_path is None:
         raise ValueError("apps_path is none")
 
@@ -96,10 +97,7 @@ def pre_processing(apps_path: str) -> None:
         os.path.join(".", "Preprocessing", "Preprocessing.jar"),
         apps_path,
     ]
-    logging.info("command= ", command)
-    sep = " "
-    print(type(sep))
-    cmd = sep.join(command)
+    cmd = " ".join(command)
     try:
         subprocess.run(cmd, shell=True, timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
@@ -179,6 +177,8 @@ def sanity_check(args) -> None:
         raise ValueError(f"Database {args.database} does not exist")
     if not os.path.exists(args.apks):
         raise ValueError(f"Invalid APK directory {args.apks}")
+    if not has_android_sdk():
+        raise ValueError(f"Set ANDROID_SDK_ROOT")
 
 
 def main() -> None:
@@ -203,7 +203,9 @@ def main() -> None:
     args = parser.parse_args()
     sanity_check(args)
 
-    pre_processing(args.apps_directory)
+    
+
+    run_pre_processing(args.apps_directory)
     runifc(args.apps_directory, args.database, args.SUSI_FILE)
 
 
