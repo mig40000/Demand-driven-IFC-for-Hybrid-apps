@@ -85,6 +85,10 @@ class TestEnd2End {
         analyzer.run();
     }
 
-
-
+    @Test
+    void case1() throws WalaException, IOException, CancelException {
+        Config config = Config.fromFile("/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/dataUpload/partA/config/au.com.wallaceit.reddinator_68.prop");
+        Analyzer analyzer = new Analyzer(config);
+        analyzer.run();
+    }
 }

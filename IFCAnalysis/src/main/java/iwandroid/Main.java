@@ -8,9 +8,7 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
 
 public class Main {
 
@@ -19,7 +17,7 @@ public class Main {
 
     private static final Options options = new Options();
 
-//    private static final Option apiLevel = Option.builder().option("l").hasArg().desc("android platform version: android-<version>").required().build();
+    //    private static final Option apiLevel = Option.builder().option("l").hasArg().desc("android platform version: android-<version>").required().build();
 //    private static final Option apk = Option.builder().option("a").hasArg().desc("path to apk file to analyze").required().build();
 //    private static final Option db = Option.builder().option("db").hasArg().desc("database").required().build();
 //    private static final Option sourceSinkFile = Option.builder().option("s").hasArg(true).desc("source sink file").required().build();
@@ -42,16 +40,10 @@ public class Main {
 
     public static void usage() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("de.unipassau.main.HybridIFCAnalyzer", options);
+        formatter.printHelp("iwandroid.Main", options);
     }
 
     public static void main(String[] args) {
-        String sdkRoot = System.getenv("ANDROID_SDK_ROOT");
-        if (sdkRoot == null) {
-            logger.error("ANDROID_SDK_ROOT variable is not set. Set ANDROID_SDK_ROOT=/path/to/android/sdk");
-            System.exit(100);
-        }
-
         CommandLine cmd = null;
         try {
             cmd = DefaultParser.builder().build().parse(options, args);
@@ -67,13 +59,10 @@ public class Main {
         }
 
         try {
-            Properties configProp = new Properties();
-            try(var inputstream = new FileInputStream(cmd.getOptionValue(prop))) {
-                configProp.load(inputstream);
-                Config config = Config.makeConfig(configProp);
-                Analyzer analyzer = new Analyzer(config);
-                analyzer.run();
-            }
+            var configFile = cmd.getOptionValue(prop);
+            Config config = Config.fromFile(configFile);
+            Analyzer analyzer = new Analyzer(config);
+            analyzer.run();
         } catch (IOException | CancelException | WalaException e) {
             e.printStackTrace();
         }

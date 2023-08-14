@@ -33,7 +33,7 @@ public class FlowPathFact implements Iterable<FlowFact> {
             return Collections.emptyList();
         } else {
             int last = flowfacts.size()-1;
-            return flowfacts.subList(2, last);
+            return flowfacts.subList(1, last);
         }
     }
 

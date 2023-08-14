@@ -3,6 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="f4e95812-d293-408a-80d7-c31a1715fbb0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/dbinterfaces/BridgedMethodDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/dbinterfaces/BridgedMethodDb.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/AndroidLibraryList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/AndroidLibraryList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/BridgeSummaryFlowfunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/BridgeSummaryFlowfunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/FlowPathFact.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/FlowPathFact.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/ForwardAnalysisFlowFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/ForwardAnalysisFlowFunctions.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/InvokingFunctionFlowFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/InvokingFunctionFlowFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/main/Analyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/main/Analyzer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/utils/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/utils/Config.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/TestEnd2End.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/TestEnd2End.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +117,7 @@
       <workItem from="1554204825729" duration="1170000" />
       <workItem from="1679918077387" duration="8000" />
       <workItem from="1679918602079" duration="389000" />
+      <workItem from="1684965597817" duration="597000" />
     </task>
     <servers />
   </component>

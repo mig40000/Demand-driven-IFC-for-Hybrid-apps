@@ -21,6 +21,8 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
     HashMap<CGNode, Set<FlowPathFact>> summaries = HashMapFactory.make();
     List<BridgedMethod> bridgedMethods;
 
+    private static final boolean TRACE = true;
+
     public InvokingFunctionFlowFunction(CGNode entryPoint, FlowFactDomain domain, SourceSinkManager manager, List<BridgedMethod> bridgedMethods, HashMap<CGNode, Set<FlowPathFact>> summaries) {
         super(entryPoint, domain, manager);
         this.bridgedMethods = bridgedMethods;
@@ -103,8 +105,15 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
 
         SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
 
+//        if (src.isExitBlock()) {
+//            return EmptyFunction.empty();
+//        }
+        if (dest.getNode().toString().contains("Primordial")) {
+            return EmptyFunction.empty();
+        }
+
         if (inst instanceof SSAInvokeInstruction invokeInst) {
-            if (FlowFunctionUtils.isLibraryCall(invokeInst.getCallSite())) {
+            if (!FlowFunctionUtils.isLibraryCall(invokeInst.getCallSite())) {
                 //get the parameters passed to this function and
                 return d1 -> {
                     MutableIntSet result = MutableSparseIntSet.makeEmpty();
@@ -118,6 +127,8 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
                     }
                     return result;
                 };
+            } else {
+                return EmptyFunction.empty();
             }
         }
 

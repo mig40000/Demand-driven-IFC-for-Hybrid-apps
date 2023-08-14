@@ -35,9 +35,11 @@ public class Analyzer {
                                             SourceSinkManager ssm) throws CancelException {
         logger.info("Computing Bridge Method Summary for {}", method);
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
-        summary.buildresults();
-        bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
-        printInfluencedPaths(summary.getInfluencedVariables());
+        if (summary != null) {
+            summary.buildresults();
+            bridgesummaries.put(summary.getBridgeNode(), summary.collectSummaryPaths());
+            printInfluencedPaths(summary.getInfluencedVariables());
+        }
     }
 
     private void printInfluencedPaths(Set<FlowFact> influencedPaths) {

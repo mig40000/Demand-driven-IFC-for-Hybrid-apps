@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class AccessGraph {
@@ -84,6 +85,19 @@ public class AccessGraph {
       graphs.add(newGraph);
     }
     return graphs;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    AccessGraph that = (AccessGraph) o;
+    return baseVariable == that.baseVariable && Objects.equals(graph, that.graph) && Objects.equals(cgNode, that.cgNode);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(baseVariable, graph, cgNode);
   }
 
   public FieldGraph fieldGraph() {

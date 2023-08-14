@@ -48,6 +48,7 @@ public class AndroidLibraryList {
         libraries.add(LibraryFunc.make("Landroid/support/v7/app/ActionBarActivity", "onCreate"));
         libraryPatterns.add("Landroid");
         libraryPatterns.add("Ljava");
+        libraryPatterns.add("android");
     }
 
     public boolean contains(String className, String method) {

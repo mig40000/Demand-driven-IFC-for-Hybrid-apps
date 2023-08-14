@@ -13,17 +13,38 @@ public class BridgedMethodDb extends ArrayList<BridgedMethod> implements Iterabl
     private static final Logger logger = LoggerFactory.getLogger("[IWANDROID]");
 
     private void add(String appName, String initiatingClass, String bridgedClass, String interfaceObjects, @NotNull String bridgeMethods, String initiatingMethod) {
-        for (String bridgeMethod : bridgeMethods.split("\n")) {
+        for (String bridgeMethod : bridgeMethods.split(".method")) {
             // [0]: .method keyword, [1]: access specifier, [2]: method signature
-            String[] tokens = bridgeMethod.split(" ");
-            String tokenType = tokens[0];
-            String accessSpecifier = tokens[1];
-            String methodSign = tokens[2];
+            if (bridgeMethod.isEmpty()) {
+                continue;
+            }
 
-            if (!tokenType.equals(".method"))
-                logger.error("Invalid method name");
+            bridgeMethod = bridgeMethod.trim();
+            String[] tokens = bridgeMethod.split(" ");
+
+            if (tokens.length < 2) {
+                logger.error("Found invalid bridge methods  {}", bridgeMethods);
+                continue;
+            }
+            int lastIndex = tokens.length;
+//            String tokenType = tokens[0];
+            String accessSpecifier = tokens[0];
+            String methodSign = rectifyMethodSignature(tokens[lastIndex-1]);
+
+//            if (!tokenType.equals(".method"))
+//                logger.error("Invalid method name");
             BridgedMethod info = new BridgedMethod(appName, initiatingClass, bridgedClass, interfaceObjects, accessSpecifier, methodSign, initiatingMethod);
             bridgedMethods.add(info);
+        }
+    }
+
+    private String rectifyMethodSignature(String methodName) {
+        methodName = methodName.trim();
+        int lastIdx = methodName.length()-1;
+        if (methodName.charAt(lastIdx) == ';') {
+            return methodName.substring(0, lastIdx);
+        } else {
+            return methodName;
         }
     }
 

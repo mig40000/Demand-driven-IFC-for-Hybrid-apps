@@ -40,6 +40,9 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     }
 
     public MutableIntSet buildEntryBlockFunction(BasicBlockInContext<IExplodedBasicBlock> src) {
+        if (TRACE) {
+            System.err.println("\t\t" + src);
+        }
         MutableIntSet intset = MutableSparseIntSet.makeEmpty();
         IR ir = src.getNode().getIR();
         for (int vn = 1; vn <= ir.getSymbolTable().getMaxValueNumber(); ++vn) {
@@ -53,11 +56,16 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     @Override
     public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst) {
         //        System.out.println("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
+        if (TRACE) {
+            System.err.println("NORMAL FLOW FUNCTION \n\t" +  src + "\n\t" + dst);
+        }
+
         SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
-        if (dst.isEntryBlock()) {
+        if (src.isExitBlock()) {
             entryfacts = buildEntryBlockFunction(src);
         }
+
 
         IUnaryFlowFunction result = null;
         if (inst instanceof SSANewInstruction newInst) {

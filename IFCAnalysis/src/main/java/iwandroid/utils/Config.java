@@ -3,6 +3,8 @@ package iwandroid.utils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 public class Config {
@@ -103,6 +105,25 @@ public class Config {
         config.setJsDir(prop.getProperty("jsDir"));
         config.setSusiFile(prop.getProperty("susiFile"));
         return config;
+    }
+
+    public static Config fromFile(String file) {
+        try(var inputstream = new FileInputStream(file)) {
+            Properties prop = new Properties();
+            prop.load(inputstream);
+            return makeConfig(prop);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        try {
+//            Properties prop = new Properties();
+//            prop.load(new FileInputStream(file));
+//            return makeConfig(prop);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return Config.emptyConfig();
+        return null;
     }
 
     @Override
