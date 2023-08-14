@@ -88,7 +88,7 @@ def ifc_analysis(config_file: str, logfile) -> None:
 def pre_processing(apps_path: str) -> None:
     if apps_path is None:
         raise ValueError("apps_path is none")
-    
+
     print(type(apps_path))
     command = [
         "java",
@@ -133,16 +133,15 @@ def get_js_file(app_js_dir: str, apk: str) -> str:
 
 
 def runifc(apps_directory, database, susi_file):
-
     if apps_directory is None:
         raise ValueError("apps_directory is None")
-    
+
     if database is None:
         raise ValueError("database is None")
-    
+
     if susi_file is None:
         raise ValueError("susi_file is None")
-    
+
     for root, apk, apk_path in scan_directory_for_apks(apps_directory):
         logfile = os.path.join(apps_directory, "logs_new", f"{apk}.log")
         logging.basicConfig(filename=logfile, filemode="w")
@@ -182,6 +181,7 @@ def sanity_check(args) -> None:
     if not os.path.exists(args.apks):
         raise ValueError(f"Invalid APK directory {args.apks}")
 
+
 def main() -> None:
     parser = ArgumentParser("iwandroid", formatter_class=RawTextHelpFormatter)
     parser.add_argument(
@@ -203,7 +203,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     sanity_check(args)
-    
+
     pre_processing(args.apps_directory)
     runifc(args.apps_directory, args.database, args.SUSI_FILE)
 
