@@ -191,7 +191,7 @@ def main() -> None:
         default="Intent.sqlite",
     )
     parser.add_argument(
-        "-apks", dest="apps_directory", type=str, help="android APKs", required=True
+        "-apks", dest="apps_directory", type=str, help="android apk files", required=True
     )
     parser.add_argument(
         "-s",
