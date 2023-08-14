@@ -89,7 +89,6 @@ def pre_processing(apps_path: str) -> None:
     if apps_path is None:
         raise ValueError("apps_path is none")
 
-    print(type(apps_path))
     command = [
         "java",
         "-Xmx16G",
