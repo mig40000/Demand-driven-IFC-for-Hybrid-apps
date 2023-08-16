@@ -4,7 +4,8 @@ import os
 import logging
 import typing
 import subprocess
-import pdb
+import re
+from time import time
 
 PROJECT_ROOT = os.path.join(os.getenv("PWD"))
 SUSI_FILE = os.path.join(PROJECT_ROOT, "IFCAnalysis", "resource", "SourcesAndSinks.txt")
@@ -12,14 +13,14 @@ TIMEOUT = 1000
 
 
 def make_config(
-    app_name: str,
-    apk_file: str,
-    js_dir: str,
-    js_script: str,
-    database: str,
-    susi_file: str,
-    android_sdk_root: str,
-    version: int = 30,
+        app_name: str,
+        apk_file: str,
+        js_dir: str,
+        js_script: str,
+        database: str,
+        susi_file: str,
+        android_sdk_root: str,
+        version: int = 30,
 ):
     res = dict()
     logging.info(f"Using SDK_ROOT={android_sdk_root}")
@@ -61,7 +62,7 @@ def make_config(
 
 
 def ifc_analysis(config_file: str, logfile) -> None:
-    command = [
+    command = ' '.join([
         "java",
         "-Xmx16G",
         # "-Xss2G",
@@ -74,13 +75,11 @@ def ifc_analysis(config_file: str, logfile) -> None:
         ),
         "-p",
         config_file,
-    ]
-    logging.info("command= ", command)
+    ])
+    print("running command: ", command)
     f = open(logfile, "a")
     try:
-        subprocess.run(
-            " ".join(command), shell=True, timeout=TIMEOUT, stdout=f, stderr=f
-        )
+        subprocess.run(command, shell=True, timeout=TIMEOUT, stdout=f, stderr=f)
     except subprocess.TimeoutExpired:
         print("timeout")
 
@@ -122,6 +121,7 @@ def construct_js_dir(js_root_dir: str, apk: str) -> str:
 
 def get_js_file(app_js_dir: str, apk: str) -> str:
     files: str = []
+    apk = apk.replace(".apk", "")
     for _, _, f in os.walk(app_js_dir):
         files.extend([x for x in f if x.startswith(apk)])
     return files[0] if len(files) > 0 else None
@@ -138,7 +138,10 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
         raise ValueError("susi_file is None")
 
     for root, apk, apk_path in scan_directory_for_apks(apps_directory):
-        logfile = os.path.join(apps_directory, "logs_new", f"{apk}.log")
+        logs_dir = os.path.join(apps_directory, "logs_new")
+        if not os.path.exists(logs_dir):
+            os.mkdir(logs_dir)
+        logfile = os.path.join(logs_dir, f"{apk}.log")
         logging.basicConfig(filename=logfile, filemode="w")
         js_root = os.path.join(".", "JSCODE")
         js_dir = js_root
@@ -150,7 +153,7 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
                 apk.replace(".apk", ""),
                 apk_path,
                 js_dir,
-                get_js_file(js_dir),
+                js_file,
                 database,
                 susi_file,
                 android_sdk_root
@@ -159,14 +162,23 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
             for k, v in config.items():
                 logging.info(f"{k}={v}")
 
-            logging.info(f"------ INITIATING ANALYSIS [{apk}]-------------------")
+            print("initiating IFC analysis")
             config_file = write_config_to_file(apps_directory, config)
             start = time()
             ifc_analysis(config_file, logfile)
             end = time()
-            logging.info(f"\n\nTOTAL TIME: {end - start}/60")
+            print(f"\n\nTOTAL TIME: {end - start}/60")
         else:
             logging.error("Could not find js files")
+
+
+def write_config_to_file(path_prefix: str, config: typing.Dict[str, str]) -> str:
+    filename = os.path.join(path_prefix, f"{config.get('appName')}.prop")
+    with open(filename, 'w') as f:
+        for k, v in config.items():
+            f.write(f"{k}={v}\n")
+    logging.info(f"created config file {filename}")
+    return filename
 
 
 def sanity_check(args) -> None:
