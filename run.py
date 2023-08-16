@@ -123,8 +123,7 @@ def construct_js_dir(js_root_dir: str, apk: str) -> str:
 def get_js_file(app_js_dir: str, apk: str) -> str:
     files: str = []
     for _, _, f in os.walk(app_js_dir):
-        if f.startswith(apk):
-            files.extend(f)
+        files.extend([x for x in f if x.startswith(apk)])
     return files[0] if len(files) > 0 else None
 
 
