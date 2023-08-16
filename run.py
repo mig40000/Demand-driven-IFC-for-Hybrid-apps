@@ -175,7 +175,7 @@ def sanity_check(args) -> None:
         raise ValueError(f"Cannot find {args.SUSI_FILE}")
     if not os.path.exists(args.database):
         raise ValueError(f"Database {args.database} does not exist")
-    if not os.path.exists(args.apks):
+    if not os.path.exists(args.apps_directory):
         raise ValueError(f"Invalid APK directory {args.apks}")
     if not has_android_sdk():
         raise ValueError(f"Set ANDROID_SDK_ROOT")
@@ -202,9 +202,6 @@ def main() -> None:
     )
     args = parser.parse_args()
     sanity_check(args)
-
-    
-
     run_pre_processing(args.apps_directory)
     runifc(args.apps_directory, args.database, args.SUSI_FILE)
 
