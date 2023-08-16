@@ -176,7 +176,7 @@ def sanity_check(args) -> None:
     if not os.path.exists(args.database):
         raise ValueError(f"Database {args.database} does not exist")
     if not os.path.exists(args.apps_directory):
-        raise ValueError(f"Invalid APK directory {args.apks}")
+        raise ValueError(f"Invalid APK directory {args.apps_directory}")
     if not has_android_sdk():
         raise ValueError(f"Set ANDROID_SDK_ROOT")
 
