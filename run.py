@@ -18,11 +18,10 @@ def make_config(
     js_script: str,
     database: str,
     susi_file: str,
+    android_sdk_root: str,
     version: int = 30,
 ):
     res = dict()
-
-    android_sdk_root = os.getenv("ANDROID_SDK_ROOT")
     logging.info(f"Using SDK_ROOT={android_sdk_root}")
     android_path = os.path.join(
         android_sdk_root, "platforms", f"android-{version}", "android.jar"
@@ -129,7 +128,7 @@ def get_js_file(app_js_dir: str, apk: str) -> str:
     return files[0] if len(files) > 0 else None
 
 
-def runifc(apps_directory, database, susi_file):
+def run_ifc(apps_directory, database, susi_file, android_sdk_root):
     if apps_directory is None:
         raise ValueError("apps_directory is None")
 
@@ -155,6 +154,7 @@ def runifc(apps_directory, database, susi_file):
                 get_js_file(js_dir),
                 database,
                 susi_file,
+                android_sdk_root
             )
 
             for k, v in config.items():
@@ -177,8 +177,8 @@ def sanity_check(args) -> None:
         raise ValueError(f"Database {args.database} does not exist")
     if not os.path.exists(args.apps_directory):
         raise ValueError(f"Invalid APK directory {args.apps_directory}")
-    if not has_android_sdk():
-        raise ValueError(f"Set ANDROID_SDK_ROOT")
+    if args.android_sdk_root is None or not os.path.exists(args.android_sdk_root):
+        raise ValueError(f"Set ANDROID_SDK_ROOT or give a valid path")
 
 
 def main() -> None:
@@ -200,10 +200,17 @@ def main() -> None:
         help="sources/sinks file (default=SourcesSinks.txt)",
         default=os.path.join(".", "IFCAnalysis", "resource", "SourcesAndSinks.txt"),
     )
+    parser.add_argument(
+        "-l",
+        dest="android_sdk_root",
+        type=str,
+        help="path/to/android/sdk/root",
+        default=os.environ.get("ANDROID_SDK_ROOT")
+    )
     args = parser.parse_args()
     sanity_check(args)
     run_pre_processing(args.apps_directory)
-    runifc(args.apps_directory, args.database, args.SUSI_FILE)
+    run_ifc(args.apps_directory, args.database, args.SUSI_FILE, args.android_sdk_root)
 
 
 if __name__ == "__main__":
