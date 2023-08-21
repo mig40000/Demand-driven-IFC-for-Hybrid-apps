@@ -349,7 +349,7 @@ public class JSDownloader {
 	}
 	
 	public static void copyJsFromApp(String jsFilePath, String ifcObj, String appName) {
-		String destination = "../JSCode/" + appName + "#" + ifcObj + ".js";  
+		String destination = "JSCode/" + appName + "#" + ifcObj + ".js";  
 		//System.out.print("source is " + jsFilePath + "\n");
 		//System.out.print("destination is " + destination + "\n");
 		try {

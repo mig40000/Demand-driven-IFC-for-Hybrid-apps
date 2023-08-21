@@ -12,9 +12,9 @@ public class GenericConstants {
 
 	public static final int MAX_CLASS = 20000;
 	public static final int MAX_FOLDERS = 2000;
-	public static String DEFAULT_LOG_DIRECTORY = "output/logs/";
-	public static final String APKTOOL_OUTPUT_DIRECTORY = "output/intermediate/";
-	public static final String DB_NAME = "jdbc:sqlite:Database/Intent.sqlite";
+	public static String DEFAULT_LOG_DIRECTORY = "Preprocessing/output/logs/";
+	public static final String APKTOOL_OUTPUT_DIRECTORY = "Preprocessing/output/intermediate/";
+	public static final String DB_NAME = "jdbc:sqlite:Preprocessing/Database/Intent.sqlite";
 	
 	public final String class_init = "Ljava/lang/Class;->forName(Ljava/lang/String;)Ljava/lang/Class;";
 	public static final String LOAD_URL ="Landroid/webkit/WebView;->loadUrl(Ljava/lang/String;)V";

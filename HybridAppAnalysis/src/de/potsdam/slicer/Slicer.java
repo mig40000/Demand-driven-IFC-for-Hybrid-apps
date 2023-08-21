@@ -248,7 +248,7 @@ public class Slicer {
 		Connection conn = null;
 		if(this.currentWebView != null) {
 		try{
-			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
+			conn = DriverManager.getConnection("jdbc:sqlite:Preprocessing/Database/Intent.sqlite");
 		} catch (SQLException e1) {
 			System.out.println(e1.getMessage());
 		}
@@ -296,7 +296,7 @@ public class Slicer {
 		Connection conn = null;
 		if(this.currentWebView != null) {
 		try{
-			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
+			conn = DriverManager.getConnection("jdbc:sqlite:Preprocessing/Database/Intent.sqlite");
 		} catch (SQLException e1) {
 			System.out.println(e1.getMessage());
 		}
