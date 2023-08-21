@@ -61,7 +61,7 @@ def make_config(
     return res
 
 
-def ifc_analysis(config_file: str) -> None:
+def ifc_analysis(config_file: str, logfile: str) -> None:
     jar_path = os.path.join("iwanDroid-1.0-jar-with-dependencies.jar")
 
     if not os.path.exists(jar_path):
@@ -80,11 +80,12 @@ def ifc_analysis(config_file: str) -> None:
         ]
     )
 
-    print("running command: ", command)
-    try:
-        subprocess.run(command, shell=True, timeout=TIMEOUT)
-    except subprocess.TimeoutExpired:
-        print("timeout")
+    with open(logfile, "w+") as f:
+        print("running command: ", command)
+        try:
+            subprocess.run(command, shell=True, timeout=TIMEOUT, stdout=f, stderr=f)
+        except subprocess.TimeoutExpired:
+            print("timeout")
 
 
 def run_pre_processing(apps_path: str) -> None:
@@ -156,9 +157,10 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root, version):
         js_dir = js_root
         js_file = get_js_file(js_dir, apk)
 
+        apk_name = apk.replace(".apk", "")
         if js_file is not None:
             config = make_config(
-                apk.replace(".apk", ""),
+                apk_name,
                 apk_path,
                 js_dir,
                 js_file,
@@ -174,7 +176,7 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root, version):
             print("initiating IFC analysis")
             config_file = write_config_to_file(apps_directory, config)
             start = time()
-            ifc_analysis(config_file)
+            ifc_analysis(config_file, f"{apk_name}.log")
             end = time()
             print(f"\n\nTOTAL TIME: {end - start}/60")
         else:
