@@ -52,7 +52,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         }
 
         if (TRACE)
-            System.out.println("\tBuildEntryBlockFunction " + intset);
+            logger.info("\tBuildEntryBlockFunction " + intset);
         return intset;
     }
 
@@ -65,12 +65,12 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     @Override
     public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
         if (TRACE) {
-            System.out.println("Called Normal Flow function \n\tsrc " + src + "\n\tdest= " + dest);
+            logger.info("Called Normal Flow function \n\tsrc " + src + "\n\tdest= " + dest);
         }
         var inst = FlowFunctionUtils.getInstruction(src);
 
         if (TRACE) {
-            System.out.println("\tInstruction= " + inst);
+            logger.info("\tInstruction= " + inst);
         }
 
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
@@ -101,7 +101,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
     private IUnaryFlowFunction buildPhiInstruction(SSAPhiInstruction phiInst, CGNode node, MutableIntSet entryfacts) {
         if (TRACE) {
-            System.out.println("Called Phi Instruction function " + phiInst);
+            logger.info("Called Phi Instruction function " + phiInst);
         }
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.make(entryfacts);
@@ -127,7 +127,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
     private IUnaryFlowFunction buildReturnInstruction(SSAReturnInstruction returnInst, CGNode node, MutableIntSet entryfacts) {
         if (TRACE) {
-            System.out.println("\tCalled return Instruction " + returnInst);
+            logger.info("\tCalled return Instruction " + returnInst);
         }
         return d1 -> {
             final MutableIntSet result = MutableSparseIntSet.make(entryfacts);
@@ -150,8 +150,8 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
     private IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node, MutableIntSet entryfacts) {
         if (TRACE) {
-            System.out.println("\tCalled Get Instruction  " + Arrays.toString(node.getIR().getInstructions()));
-            System.out.println(entryfacts);
+            logger.info("\tCalled Get Instruction  " + Arrays.toString(node.getIR().getInstructions()));
+            logger.info(entryfacts.toString());
         }
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.make(entryfacts);
@@ -217,9 +217,9 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     }
 
     private void trace(String functiontype, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        System.out.println("Called " + functiontype);
-        System.out.println("\tsrc= " + src);
-        System.out.println("\tdest= " + dest);
+        logger.info("Called " + functiontype);
+        logger.info("\tsrc= " + src);
+        logger.info("\tdest= " + dest);
     }
 
     /**
@@ -238,12 +238,12 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         assert invoke != null;
 
         if (TRACE) {
-            System.out.println("\tInvoke Instruction = " + invoke);
+            logger.info("\tInvoke Instruction = " + invoke);
         }
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
             if (TRACE) {
-                System.out.println("\tLibrary function call");
+                logger.info("\tLibrary function call");
             }
             // propagate library calls by replqcing it with identity functions
 //            return EmptyFunction.empty();

@@ -17,7 +17,10 @@ import com.ibm.wala.util.collections.HashSetFactory;
 import iwandroid.dbinterfaces.BridgedMethod;
 import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.frontend.AndroidAnalysis;
+import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -35,6 +38,9 @@ public class InvokingMethodDriver {
     protected InvokingMethodFlowProblem problem;
 
     private static boolean TRACE = false;
+
+    private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
+
 //    protected BackwardIFCAnalysisProblem problem;
 
     public InvokingMethodDriver(CGNode entrypoint,
@@ -105,8 +111,8 @@ public class InvokingMethodDriver {
         for (var sgnode : supergraph) {
             var reachableNodes = result.getResult(sgnode);
             if (sgnode.getNode().equals(entrypoint) && TRACE) {
-                System.out.println(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
-                reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
+                logger.info(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
+                reachableNodes.foreach(i -> logger.info(domain.getMappedObject(i) + " "));
             }
         }
     }
@@ -125,7 +131,7 @@ public class InvokingMethodDriver {
         var supergraph = BackwardsSupergraph.make(ICFGSupergraph.make(analysis.callgraph()));
         var entrypoint = findCGNodeForBridgeMethod(method, analysis);
         if (TRACE)
-            System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
+            logger.info(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
 
         return entrypoint.map(cgNode -> new InvokingMethodDriver(
                 cgNode,

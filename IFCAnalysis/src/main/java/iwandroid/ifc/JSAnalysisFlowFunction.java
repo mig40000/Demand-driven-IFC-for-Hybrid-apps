@@ -9,6 +9,9 @@ import com.ibm.wala.ssa.SSAInvokeInstruction;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.intset.MutableIntSet;
 import com.ibm.wala.util.intset.MutableSparseIntSet;
+import iwandroid.utils.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -20,6 +23,9 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 
     private final HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries;
 
+    private final static Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
+
+
     public JSAnalysisFlowFunction(CGNode entryPoint, FlowFactDomain domain, HashMap<CGNode, Set<FlowPathFact>> bridgesummaries) {
         super(entryPoint, domain, null);
         this.bridgeSummaries = bridgesummaries;
@@ -29,7 +35,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
         SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) FlowFunctionUtils.getInstruction(src);
         if (TRACE) {
-            System.out.println("JSAnalysisflowfunction.getCallFlowFunction " + invoke + " target is " + invoke.getDeclaredTarget());
+            logger.info("JSAnalysisflowfunction.getCallFlowFunction " + invoke + " target is " + invoke.getDeclaredTarget());
         }
         assert invoke != null;
         // check if the invoking method is a bridge method. In this case propagate the summaries
@@ -54,7 +60,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
         if (isJsLib(invoke)) {
             if (TRACE)
                 // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
-                System.out.println(invoke + "  is a JS library or constructor reference");
+                logger.info(invoke + "  is a JS library or constructor reference");
             if (!invoke.hasDef()) {
                 return EmptyFunction.empty();
             } else {
@@ -104,7 +110,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
 
             for (int paramI = 0; paramI < invoke.getNumberOfPositionalParameters(); ++paramI) {
-                System.out.println("Potential Integrity Violation " + invoke);
+                logger.info("Potential Integrity Violation " + invoke);
                 int aArg = invoke.getUse(paramI);
                 var flowfact = domain.getMappedObject(d1);
                 if (flowfact.getBase() == aArg) {

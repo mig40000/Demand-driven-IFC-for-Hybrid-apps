@@ -12,7 +12,10 @@ import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.collections.HashSetFactory;
 import iwandroid.dbinterfaces.BridgedMethod;
 import iwandroid.frontend.AndroidAnalysis;
+import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +33,9 @@ public class BridgeMethodIFCSummaryDriver {
     protected BridgeMethodPathSummaryProblem problem;
 
     private static boolean DEBUG = false;
+
+    private final static Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
+
 
     protected BridgeMethodIFCSummaryDriver(CGNode bridgeNode,
                                            ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
@@ -95,8 +101,8 @@ public class BridgeMethodIFCSummaryDriver {
             var reachableNodes = result.getResult(sgnode);
             if (DEBUG) {
                 if (sgnode.getNode().equals(bridgeNode)) {
-                    System.out.println(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
-                    reachableNodes.foreach(i -> System.out.println(domain.getMappedObject(i) + " "));
+                    logger.info(sgnode + " [ " + sgnode.getDelegate().getInstruction() + " ] " + reachableNodes);
+                    reachableNodes.foreach(i -> logger.info(domain.getMappedObject(i) + " "));
                 }
             }
         }
@@ -127,7 +133,7 @@ public class BridgeMethodIFCSummaryDriver {
         var supergraph = ICFGSupergraph.make(analysis.callgraph());
         var entrypoint = FlowFunctionUtils.findCGNodeForBridgeMethod(method, analysis);
         if (DEBUG)
-            System.out.println(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
+            logger.info(entrypoint.map(ep -> ep.getIR().toString()).orElse("No insturctions"));
         return entrypoint.map(cgNode -> new BridgeMethodIFCSummaryDriver(cgNode, supergraph, new FlowPathFactDomain(), ssm)).orElse(null);
     }
 

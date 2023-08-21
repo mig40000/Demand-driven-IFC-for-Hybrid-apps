@@ -49,13 +49,13 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
             int id = domain.add(new FlowFact(src.getNode(), vn, null, IFCLabel.PUBLIC));
             intset.add(id);
         }
-//        System.out.println("BuildEntryBlockFunction " + intset);
+//        logger.info("BuildEntryBlockFunction " + intset);
         return intset;
     }
 
     @Override
     public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst) {
-        //        System.out.println("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
+        //        logger.info("JP--DEBUG " + src.getDelegate().getInstruction() + " --> " + dst.getDelegate().getInstruction());
         if (TRACE) {
             System.err.println("NORMAL FLOW FUNCTION \n\t" +  src + "\n\t" + dst);
         }
@@ -135,7 +135,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
         }
         return d1 -> {
-//            System.out.println("Get function " + inst + " d1 = " + d1);
+//            logger.info("Get function " + inst + " d1 = " + d1);
 
             int src = inst.getUse(0);
             int dst = inst.getDef();
@@ -151,7 +151,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
                 FlowFact dstFact = new FlowFact(node, dst, srcTaintInfo.fieldgraph(), srcTaintInfo.ifclabel());
                 result.add(domain.add(dstFact));
             }
-//            System.out.println("get function result " + result);
+//            logger.info("get function result " + result);
             return result;
         };
     }
