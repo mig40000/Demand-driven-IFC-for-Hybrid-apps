@@ -153,7 +153,7 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root, version):
             os.mkdir(logs_dir)
         logfile = os.path.join(logs_dir, f"{apk}.log")
         logging.basicConfig(filename=logfile, filemode="w")
-        js_root = os.path.join(".", "JSCODE")
+        js_root = os.path.join(".", "JSCode")
         js_dir = js_root
         js_file = get_js_file(js_dir, apk)
 
