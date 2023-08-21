@@ -157,7 +157,7 @@ public class JSDownloader {
 	
 	public static void extractAltJS(ArrayList<String> ifcObj, String appName) {
 		
-		String path = "output/intermediate/";
+		String path = "Preprocessing/output/intermediate/";
 		Integer counter = 0;
 		path = path.concat(appName+"/");
 		ArrayList<String> jsFilePath = findJSscript(path, appName);
@@ -228,7 +228,7 @@ public class JSDownloader {
 	
 	public static void extractJS(String jsString, String ifcObj, String appName) {
 		
-		String path = "output/intermediate/";
+		String path = "Preprocessing/output/intermediate/";
 		path = path.concat(appName+"/");
 		boolean flag = false;
 		String script = "";
@@ -317,7 +317,7 @@ public class JSDownloader {
 	
 	public static String findAbsolutePath(String js, String appName) {
 		
-		String path = "output/intermediate/";
+		String path = "Preprocessing/output/intermediate/";
 		path = path.concat(appName+"/");
 		String jsFilePath = "";
 		try {

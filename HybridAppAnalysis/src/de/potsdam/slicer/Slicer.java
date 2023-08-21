@@ -67,7 +67,7 @@ public class Slicer {
 		this.class_content = class_list;
 		this.logger = logger;
 		this.app = app;
-		FileWriter writer = new FileWriter("output/dummy.txt");
+		FileWriter writer = new FileWriter("Preprocessing/output/dummy.txt");
 		BufferedWriter buffer = new BufferedWriter(writer); 
 
 		prepareSlice();
@@ -94,14 +94,14 @@ public class Slicer {
 		
 		
 		
-		BufferedReader reader = new BufferedReader(new FileReader("output/dummy.txt"));
+		BufferedReader reader = new BufferedReader(new FileReader("Preprocessing/output/dummy.txt"));
 		Set<String> lines = new HashSet<String>(50000);
 		String line;
 	    while ((line = reader.readLine()) != null) {
 	        lines.add(line);
 	    }
 	    reader.close();
-	    BufferedWriter writerA = new BufferedWriter(new FileWriter("output/dummy.txt"));
+	    BufferedWriter writerA = new BufferedWriter(new FileWriter("Preprocessing/output/dummy.txt"));
 	    for (String unique : lines) {
 	        writerA.write(unique);
 	        writerA.newLine();
@@ -194,7 +194,7 @@ public class Slicer {
 	 * read the sources file which contains possible information leak sources
 	 */
 	public void readSources() {
-		File file = new File("Database/sources.txt");
+		File file = new File("Preprocessing/Database/sources.txt");
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -387,7 +387,7 @@ public class Slicer {
 
 		extractStringsFromSlice();
 
-		File dir = new File("output/" + app.getAppName() + "/downloads");
+		File dir = new File("Preprocessing/output/" + app.getAppName() + "/downloads");
 		dir.mkdirs();
 
 		for (String s : this.sliceStrings) {
@@ -547,7 +547,7 @@ public class Slicer {
 		SliceMethod invokedMethod;
 
 		try {
-			File dir = new File("output/" + app.getAppName());
+			File dir = new File("Preprocessing/output/" + app.getAppName());
 			dir.mkdirs();
 			File sliceFile = new File(dir, "slice" + this.sliceCount + ".smali");
 			sliceFile.createNewFile();
