@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Analyzer {
@@ -44,7 +45,7 @@ public class Analyzer {
 
     private void printInfluencedPaths(Set<FlowFact> influencedPaths) {
         for (var path : influencedPaths) {
-            logger.warn("INFLUENCED PATH: {} {} {}", path.getCGNode(), path.getBase(), path.fieldgraph());
+            System.out.println("Influenced Path " + " " + path.getCGNode() + " " +  path.getBase() + " "  + path.fieldgraph());
         }
     }
 
@@ -98,11 +99,14 @@ public class Analyzer {
 
     private void runJsAnalysis(String jsDir, String jsFile) throws WalaException, IOException, CancelException {
         // PHASE 2: compute the summary of the javascript files
+        System.out.println("Analyzing javascript code " + Paths.get(jsDir, jsFile));
         var analysis = new JSAnalysis(jsDir, jsFile);
         var entrynodes = new ArrayList<>(analysis.getCallGraph().getEntrypointNodes());
         var supergraph = ICFGSupergraph.make(analysis.getCallGraph());
+        System.out.println("Computed Javascript Callgraph ");
         var appEntryNode = entrynodes.get(0);
         JSAnalysisDriver driver = new JSAnalysisDriver(appEntryNode, supergraph, bridgesummaries);
+        System.out.println("IFC analysis");
         driver.analyze();
 //        System.out.println(driver.getResults());
     }
@@ -110,14 +114,17 @@ public class Analyzer {
 
     private void runAndroidAnalysis(String androidJar, String apk, @NotNull List<BridgedMethod> bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {
         // PHASE 1(a): compute the summary of the bridge methods
+        System.out.println("Generating Callgraph for Android");
         var analysis = new AndroidAnalysis(androidJar, apk);
         for (var bridgeMethod : bridgedMethods) {
+            System.out.println("Computing summary for bridged method " + bridgeMethod.toString());
             computeBridgeMethodSummary(analysis, bridgeMethod, ssm);
             String clazz = bridgeMethod.initiatingClass();
             String method = bridgeMethod.initiatingMethod();
             // PHASE 1(b): compute the summary of the ifc methods
             Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
             assert invokingMethod.isPresent();
+            System.out.println("Computing summary information " + invokingMethod.get().getMethod().toString());
             computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
         }
 //        String clazz = bridgedMethods.get(0).initiatingClass();

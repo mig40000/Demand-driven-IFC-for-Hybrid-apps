@@ -6,49 +6,49 @@ import typing
 import subprocess
 import re
 from time import time
+from sys import exit, stderr, stdout, stdin
 
 PROJECT_ROOT = os.path.join(os.getenv("PWD"))
-SUSI_FILE = os.path.join(PROJECT_ROOT, "IFCAnalysis", "resource", "SourcesAndSinks.txt")
 TIMEOUT = 1000
 
 
 def make_config(
-        app_name: str,
-        apk_file: str,
-        js_dir: str,
-        js_script: str,
-        database: str,
-        susi_file: str,
-        android_sdk_root: str,
-        version: int = 30,
+    app_name: str,
+    apk_file: str,
+    js_dir: str,
+    js_script: str,
+    database: str,
+    susi_file: str,
+    android_sdk_root: str,
+    version: int,
 ):
     res = dict()
-    logging.info(f"Using SDK_ROOT={android_sdk_root}")
+    print(f"Using SDK_ROOT={android_sdk_root}")
     android_path = os.path.join(
         android_sdk_root, "platforms", f"android-{version}", "android.jar"
     )
 
     if not os.path.exists(android_path):
-        logging.info(f"android.jar not present in {android_path}")
+        print(f"android.jar not present in {android_path}")
         exit(127)
 
     if not os.path.exists(apk_file):
-        logging.info(f"apk file not present {apk_file}")
+        print(f"apk file not present {apk_file}")
         exit(127)
 
     if not os.path.exists(susi_file):
-        logging.info(f"cannot find {susi_file}")
+        print(f"cannot find {susi_file}")
         exit(127)
 
     if not os.path.exists(database):
-        logging.info(f"database not found: {database}")
+        print(f"database not found: {database}")
         exit(127)
     if not os.path.exists(js_dir):
-        logging.info(f"cannot locate directory {js_dir}")
+        print(f"cannot locate directory {js_dir}")
         exit(127)
 
     if not os.path.exists(os.path.join(js_dir, js_script)):
-        logging.info(f"cannot locate file {os.path.join(js_dir, js_script)}")
+        print(f"cannot locate file {os.path.join(js_dir, js_script)}")
 
     res["appName"] = app_name
     res["apkFile"] = apk_file
@@ -61,25 +61,28 @@ def make_config(
     return res
 
 
-def ifc_analysis(config_file: str, logfile) -> None:
-    command = ' '.join([
-        "java",
-        "-Xmx16G",
-        # "-Xss2G",
-        "-jar",
-        os.path.join(
-            PROJECT_ROOT,
-            "IFCAnalysis",
-            "target",
-            "iwanDroid-1.0-jar-with-dependencies.jar",
-        ),
-        "-p",
-        config_file,
-    ])
+def ifc_analysis(config_file: str) -> None:
+    jar_path = os.path.join("iwanDroid-1.0-jar-with-dependencies.jar")
+
+    if not os.path.exists(jar_path):
+        print(f"failed to find {jar_path}")
+        exit(100)
+
+    command = " ".join(
+        [
+            "java",
+            "-Xmx16G",
+            # "-Xss2G",
+            "-jar",
+            jar_path,
+            "-p",
+            config_file,
+        ]
+    )
+
     print("running command: ", command)
-    f = open(logfile, "a")
     try:
-        subprocess.run(command, shell=True, timeout=TIMEOUT, stdout=f, stderr=f)
+        subprocess.run(command, shell=True, timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
         print("timeout")
 
@@ -88,11 +91,17 @@ def run_pre_processing(apps_path: str) -> None:
     if apps_path is None:
         raise ValueError("apps_path is none")
 
+    jar_path = os.path.join(".", "Preprocessing", "Preprocessing.jar")
+
+    if not os.path.exists(jar_path):
+        print(f"failed to find {jar_path}")
+        exit(100)
+
     command = [
         "java",
         "-Xmx16G",
         "-jar",
-        os.path.join(".", "Preprocessing", "Preprocessing.jar"),
+        jar_path,
         apps_path,
     ]
     cmd = " ".join(command)
@@ -127,7 +136,7 @@ def get_js_file(app_js_dir: str, apk: str) -> str:
     return files[0] if len(files) > 0 else None
 
 
-def run_ifc(apps_directory, database, susi_file, android_sdk_root):
+def run_ifc(apps_directory, database, susi_file, android_sdk_root, version):
     if apps_directory is None:
         raise ValueError("apps_directory is None")
 
@@ -137,7 +146,7 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
     if susi_file is None:
         raise ValueError("susi_file is None")
 
-    for root, apk, apk_path in scan_directory_for_apks(apps_directory):
+    for _, apk, apk_path in scan_directory_for_apks(apps_directory):
         logs_dir = os.path.join(apps_directory, "logs_new")
         if not os.path.exists(logs_dir):
             os.mkdir(logs_dir)
@@ -145,7 +154,6 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
         logging.basicConfig(filename=logfile, filemode="w")
         js_root = os.path.join(".", "JSCODE")
         js_dir = js_root
-        # js_dir = construct_js_dir(js_root, apk)
         js_file = get_js_file(js_dir, apk)
 
         if js_file is not None:
@@ -156,34 +164,35 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root):
                 js_file,
                 database,
                 susi_file,
-                android_sdk_root
+                android_sdk_root,
+                version
             )
 
             for k, v in config.items():
-                logging.info(f"{k}={v}")
+                print(f"{k}={v}")
 
             print("initiating IFC analysis")
             config_file = write_config_to_file(apps_directory, config)
             start = time()
-            ifc_analysis(config_file, logfile)
+            ifc_analysis(config_file)
             end = time()
             print(f"\n\nTOTAL TIME: {end - start}/60")
         else:
-            logging.error("Could not find js files")
+            print("Could not find js files", file=stderr)
 
 
 def write_config_to_file(path_prefix: str, config: typing.Dict[str, str]) -> str:
     filename = os.path.join(path_prefix, f"{config.get('appName')}.prop")
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         for k, v in config.items():
             f.write(f"{k}={v}\n")
-    logging.info(f"created config file {filename}")
+    print(f"created config file {filename}")
     return filename
 
 
 def sanity_check(args) -> None:
-    if not os.path.exists(args.SUSI_FILE):
-        raise ValueError(f"Cannot find {args.SUSI_FILE}")
+    if not os.path.exists(args.susi_file):
+        raise ValueError(f"Cannot find {args.susi_file}")
     if not os.path.exists(args.database):
         raise ValueError(f"Database {args.database} does not exist")
     if not os.path.exists(args.apps_directory):
@@ -202,11 +211,15 @@ def main() -> None:
         default="Intent.sqlite",
     )
     parser.add_argument(
-        "-apks", dest="apps_directory", type=str, help="android apk files", required=True
+        "-apks",
+        dest="apps_directory",
+        type=str,
+        help="android apk files",
+        required=True,
     )
     parser.add_argument(
         "-s",
-        dest="SUSI_FILE",
+        dest="susi_file",
         type=str,
         help="sources/sinks file (default=SourcesSinks.txt)",
         default=os.path.join(".", "IFCAnalysis", "resource", "SourcesAndSinks.txt"),
@@ -216,12 +229,19 @@ def main() -> None:
         dest="android_sdk_root",
         type=str,
         help="path/to/android/sdk/root",
-        default=os.environ.get("ANDROID_SDK_ROOT")
+        default=os.environ.get("ANDROID_SDK_ROOT"),
+    )
+    parser.add_argument(
+        "-v",
+        dest="version",
+        type=int,
+        help="android version number",
+        default=30
     )
     args = parser.parse_args()
     sanity_check(args)
     run_pre_processing(args.apps_directory)
-    run_ifc(args.apps_directory, args.database, args.SUSI_FILE, args.android_sdk_root)
+    run_ifc(args.apps_directory, args.database, args.susi_file, args.android_sdk_root, args.version)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ import java.util.Set;
 public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
 
 
-    private static final boolean TRACE = false;
+    private static final boolean TRACE = true;
 
     private final HashMap<CGNode, Set<FlowPathFact>> bridgeSummaries;
 
@@ -54,7 +54,7 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
         if (isJsLib(invoke)) {
             if (TRACE)
                 // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value
-                System.out.println("JP.... " + invoke + "  is a JS library or constructor reference");
+                System.out.println(invoke + "  is a JS library or constructor reference");
             if (!invoke.hasDef()) {
                 return EmptyFunction.empty();
             } else {
@@ -84,8 +84,6 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
                 return result;
             };
         }
-
-        //
     }
 
     private boolean isJsLib(SSAAbstractInvokeInstruction invoke) {
@@ -100,13 +98,13 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
                                                              BasicBlockInContext<IExplodedBasicBlock> src,
                                                              BasicBlockInContext<IExplodedBasicBlock> dst) {
         // map each path of the destination node to the source node
-        // update the
         return d1 -> {
             SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
             assert invoke != null;
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
 
             for (int paramI = 0; paramI < invoke.getNumberOfPositionalParameters(); ++paramI) {
+                System.out.println("Potential Integrity Violation " + invoke);
                 int aArg = invoke.getUse(paramI);
                 var flowfact = domain.getMappedObject(d1);
                 if (flowfact.getBase() == aArg) {
