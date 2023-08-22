@@ -55,6 +55,9 @@ public class BridgeMethodPathSummaryProblem implements TabulationProblem<BasicBl
         var entryBlock = ir.getControlFlowGraph().entry().getGraphNodeId();
         var entrySuperblock = supergraph.getLocalBlock(this.entrypoint, entryBlock);
         initPathEdges.add(PathEdge.createPathEdge(entrySuperblock, 0, entrySuperblock, 0));
+        for (int i=1; i < ir.getSymbolTable().getMaxValueNumber(); ++i) {
+            initPathEdges.add(PathEdge.createPathEdge(entrySuperblock, i, entrySuperblock, i));
+        }
         return initPathEdges;
     }
 

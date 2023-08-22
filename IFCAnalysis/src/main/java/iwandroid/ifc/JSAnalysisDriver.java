@@ -8,7 +8,8 @@ import com.ibm.wala.ipa.cfg.BasicBlockInContext;
 import com.ibm.wala.ssa.analysis.IExplodedBasicBlock;
 import com.ibm.wala.util.CancelException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
 
 public class JSAnalysisDriver {
 
@@ -24,7 +25,7 @@ public class JSAnalysisDriver {
         this.entrypoint = entrypoint;
         this.supergraph = supergraph;
         this.domain = new FlowFactDomain();
-        this.problem = new JSAnalysisProblem(entrypoint, supergraph,bridgesummaries, this.domain);
+        this.problem = new JSAnalysisProblem(entrypoint, supergraph, bridgesummaries, this.domain);
     }
 
     public TabulationResult<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowFact> analyze() {

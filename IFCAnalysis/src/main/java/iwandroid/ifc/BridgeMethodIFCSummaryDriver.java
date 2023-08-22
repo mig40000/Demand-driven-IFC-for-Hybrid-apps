@@ -16,6 +16,7 @@ import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +37,10 @@ public class BridgeMethodIFCSummaryDriver {
 
     private final static Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
+    static {
+        logger.isEnabledForLevel(Level.TRACE);
+    }
+
 
     protected BridgeMethodIFCSummaryDriver(CGNode bridgeNode,
                                            ISupergraph<BasicBlockInContext<IExplodedBasicBlock>, CGNode> supergraph,
@@ -46,12 +51,23 @@ public class BridgeMethodIFCSummaryDriver {
         this.domain = domain;
         this.flowfunctions = new BridgeSummaryFlowfunctions(domain, bridgeNode, ssm);
         this.problem = new BridgeMethodPathSummaryProblem(bridgeNode, domain, supergraph, ssm, this.flowfunctions);
+        logger.isEnabledForLevel(Level.TRACE);
     }
 
     protected TabulationResult<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowPathFact> analyze() {
+        logger.info("Analyzing bridge function  {} ", bridgeNode.getMethod().toString());
+        logger.info("IR======");
+        logger.info(this.bridgeNode.getIR().toString());
+        logger.info("========");
         this.solver = TabulationSolver.make(this.problem);
+        logger.info(" initial seeds = " + this.solver.getSeeds().size());
+        for (var s :solver.getSeeds()) {
+            logger.info(s.toString());
+        }
         try {
+            logger.info("solving constraints");
             this.result = solver.solve();
+//            logger.info(" Result = {}", this.result);
             return this.result;
         } catch (CancelException e) {
             throw new IllegalStateException("Failed to solve the constraints");

@@ -164,6 +164,9 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
     }
 
     public IUnaryFlowFunction transformSummaryToFlowFunction(CGNode targetNode, SSAInvokeInstruction invoke) {
+        if (FlowFunctionUtils.isSensitiveSource(ssm, invoke.getCallSite())) {
+
+        }
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
             result.add(d1);

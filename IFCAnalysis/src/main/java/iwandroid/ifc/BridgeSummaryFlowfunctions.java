@@ -18,6 +18,7 @@ import iwandroid.utils.Config;
 import iwandroid.utils.SourceSinkManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,9 +33,11 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
 
     private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
-    private static final boolean TRACE = false;
-
+    static {
+        logger.isEnabledForLevel(Level.TRACE);
+    }
     public BridgeSummaryFlowfunctions(FlowPathFactDomain domain, CGNode entryPoint, SourceSinkManager ssm) {
+        logger.trace("In bridgeSummaryFlowFunctions");
         this.domain = domain;
         this.entryPoint = entryPoint;
         this.ssm = ssm;
@@ -51,8 +54,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             intset.add(id);
         }
 
-        if (TRACE)
-            logger.info("\tBuildEntryBlockFunction " + intset);
+        logger.trace("\tBuildEntryBlockFunction " + intset);
         return intset;
     }
 
@@ -64,15 +66,9 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getNormalFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        if (TRACE) {
-            logger.info("Called Normal Flow function \n\tsrc " + src + "\n\tdest= " + dest);
-        }
+        logger.trace("Called Normal Flow function \n\tsrc " + src + "\n\tdest= " + dest);
         var inst = FlowFunctionUtils.getInstruction(src);
-
-        if (TRACE) {
-            logger.info("\tInstruction= " + inst);
-        }
-
+        logger.trace("\tInstruction= " + inst);
         MutableIntSet entryfacts = MutableSparseIntSet.makeEmpty();
         if (src.isEntryBlock()) {
             entryfacts = buildEntryBlockFunction(src);
@@ -100,9 +96,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     }
 
     private IUnaryFlowFunction buildPhiInstruction(SSAPhiInstruction phiInst, CGNode node, MutableIntSet entryfacts) {
-        if (TRACE) {
-            logger.info("Called Phi Instruction function " + phiInst);
-        }
+        logger.trace("Called Phi Instruction function {}", phiInst);
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.make(entryfacts);
             result.add(d1);
@@ -126,9 +120,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     }
 
     private IUnaryFlowFunction buildReturnInstruction(SSAReturnInstruction returnInst, CGNode node, MutableIntSet entryfacts) {
-        if (TRACE) {
-            logger.info("\tCalled return Instruction " + returnInst);
-        }
+        logger.trace("\tCalled return Instruction " + returnInst);
         return d1 -> {
             final MutableIntSet result = MutableSparseIntSet.make(entryfacts);
             result.add(d1);
@@ -149,10 +141,9 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     }
 
     private IUnaryFlowFunction buildGetInstruction(SSAGetInstruction inst, CGNode node, MutableIntSet entryfacts) {
-        if (TRACE) {
-            logger.info("\tCalled Get Instruction  " + Arrays.toString(node.getIR().getInstructions()));
-            logger.info(entryfacts.toString());
-        }
+        logger.trace("\tCalled Get Instruction  " + Arrays.toString(node.getIR().getInstructions()));
+        logger.trace(entryfacts.toString());
+
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.make(entryfacts);
 
@@ -217,9 +208,9 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
     }
 
     private void trace(String functiontype, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        logger.info("Called " + functiontype);
-        logger.info("\tsrc= " + src);
-        logger.info("\tdest= " + dest);
+        logger.trace("Called " + functiontype);
+        logger.trace("\tsrc= " + src);
+        logger.trace("\tdest= " + dest);
     }
 
     /**
@@ -231,23 +222,27 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest, BasicBlockInContext<IExplodedBasicBlock> ret) {
-        if (TRACE) {
-            trace("getCallFlowFucntion", src, dest);
-        }
+        logger.trace("getCallFlowFucntion", src, dest);
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
         assert invoke != null;
 
-        if (TRACE) {
-            logger.info("\tInvoke Instruction = " + invoke);
+        if (FlowFunctionUtils.isSensitiveSource(ssm, invoke.getCallSite())) {
+            logger.info("Sensitive Data " + invoke);
         }
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
-            if (TRACE) {
-                logger.info("\tLibrary function call");
-            }
+            logger.trace("\tLibrary function call");
             // propagate library calls by replqcing it with identity functions
 //            return EmptyFunction.empty();
-            return d1 -> MutableSparseIntSet.makeEmpty();
+            if (invoke.hasDef()) {
+                return d1 -> {
+                    MutableSparseIntSet result = MutableSparseIntSet.makeEmpty();
+                    result.add(d1);
+                    return result;
+                };
+            } else {
+                return d1 -> MutableSparseIntSet.makeEmpty();
+            }
         }
 
         // skip analysing these calls and replace it with identity functions
@@ -279,9 +274,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IFlowFunction getReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> call, BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        if (TRACE) {
-            trace("getReturnFlowFunction", src, dest);
-        }
+        trace("getReturnFlowFunction", src, dest);
         SSAInvokeInstruction callInstruction = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(call);
         SSAReturnInstruction returnInst = (SSAReturnInstruction) FlowFunctionUtils.getInstruction(src);
         // In case the return instruction is null, pass the empty set
@@ -329,9 +322,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-        if (TRACE) {
-            trace("getCallToReturnFlowFunction", src, dest);
-        }
+        trace("getCallToReturnFlowFunction", src, dest);
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
 

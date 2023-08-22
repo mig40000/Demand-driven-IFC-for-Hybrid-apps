@@ -24,7 +24,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     protected CGNode entryPoint;
     protected HashMap<CGNode, FlowFact> returnFacts;
     protected static final int RETURN_VALUE = Integer.MAX_VALUE;
-    protected SourceSinkManager sensitiveSourcesManager;
+    protected SourceSinkManager ssm;
 
     private static final boolean TRACE = false;
 
@@ -32,7 +32,7 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
         this.entryPoint = entryPoint;
         this.domain = domain;
         this.returnFacts = HashMapFactory.make();
-        this.sensitiveSourcesManager = sources;
+        this.ssm = sources;
     }
 
     protected IClassHierarchy getClassHierarchy() {
@@ -199,14 +199,15 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src,
                                                   BasicBlockInContext<IExplodedBasicBlock> dst,
                                                   BasicBlockInContext<IExplodedBasicBlock> ret) {
-        System.err.println("JP .... in getCallFlowFunction " + src.getNode() + src.getDelegate().getInstruction());
+//        System.err.println("JP .... in getCallFlowFunction " + src.getNode() + src.getDelegate().getInstruction());
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (invoke == null) {
             return EmptyFunction.empty();
         }
 
-        if (FlowFunctionUtils.isSensitiveSource(sensitiveSourcesManager, invoke.getCallSite())) {
+        if (FlowFunctionUtils.isSensitiveSource(ssm, invoke.getCallSite())) {
+            System.out.println("Reading from sensitive Source " + invoke);
             return d1 -> {
                 MutableIntSet result = MutableSparseIntSet.makeEmpty();
 
@@ -220,6 +221,10 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
                 }
                 return result;
             };
+        }
+
+        if (FlowFunctionUtils.isSensitiveSink(ssm, invoke.getCallSite())) {
+            System.out.println("Leak to sink " + invoke.getCallSite());
         }
 
         if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {

@@ -38,9 +38,16 @@ public class FlowFunctionUtils {
         return field;
     }
 
+
+
     protected static boolean isSensitiveSource(SourceSinkManager manager, CallSiteReference functionCallSite) {
         String method = functionCallSite.getDeclaredTarget().getName().toString();
         return manager.isSourceMethod(method);
+    }
+
+    public static boolean isSensitiveSink(SourceSinkManager manager, CallSiteReference callsite) {
+        String method = callsite.getDeclaredTarget().getName().toString();
+        return manager.isSinkMethod(method);
     }
 
     protected static boolean isLibraryCall(CallSiteReference callSite) {

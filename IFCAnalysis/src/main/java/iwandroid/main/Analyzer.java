@@ -34,7 +34,7 @@ public class Analyzer {
 
     private void computeBridgeMethodSummary(AndroidAnalysis analysis, BridgedMethod method,
                                             SourceSinkManager ssm) throws CancelException {
-        logger.info("Computing Bridge Method Summary for {}", method);
+//        logger.info("Computing Bridge Method Summary for {}", method);
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
         if (summary != null) {
             summary.buildresults();
@@ -124,7 +124,7 @@ public class Analyzer {
             // PHASE 1(b): compute the summary of the ifc methods
             Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
             assert invokingMethod.isPresent();
-            logger.info("Computing summary information " + invokingMethod.get().getMethod().toString());
+            logger.info("Computing summary information: {} ", invokingMethod.get().getMethod().toString());
             computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
         }
 //        String clazz = bridgedMethods.get(0).initiatingClass();

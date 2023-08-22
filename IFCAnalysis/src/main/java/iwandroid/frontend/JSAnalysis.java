@@ -24,8 +24,14 @@ public class JSAnalysis {
 //        AnalysisOptions options = JSCallGraphBuilderUtil.makeOptions(scope, cha, )
 //        var util = new FieldBasedCallGraphBuilder(cha, makeOptions(scope, cha), new AnalysisCacheImpl(), )
 //        this.callGraph = FieldBasedCallGraphBuilder
-        var cgBuilder = JSCallGraphBuilderUtil.makeScriptCGBuilder(jsDir, jsfile);
-        this.callGraph = cgBuilder.makeCallGraph(cgBuilder.getOptions());
+        try {
+            var cgBuilder = JSCallGraphBuilderUtil.makeScriptCGBuilder(jsDir, jsfile);
+            this.callGraph = cgBuilder.makeCallGraph(cgBuilder.getOptions());
+        } catch (WalaException | IOException | CancelException | IllegalArgumentException e) {
+            // do nothing
+            System.out.println("Unexpected exception");
+            e.printStackTrace();
+        }
     }
 
     public CallGraph getCallGraph() {
