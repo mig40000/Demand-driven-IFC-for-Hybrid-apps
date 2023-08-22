@@ -56,11 +56,11 @@ public class BridgeMethodIFCSummaryDriver {
 
     protected TabulationResult<BasicBlockInContext<IExplodedBasicBlock>, CGNode, FlowPathFact> analyze() {
         logger.info("Analyzing bridge function  {} ", bridgeNode.getMethod().toString());
-        logger.info("IR======");
-        logger.info(this.bridgeNode.getIR().toString());
-        logger.info("========");
+        logger.trace("IR======");
+        logger.trace(this.bridgeNode.getIR().toString());
+        logger.trace("========");
         this.solver = TabulationSolver.make(this.problem);
-        logger.info(" initial seeds = " + this.solver.getSeeds().size());
+        logger.trace(" initial seeds = " + this.solver.getSeeds().size());
         for (var s :solver.getSeeds()) {
             logger.info(s.toString());
         }
