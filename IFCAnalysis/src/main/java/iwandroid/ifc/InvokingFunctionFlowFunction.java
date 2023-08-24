@@ -105,11 +105,22 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
 
         SSAInstruction inst = FlowFunctionUtils.getInstruction(src);
 
-//        if (src.isExitBlock()) {
-//            return EmptyFunction.empty();
-//        }
+        if (inst == null) {
+            return d1 -> MutableSparseIntSet.makeEmpty();
+        }
+
         if (dest.getNode().toString().contains("Primordial")) {
-            return EmptyFunction.empty();
+            assert inst != null;
+            if (inst.hasDef()) {
+                return d1 -> {
+                    MutableIntSet results = MutableSparseIntSet.makeEmpty();
+                    FlowFact fact = new FlowFact(src.getNode(), inst.getDef(0), null, IFCLabel.SECRET);
+                    results.add(domain.add(fact));
+                    return results;
+                };
+            } else {
+                return d1 -> MutableSparseIntSet.makeEmpty();
+            }
         }
 
         if (inst instanceof SSAInvokeInstruction invokeInst) {
@@ -147,20 +158,6 @@ public class InvokingFunctionFlowFunction extends ForwardAnalysisFlowFunctions {
         }
 
         return EmptyFunction.empty();
-        // create a new return node for the
-//        return d1 -> {
-//
-//        };
-//        if (ret == null) {
-//            return FlowFunctionUtils.emptyFunction();
-//        }
-//
-//        if (ret.isExitBlock()) {
-//            return FlowFunctionUtils.emptyFunction();
-//        }
-//
-//        return FlowFunctionUtils.emptyFunction();
-//        return (IUnaryFlowFunction) super.getReturnFlowFunction(src, calledFunc, ret);
     }
 
     public IUnaryFlowFunction transformSummaryToFlowFunction(CGNode targetNode, SSAInvokeInstruction invoke) {

@@ -64,7 +64,7 @@ class TestEnd2End {
         Config config = makeBasicConfig();
         config.setApkFile(getAppPath("HelloScript.apk"));
         config.setAppName("HelloScript");
-        Path jsDir = getIntermediateFile("HelloScript", "assets", "www", "js" );
+            Path jsDir = getIntermediateFile("HelloScript", "assets", "www", "js" );
         config.setJsDir(jsDir.toString());
         Path jsFile = Paths.get("contact.js");
         config.setJsFilepath(jsFile.toString());

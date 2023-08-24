@@ -4,9 +4,11 @@ import com.ibm.wala.dataflow.IFDS.BackwardsSupergraph;
 import com.ibm.wala.dataflow.IFDS.ICFGSupergraph;
 import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.cha.ClassHierarchyException;
+import com.ibm.wala.ssa.IR;
 import com.ibm.wala.util.CancelException;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.collections.HashMapFactory;
+import com.ibm.wala.util.graph.traverse.DFS;
 import iwandroid.dbinterfaces.BridgedMethod;
 import iwandroid.dbinterfaces.BridgedMethodDb;
 import iwandroid.frontend.AndroidAnalysis;
@@ -87,7 +89,7 @@ public class Analyzer {
 
             Path jsDir = Path.of(config.getJsDir());
             Path jsFile = Path.of(config.getJsFilepath());
-            runJsAnalysis(jsDir.toString(), jsFile.toString());
+            runJsAnalysis(jsDir.toString(), jsFile.toString(), bridgedMethods);
             logger.info("Time taken for JS analysis (in sec) {}", timer.lap());
 
             timer.stopTimer();
@@ -97,19 +99,40 @@ public class Analyzer {
 
 
 
-    private void runJsAnalysis(String jsDir, String jsFile) throws WalaException, IOException, CancelException {
+    private void runJsAnalysis(String jsDir, String jsFile, List<BridgedMethod> bridgedMethods) throws WalaException, IOException, CancelException {
         // PHASE 2: compute the summary of the javascript files
+
         logger.info("Analyzing javascript code " + Paths.get(jsDir, jsFile));
         var analysis = new JSAnalysis(jsDir, jsFile);
         var entrynodes = new ArrayList<>(analysis.getCallGraph().getEntrypointNodes());
         var supergraph = ICFGSupergraph.make(analysis.getCallGraph());
+
+        // parse the IR in javascript and check if it contains an invocation to bridge MEthod
+        parseIR(supergraph, bridgedMethods);
         logger.info("Computed Javascript Callgraph ");
+
         var appEntryNode = entrynodes.get(0);
         JSAnalysisDriver driver = new JSAnalysisDriver(appEntryNode, supergraph, bridgesummaries);
         logger.info("IFC analysis");
         driver.analyze();
 //        logger.info(driver.getResults());
     }
+
+    private void parseIR(ICFGSupergraph supergraph, List<BridgedMethod> bridgedMethods) {
+        for (var node : DFS.getReachableNodes(supergraph)) {
+            IR ir = node.getNode().getIR();
+            for (var inst : ir.getInstructions()) {
+                if (inst != null) {
+                    for (var b : bridgedMethods) {
+                        if (inst.toString().contains(b.clazz())) {
+                            logger.info("Bridge method potentially leak in {}", b.clazz());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 
     private void runAndroidAnalysis(String androidJar, String apk, @NotNull List<BridgedMethod> bridgedMethods, SourceSinkManager ssm) throws CancelException, ClassHierarchyException, IOException {

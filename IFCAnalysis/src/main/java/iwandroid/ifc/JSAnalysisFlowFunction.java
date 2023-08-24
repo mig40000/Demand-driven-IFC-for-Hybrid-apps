@@ -34,9 +34,8 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
     @Override
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dst, BasicBlockInContext<IExplodedBasicBlock> ret) {
         SSAAbstractInvokeInstruction invoke = (SSAAbstractInvokeInstruction) FlowFunctionUtils.getInstruction(src);
-        if (TRACE) {
-            logger.info("JSAnalysisflowfunction.getCallFlowFunction " + invoke + " target is " + invoke.getDeclaredTarget());
-        }
+
+        logger.info("JSAnalysisflowfunction.getCallFlowFunction " + invoke + " target is " + invoke.getDeclaredTarget());
         assert invoke != null;
         // check if the invoking method is a bridge method. In this case propagate the summaries
         if (isBridgeMethod(invoke)) {
