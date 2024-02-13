@@ -20,14 +20,14 @@ public class ExtractFilesFromDirectory {
 	public static List<File> collectFiles(File directory, String[] extensions) {
 		ArrayList<File> files = new ArrayList<File>();
 
-		System.out.println("Directoy is " + directory);
+	//	System.out.println("Directoy is " + directory);
 		if (directory.isDirectory()) {
 		    try {
 
 		         boolean recursive = true;
 		         
 		         Collection<File> foundApks = FileUtils.listFiles(directory, extensions, recursive);
-		         System.out.println("Directoy is " + foundApks.size());
+		      //   System.out.println("Number of classes " + foundApks.size());
 		         for (Iterator<File> iterator = foundApks.iterator(); iterator.hasNext();) {
 		             files.add(iterator.next());
 		         }   

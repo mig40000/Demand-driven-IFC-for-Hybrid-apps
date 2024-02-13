@@ -83,7 +83,7 @@ public class EvaluateJavaScriptHandler {
 			//Handle move-result-object
 			else if(fileContentInArray[index].contains(inputTempReg[2]) && fileContentInArray[index].contains("move-result-object")){			
 				if(fileContentInArray[index-2].contains(GenericConstants.STRINGBUILDER_TOSTRING)){
-					System.out.println("Handling move-result-object");
+				//	System.out.println("Handling move-result-object");
 					rawJavaScript += StringOptimizer.string_builder(fileContentInArray, index-2);
 				}
 				else{
@@ -100,8 +100,8 @@ public class EvaluateJavaScriptHandler {
 			}
 			//Handle inter-procedural
 			else if(inputTempReg[2].contains("p")){
-				System.out.println("We do not handle inter-procedural as of now");
-				rawJavaScript += "We do not handle inter-procedural as of now";
+				System.out.println("We do not handle inter-procedural strings as of now");
+				rawJavaScript += "We do not handle inter-procedural strings as of now";
 				return rawJavaScript;
 			}			
 			

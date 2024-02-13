@@ -42,7 +42,7 @@ public class StringOptimizer {
 						tempIndex--;
 						if(array[tempIndex].contains(tempReg) && array[tempIndex].contains("const-string")){
 							st = new StringTokenizer(array[tempIndex],"\"");
-							System.out.println(st.nextToken());
+						//	System.out.println(st.nextToken());
 							finalString = finalString.insert(0, st.nextToken());
 						}
 					}
@@ -52,7 +52,7 @@ public class StringOptimizer {
 			
 			
 			}
-		System.out.println("Final String is " + finalString.toString());
+	//	System.out.println("Final String is " + finalString.toString());
 		return finalString.toString();
 		
 	}

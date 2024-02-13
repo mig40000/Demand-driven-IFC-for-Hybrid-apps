@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -113,6 +114,27 @@ public class CollectClasses {
 			fin.close();
 		}
 	   
+	}
+	
+	public static void listAllSmali(String directory, SmaliContent smaliData, Logger logger) throws IOException {
+		File dir = new File(directory);
+		
+		ArrayList<File> inputSmaliFiles =  new ArrayList<File>();
+		
+		System.out.println("Called listallSmali");
+		
+		inputSmaliFiles.addAll(ExtractFilesFromDirectory.collectFiles(dir, new String[]{"smali"}));
+		List<String> lines = new ArrayList();
+		Path path;
+		
+		for(File smaliFile: inputSmaliFiles) {
+			path = Paths.get(smaliFile.getAbsolutePath());
+			lines = Files.readAllLines(path);
+			smaliData.class_content.add(lines);
+		
+		}
+		inputSmaliFiles.clear();
+		
 	}
 	
 	

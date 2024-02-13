@@ -115,17 +115,19 @@ public class ApplicationAnalysis {
 				//remove duplicate paths
 				this.removeDuplicate(this.appDetails.getActivityPath());
 				//Store each class file content (in smali format) to the SmaliContent class_content
-				for(String directory : this.appDetails.getActivityPath()){
-					//System.out.println("directory is " + directory);
-				//	directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath() +directory;
-					// Providing an alternate directory
+				String directoryA = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath();
+				directoryA = directoryA.replace("smali/", "");
+				System.out.println("directory is " + directoryA);
+				CollectClasses.listAllSmali(directoryA, this.smaliData, this.logger.getLogger());
+				
+				
+		/*		for(String directory : this.appDetails.getActivityPath()){
 					directory = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath();
 					directory = directory.replace("smali/", ""); 
-				//	System.out.println("directory below is " + directory);
-					CollectClasses.listFilesA(directory, this.smaliData, this.logger.getLogger());
-					
-				//	CollectClasses.storeFiles(directory, this.smaliData, this.logger.getLogger());
-				}			
+
+					CollectClasses.listAllSmali(directory, this.smaliData, this.logger.getLogger());
+
+				}			*/
 
 				
 				/* Stop the analysis if the app does not contain addJavascriptInterface api call
