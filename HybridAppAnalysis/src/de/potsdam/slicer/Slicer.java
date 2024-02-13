@@ -67,7 +67,7 @@ public class Slicer {
 		this.class_content = class_list;
 		this.logger = logger;
 		this.app = app;
-		FileWriter writer = new FileWriter("Preprocessing/output/dummy.txt");
+		FileWriter writer = new FileWriter("output/dummy.txt");
 		BufferedWriter buffer = new BufferedWriter(writer); 
 
 		prepareSlice();
@@ -94,14 +94,14 @@ public class Slicer {
 		
 		
 		
-		BufferedReader reader = new BufferedReader(new FileReader("Preprocessing/output/dummy.txt"));
+		BufferedReader reader = new BufferedReader(new FileReader("output/dummy.txt"));
 		Set<String> lines = new HashSet<String>(50000);
 		String line;
 	    while ((line = reader.readLine()) != null) {
 	        lines.add(line);
 	    }
 	    reader.close();
-	    BufferedWriter writerA = new BufferedWriter(new FileWriter("Preprocessing/output/dummy.txt"));
+	    BufferedWriter writerA = new BufferedWriter(new FileWriter("output/dummy.txt"));
 	    for (String unique : lines) {
 	        writerA.write(unique);
 	        writerA.newLine();
@@ -194,7 +194,7 @@ public class Slicer {
 	 * read the sources file which contains possible information leak sources
 	 */
 	public void readSources() {
-		File file = new File("Preprocessing/Database/sources.txt");
+		File file = new File("Database/sources.txt");
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -248,7 +248,7 @@ public class Slicer {
 		Connection conn = null;
 		if(this.currentWebView != null) {
 		try{
-			conn = DriverManager.getConnection("jdbc:sqlite:Preprocessing/Database/Intent.sqlite");
+			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
 		} catch (SQLException e1) {
 			System.out.println(e1.getMessage());
 		}
@@ -296,11 +296,11 @@ public class Slicer {
 		Connection conn = null;
 		if(this.currentWebView != null) {
 		try{
-			conn = DriverManager.getConnection("jdbc:sqlite:Preprocessing/Database/Intent.sqlite");
+			conn = DriverManager.getConnection("jdbc:sqlite:Database/Intent.sqlite");
 		} catch (SQLException e1) {
 			System.out.println(e1.getMessage());
 		}
-		this.methodNames = removeRedundantBridgeMethod(this.methodNames);
+	//	this.methodNames = removeRedundantBridgeMethod(this.methodNames);
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			//stmt.setString(1, app.getAppName());
@@ -312,6 +312,7 @@ public class Slicer {
 				stmt.setString(5, "");
 			} else {
 				stmt.setString(5, this.methodNames);
+				//this.methodNames = ""; //init the list
 			}
 		
 			//Changes Abhishek
@@ -342,7 +343,7 @@ public class Slicer {
 		ArrayList<String> tempList = new ArrayList<String>();
 		
 		for(String method: methods) {
-			//System.out.println("methods now are " + method);
+			System.out.println("methods now are " + method);
 			tempList.add(method);
 		}
 		
@@ -387,7 +388,7 @@ public class Slicer {
 
 		extractStringsFromSlice();
 
-		File dir = new File("Preprocessing/output/" + app.getAppName() + "/downloads");
+		File dir = new File("output/" + app.getAppName() + "/downloads");
 		dir.mkdirs();
 
 		for (String s : this.sliceStrings) {
@@ -545,9 +546,12 @@ public class Slicer {
 	public void saveSlice(String class_name, SliceClass currentWebView) {
 
 		SliceMethod invokedMethod;
+		
+		System.out.println("Here in saveSlice");
+		this.methodNames = "";
 
 		try {
-			File dir = new File("Preprocessing/output/" + app.getAppName());
+			File dir = new File("output/" + app.getAppName());
 			dir.mkdirs();
 			File sliceFile = new File(dir, "slice" + this.sliceCount + ".smali");
 			sliceFile.createNewFile();
@@ -571,8 +575,10 @@ public class Slicer {
 						this.extraMethods.add(s);
 						
 						if(s.contains(".method ")) {
-							this.methodNames = this.methodNames.concat("\n");
+						//	
 							this.methodNames = this.methodNames.concat(s);
+							this.methodNames = this.methodNames.concat("\n");
+						//	System.out.println("Method is " + s);
 									
 							
 						}

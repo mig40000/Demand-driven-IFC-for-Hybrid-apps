@@ -1,3 +1,4 @@
 output/intermediate/
 *.apk
 input/testset1/*
+*.DS_Store
