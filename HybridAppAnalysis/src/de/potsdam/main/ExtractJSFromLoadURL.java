@@ -64,7 +64,7 @@ public class ExtractJSFromLoadURL {
 	public static void extractloadURL(String appname) throws IOException {
 		
 		String folderpath = "output/" + appname;
-		String filenameString = "";
+		String[] filenameString = new String[2];
 		
 		File dir = new File(folderpath);
 		ArrayList<File> inputSmaliFiles =  new ArrayList<File>();
@@ -80,13 +80,13 @@ public class ExtractJSFromLoadURL {
 			path = Paths.get(smaliFile.getAbsolutePath());
 			lines = Files.readAllLines(path);
 			filenameString = getJSorHTML(lines);
-			findFile(appname, filenameString);
+			findFile(appname, filenameString[0], filenameString[1]);
 		
 		}
 		
 	}
 
-	public static void findFile(String appName, String filenameString) throws IOException{
+	public static void findFile(String appName, String filenameString, String interfaceObject) throws IOException{
 		String dirPath = "output/intermediate/" + appName + "/assets/"; 
 		String absolutFileName = "";
 		File f = new File(dirPath);
@@ -110,15 +110,21 @@ public class ExtractJSFromLoadURL {
 				for(Element jsScripElement: jsScripElements){
 				//	System.out.println("JSValue is " + jsScripElement.data());
 					if(!jsScripElement.data().isEmpty())
-						storeJSFromHtml(appName, jsScripElement.data());
+						storeJSFromHtml(appName, jsScripElement.data(), interfaceObject);
 
 				}
 			}
 		}
 
 	}
-	public static void storeJSFromHtml(String appName, String JSValue){
-		String outputPath = "JSCodeHtml/" + appName + "_" + ThreadLocalRandom.current().nextInt(1, 100 + 1) + ".js";
+	public static void storeJSFromHtml(String appName, String JSValue, String interfaceObject){
+		String outputPath = "JSCodeHtml/" + appName + "_" + ThreadLocalRandom.current().nextInt(1, 100 + 1);
+		if(interfaceObject!=null){
+			outputPath = outputPath + "#" + interfaceObject + ".js";
+		}
+		else{
+			outputPath = outputPath + ".js";
+		}
 		File jsfile = new File(outputPath);
 
 		Path path = Paths.get(jsfile.getAbsolutePath());
@@ -133,22 +139,52 @@ public class ExtractJSFromLoadURL {
 	}
 
 	
-	public static String getJSorHTML(List<String> lines) {
+	public static String[] getJSorHTML(List<String> lines) {
 		
 		String[] fileArray = lines.toArray(new String[0]);
 		int index = 0;
 		String register = "";
-		String externalJS = null;
+		String[] externalJS = new String[2];
+		String interfaceObject = null;
 		while(index < fileArray.length) {
 			if(fileArray[index].contains("WebView;->loadUrl(")) {
 			//	System.out.println(fileArray[index]);
 				register = getRegister(fileArray[index]);
-				externalJS = getJSFile(fileArray, index, register);
-				
+				externalJS[0] = getJSFile(fileArray, index, register);
+				externalJS[1] = getInterfaceObject(fileArray, index);
 			}
 			index++;
 		}
 		return externalJS;
+	}
+
+	public static String getInterfaceObject(String[] fileArray, int index){
+		String interfaceObject = null;
+
+		while(index > 0){
+			index--;
+			if(fileArray[index].contains("WebView;->addJavascriptInterface(")){
+				StringTokenizer st = new StringTokenizer(fileArray[index], ",}");
+				st.nextToken();
+				st.nextToken();
+				String register = st.nextToken();
+				while(index > 0){
+					index--;
+					if(fileArray[index].contains("const-string") && fileArray[index].contains(register)){
+						interfaceObject = fileArray[index].replace("const-string", "");
+						interfaceObject = interfaceObject.replace(register, "");
+						interfaceObject = interfaceObject.replace(",", "");
+						interfaceObject = interfaceObject.replace("\"", "");
+						interfaceObject = interfaceObject.trim();
+						break;
+					}
+				}
+
+			}
+		
+		}
+
+		return interfaceObject;
 	}
 	
 	public static String getRegister(String line) {
