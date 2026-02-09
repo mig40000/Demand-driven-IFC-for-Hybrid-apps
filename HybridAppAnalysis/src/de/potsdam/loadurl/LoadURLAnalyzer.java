@@ -17,7 +17,7 @@ import de.potsdam.constants.GenericConstants;
  */
 public class LoadURLAnalyzer {
 	
-	public static int co = 0;
+	public static int fileCounter = 0;
 	
 	public static void checkLoadUrlType( ApplicationAnalysis appAnalyzer){
 		
@@ -26,8 +26,8 @@ public class LoadURLAnalyzer {
 		int index;
 		boolean addJsflag = false;
 		try{
-		for (List<String> fileContentInSmaliFormat : smaliData.class_content){
-			co++;
+		for (List<String> fileContentInSmaliFormat : smaliData.classContent){
+			fileCounter++;
 			index =0;
 			String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
 			addJsflag = false;
@@ -57,7 +57,7 @@ public class LoadURLAnalyzer {
 				index++;
 			}
 		}
-		System.out.println("Total number of files " + co);
+		System.out.println("Total number of files " + fileCounter);
 		}catch(Exception e){
 			System.out.println("here in checkLoadUrlType");
 			System.out.println(e.getStackTrace());

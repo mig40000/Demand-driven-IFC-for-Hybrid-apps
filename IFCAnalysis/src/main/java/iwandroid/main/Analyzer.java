@@ -36,7 +36,6 @@ public class Analyzer {
 
     private void computeBridgeMethodSummary(AndroidAnalysis analysis, BridgedMethod method,
                                             SourceSinkManager ssm) throws CancelException {
-//        logger.info("Computing Bridge Method Summary for {}", method);
         BridgeMethodIFCSummaryDriver summary = BridgeMethodIFCSummaryDriver.make(analysis, method, ssm);
         if (summary != null) {
             summary.buildresults();
@@ -107,7 +106,7 @@ public class Analyzer {
         var entrynodes = new ArrayList<>(analysis.getCallGraph().getEntrypointNodes());
         var supergraph = ICFGSupergraph.make(analysis.getCallGraph());
 
-        // parse the IR in javascript and check if it contains an invocation to bridge MEthod
+        // parse the IR in javascript and check if it contains an invocation to bridge method
         parseIR(supergraph, bridgedMethods);
         logger.info("Computed Javascript Callgraph ");
 
@@ -115,7 +114,6 @@ public class Analyzer {
         JSAnalysisDriver driver = new JSAnalysisDriver(appEntryNode, supergraph, bridgesummaries);
         logger.info("IFC analysis");
         driver.analyze();
-//        logger.info(driver.getResults());
     }
 
     private void parseIR(ICFGSupergraph supergraph, List<BridgedMethod> bridgedMethods) {
@@ -150,11 +148,5 @@ public class Analyzer {
             logger.info("Computing summary information: {} ", invokingMethod.get().getMethod().toString());
             computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
         }
-//        String clazz = bridgedMethods.get(0).initiatingClass();
-//        String method = bridgedMethods.get(0).initiatingMethod();
-//
-//        Optional<CGNode> invokingMethod = FlowFunctionUtils.findCGNodeForBridgeMethod(clazz, method, analysis);
-//        assert invokingMethod.isPresent();
-//        computeInvokingMethodSummary(analysis, invokingMethod.get(), bridgedMethods, ssm);
     }
 }

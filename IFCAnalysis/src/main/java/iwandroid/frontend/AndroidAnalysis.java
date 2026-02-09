@@ -54,20 +54,6 @@ public class AndroidAnalysis {
         this.cha = ClassHierarchyFactory.make(scope);
         this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
         this.cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
-//        AnalysisScope scope = AnalysisScope.createJavaAnalysisScope();
-//        AnalysisScope scope = AndroidAnalysisScope.setUpAndroidAnalysisScope()
-//        scope.setLoaderImpl(ClassLoaderReference.Application, "com.ibm.wala.dalvik.classLoader.WDexClassLoaderImpl");
-//        try {
-//            scope.addToScope(ClassLoaderReference.Primordial, new JarFile(this.androidJar));
-//
-//            scope.addToScope(ClassLoaderReference.Application, DexFileModule.make(new File(this.apkfile)));
-//            this.cha = ClassHierarchyFactory.make(scope);
-//            this.options = new AnalysisOptions(scope, new AllApplicationEntrypoints(scope, cha));
-//            this.cgb = Util.makeZeroCFABuilder(Language.JAVA, this.options, this.cache, this.cha);
-//            logger.info("Analysis environment setup successful");
-//        } catch (IOException e) {
-//            logger.error(e.getMessage());
-//        }
     }
 
     public CallGraph callgraph() throws CancelException {

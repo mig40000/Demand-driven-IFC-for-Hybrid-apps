@@ -84,12 +84,10 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
         } else if (inst instanceof SSAReturnInstruction returnInst) {
             result = buildReturnInstruction(returnInst, src.getNode(), entryfacts);
         } else if (inst instanceof SSAPhiInstruction phiInst) {
-//            result = buildPhiInstruction(phiInst, src.getNode(), entryfacts);
             result = IdentityFunction.identity();
         } else if (inst instanceof SSAThrowInstruction throwInst) {
             result = EmptyFunction.empty();
         } else {
-//            result = IdentityFunction.identity();
             result = IdentityFunction.identity();
         }
         return result;
@@ -222,7 +220,7 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest, BasicBlockInContext<IExplodedBasicBlock> ret) {
-        logger.trace("getCallFlowFucntion", src, dest);
+        logger.trace("getCallFlowFunction", src, dest);
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
         assert invoke != null;
 
@@ -344,7 +342,6 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             };
         }
 
-//        if (FlowFunctionUtils.isLibraryCall(invoke.getCallSite())) {
         return d1 -> {
             MutableIntSet result = MutableSparseIntSet.makeEmpty();
             result.add(d1);
@@ -357,13 +354,6 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
             }
             return result;
         };
-//        }
-
-//        return d1 -> {
-//            MutableSparseIntSet
-//            int def = invoke.getDef(0);
-//        }
-//        return IdentityFunction.identity();
     }
 
     /**
@@ -374,7 +364,6 @@ public class BridgeSummaryFlowfunctions implements IFlowFunctionMap<BasicBlockIn
      */
     @Override
     public IUnaryFlowFunction getCallNoneToReturnFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src, BasicBlockInContext<IExplodedBasicBlock> dest) {
-//        return IdentityFunction.identity();
         return EmptyFunction.empty();
     }
 

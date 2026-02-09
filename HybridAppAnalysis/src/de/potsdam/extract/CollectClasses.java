@@ -56,7 +56,7 @@ public class CollectClasses {
 		f1.addAll(set);
 		for(FileInputStream f2 : f1) {
 			//System.out.println(f2.toString());	
-			smaliData.class_content.add(IOUtils.readLines(f2));
+			smaliData.classContent.add(IOUtils.readLines(f2));
 			f2.close();
 		}
 	}
@@ -78,7 +78,6 @@ public class CollectClasses {
 	        		listFiles(fil.getAbsolutePath(), smaliData, logger);
 	            }
 	        	else {
-	        		//if(!fil.getName().contains("R$") && !fil.getName().equals("R.smali") && !fil.getName().equals(".DS_Store") && !fil.getName().equals("BuildConfig.smali") && !fil.getName().contains("$") && !fil.getName().equals("a.smali") && !fil.getName().equals("b.smali") && !fil.getName().equals("c.smali") && !fil.getName().equals("d.smali") && !fil.getName().equals("e.smali") && !fil.getName().equals("f.smali") && !fil.getName().equals("g.smali") && !fil.getName().equals("h.smali") &&  !fil.getName().equals("i.smali") && !fil.getName().equals("j.smali") && !fil.getName().equals("k.smali") && !fil.getName().equals("l.smali")  &&  !fil.getName().equals("m.smali") && !fil.getName().equals("n.smali") && !fil.getName().equals("o.smali") && !fil.getName().equals("p.smali")  &&  !fil.getName().equals("q.smali") && !fil.getName().equals("r.smali") && !fil.getName().equals("s.smali") && !fil.getName().equals("t.smali")  && !fil.getName().equals("u.smali") && !fil.getName().equals("v.smali") && !fil.getName().equals("w.smali") && !fil.getName().equals("x.smali") && !fil.getName().equals("y.smali") && !fil.getName().equals("z.smali")){
 	        		if(!fil.getName().contains("R$") && !fil.getName().equals("R.smali") && !fil.getName().equals(".DS_Store") && !fil.getName().equals("BuildConfig.smali") && !fil.getName().equals("AndroidManifest.xml") && !fil.getName().equals("apktool.yml")){
 	        			logger.info("final file " + fil.getName());
 	        		try {
@@ -110,7 +109,7 @@ public class CollectClasses {
 		f1.clear();
 		f1.addAll(set);
 		for(FileInputStream fin : f1) {
-			smaliData.class_content.add(IOUtils.readLines(fin));
+			smaliData.classContent.add(IOUtils.readLines(fin));
 			fin.close();
 		}
 	   
@@ -130,7 +129,7 @@ public class CollectClasses {
 		for(File smaliFile: inputSmaliFiles) {
 			path = Paths.get(smaliFile.getAbsolutePath());
 			lines = Files.readAllLines(path);
-			smaliData.class_content.add(lines);
+			smaliData.classContent.add(lines);
 		
 		}
 		inputSmaliFiles.clear();
@@ -157,7 +156,6 @@ public class CollectClasses {
 	            }
 	        	else {
 
-	        		//if(!fil.getName().contains("R$") && !fil.getName().equals("R.smali") && !fil.getName().equals(".DS_Store") && !fil.getName().equals("BuildConfig.smali") && !fil.getName().contains("$") && !fil.getName().equals("a.smali") && !fil.getName().equals("b.smali") && !fil.getName().equals("c.smali") && !fil.getName().equals("d.smali") && !fil.getName().equals("e.smali") && !fil.getName().equals("f.smali") && !fil.getName().equals("g.smali") && !fil.getName().equals("h.smali") &&  !fil.getName().equals("i.smali") && !fil.getName().equals("j.smali") && !fil.getName().equals("k.smali") && !fil.getName().equals("l.smali")  &&  !fil.getName().equals("m.smali") && !fil.getName().equals("n.smali") && !fil.getName().equals("o.smali") && !fil.getName().equals("p.smali")  &&  !fil.getName().equals("q.smali") && !fil.getName().equals("r.smali") && !fil.getName().equals("s.smali") && !fil.getName().equals("t.smali")  && !fil.getName().equals("u.smali") && !fil.getName().equals("v.smali") && !fil.getName().equals("w.smali") && !fil.getName().equals("x.smali") && !fil.getName().equals("y.smali") && !fil.getName().equals("z.smali")){
 	        		if(fil.getName().contains(".smali") && !fil.getName().contains("R$") && !fil.getName().equals("R.smali") && !fil.getName().equals(".DS_Store") && !fil.getName().equals("BuildConfig.smali") && !fil.getName().equals("AndroidManifest.xml") && !fil.getName().equals("apktool.yml")){
 	        			logger.info("final file " + fil.getName());
 	        			//try {
@@ -168,7 +166,7 @@ public class CollectClasses {
 		        				File dircheck = new File(directory + fil.getName());
 		        				if(!dircheck.isDirectory()) {
 		        					try(FileInputStream ftemp = new FileInputStream(directory + fil.getName())){
-		        					smaliData.class_content.add(IOUtils.readLines(ftemp, "UTF-8"));	  
+		        					smaliData.classContent.add(IOUtils.readLines(ftemp, "UTF-8"));	  
 		        					} catch (IOException e) {
 		        						System.out.println("Culprit file is " + directory + fil.getName());
 		        						e.printStackTrace();
@@ -176,8 +174,6 @@ public class CollectClasses {
 		        				}
 		       
 		        				}
-					//	
-							// TODO Auto-generated catch block
 						
 		        		}
 		        	}

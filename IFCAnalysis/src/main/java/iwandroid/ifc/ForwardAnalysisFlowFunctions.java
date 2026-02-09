@@ -49,7 +49,6 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
             int id = domain.add(new FlowFact(src.getNode(), vn, null, IFCLabel.PUBLIC));
             intset.add(id);
         }
-//        logger.info("BuildEntryBlockFunction " + intset);
         return intset;
     }
 
@@ -82,7 +81,6 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
             result = IdentityFunction.identity();
         }
         return result;
-//        return compose(entryblock, result);
     }
 
     protected IUnaryFlowFunction buildPhiInstruction(SSAPhiInstruction inst, CGNode node, MutableIntSet entryfacts) {
@@ -135,7 +133,6 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
 
         }
         return d1 -> {
-//            logger.info("Get function " + inst + " d1 = " + d1);
 
             int src = inst.getUse(0);
             int dst = inst.getDef();
@@ -144,14 +141,9 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
             result.add(d1);
             var srcTaintInfo = domain.getMappedObject(d1);
             if (srcTaintInfo.getBase() == src) {
-//                if (srcTaintInfo.fieldgraph() == null) {
-//                    IfcAnalysisFact fieldFact = new IfcAnalysisFact(node, src, FieldGraph.of(field), srcTaintInfo.ifclabel());
-//                    result.add(domain.add(fieldFact));
-//                }
                 FlowFact dstFact = new FlowFact(node, dst, srcTaintInfo.fieldgraph(), srcTaintInfo.ifclabel());
                 result.add(domain.add(dstFact));
             }
-//            logger.info("get function result " + result);
             return result;
         };
     }
@@ -199,7 +191,6 @@ public class ForwardAnalysisFlowFunctions implements IFlowFunctionMap<BasicBlock
     public IUnaryFlowFunction getCallFlowFunction(BasicBlockInContext<IExplodedBasicBlock> src,
                                                   BasicBlockInContext<IExplodedBasicBlock> dst,
                                                   BasicBlockInContext<IExplodedBasicBlock> ret) {
-//        System.err.println("JP .... in getCallFlowFunction " + src.getNode() + src.getDelegate().getInstruction());
         SSAInvokeInstruction invoke = (SSAInvokeInstruction) FlowFunctionUtils.getInstruction(src);
 
         if (invoke == null) {

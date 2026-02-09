@@ -115,14 +115,7 @@ public class Config {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        try {
-//            Properties prop = new Properties();
-//            prop.load(new FileInputStream(file));
-//            return makeConfig(prop);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return Config.emptyConfig();
+
         return null;
     }
 
@@ -140,5 +133,5 @@ public class Config {
                 '}';
     }
 
-    public static String TOOLNAME = "IWANDROID";
+    public static final String TOOLNAME = "IWANDROID";
 }

@@ -25,7 +25,7 @@ public class EvaluateJavaScriptHandler {
 		String className = null;
 		int index;
 		
-		for (List<String> fileContentInSmaliFormat : smaliData.class_content){
+		for (List<String> fileContentInSmaliFormat : smaliData.classContent){
 			
 			index =0;
 			String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);

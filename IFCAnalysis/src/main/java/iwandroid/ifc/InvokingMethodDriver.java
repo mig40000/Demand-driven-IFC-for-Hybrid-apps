@@ -37,11 +37,9 @@ public class InvokingMethodDriver {
     protected List<BridgedMethod> bridgedMethods;
     protected InvokingMethodFlowProblem problem;
 
-    private static boolean TRACE = false;
+    private static final boolean TRACE = false;
 
     private static final Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
-
-//    protected BackwardIFCAnalysisProblem problem;
 
     public InvokingMethodDriver(CGNode entrypoint,
                                 FlowFactDomain domain,

@@ -6,7 +6,7 @@ import typing
 from argparse import ArgumentParser, RawTextHelpFormatter
 from time import time
 
-TIMEOUT = 1000
+TIMEOUT_SECONDS = 1000
 
 PROJECT_ROOT = os.path.join(os.getenv("HOME"), "Research", "HybridAppsIfcAnalysis", "Demand-driven-IFC-for-Hybrid-apps")
 SUSI_FILE = os.path.join(PROJECT_ROOT, "IFCAnalysis", "resource", "SourcesAndSinks.txt")
@@ -75,10 +75,10 @@ def ifc_analysis(config_file: str, logfile) -> None:
                "-jar",
                os.path.join(PROJECT_ROOT, "IFCAnalysis", "target", "iwanDroid-1.0-jar-with-dependencies.jar"),
                "-p", config_file]
-    logging.info("command= ", command)
-    f = open(logfile, 'a')
-    try:
-        subprocess.run(' '.join(command), shell=True, timeout=TIMEOUT, stdout=f, stderr=f)
+    logging.info("command= %s", command)
+    with open(logfile, 'a') as f:
+        try:
+            subprocess.run(command, timeout=TIMEOUT_SECONDS, stdout=f, stderr=f)
     except subprocess.TimeoutExpired:
         print("timeout")
 
@@ -100,29 +100,7 @@ def construct_js_dir(js_root_dir: str, apk: str) -> str:
     return os.path.join(js_root_dir, canonical_path)
 
 
-# def test():
-#     if not has_android_sdk():
-#         logging.info("missing ANDROID_SDK_ROOT in environment")
-#         exit(127)
-#
-#     config = make_config(
-#         app_name="chiver",
-#         apk_file="/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/dataUpload/apps/io.github.chiver_211.apk",
-#         js_dir="/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/dataUpload/JSCode/JSCodeProcessed/io.github.chiver",
-#         js_script="io.github.chiver_2110#wai#flutter_inappwebview.js",
-#         database="/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/RealWorldApps/Database/Intent.sqlite",
-#         susi_file="/Users/jyotiprakash/Research/HybridAppsIfcAnalysis/Demand-driven-IFC-for-Hybrid-apps/IFCAnalysis/resource/SourcesAndSinks.txt"
-#     )
-#
-#     logging.info("----------------------- Analysis config ---------------------------------------------".upper())
-#     for k, v in config.items():
-#         logging.info(f'{k.upper()}: {v}')
-#
-#     config_file = write_config_to_file(".", config)
-#     ifc_analysis(config_file)
-
-
-def get_js_file(app_js_dir: str) -> str:
+def get_js_file(app_js_dir: str) -> typing.Optional[str]:
     files = []
     for _, _, f in os.walk(app_js_dir):
         files.extend(f)
@@ -130,7 +108,7 @@ def get_js_file(app_js_dir: str) -> str:
 
 
 def main():
-    parser = ArgumentParser('charlie.py', formatter_class=RawTextHelpFormatter)
+    parser = ArgumentParser('run-ifc.py', formatter_class=RawTextHelpFormatter)
     parser.add_argument("-d", dest='database', type=str,
                         help="database path from pre-processing (default: Intent.sqlite)", default="Intent.sqlite")
     parser.add_argument("-apk", dest='apps_directory', type=str, help="android APKs")
@@ -161,7 +139,7 @@ def main():
             start = time()
             ifc_analysis(config_file, logfile)
             end = time()
-            logging.info(f"\n\nTOTAL TIME: {end - start}/60")
+            logging.info(f"\n\nTOTAL TIME: {(end - start) / 60:.2f} min")
         else:
             logging.error("Could not find js files")
 

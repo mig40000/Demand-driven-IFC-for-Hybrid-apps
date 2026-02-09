@@ -42,20 +42,6 @@ public class JSAnalysisFlowFunction extends ForwardAnalysisFlowFunctions {
             return generateBridgeSummaryFunction(bridgeSummaries.get(dst.getNode()), src, dst);
         }
 
-//        if (isConstructorReference(invoke)) {
-//            new AssertionError("unreachable");
-//        }
-
-//        if (isConstructorReference(invoke)) {
-//            return d1 -> {
-//                MutableIntSet result = MutableSparseIntSet.makeEmpty();
-//                if (invoke.hasDef()) {
-//
-//                }
-//            }
-////            return getConstructorFlowFunction(dst);
-//        }
-
         if (isJsLib(invoke)) {
             if (TRACE)
                 // if the invoking method is a JS library, in this case, don't analyze the library and pass a dummy object for the returned value

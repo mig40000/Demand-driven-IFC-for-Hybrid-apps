@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
 
 public class Slicer {
 
-	public List<List<String>> class_content;
+	public List<List<String>> classContent;
 	public Logger logger;
 	//public MainHandler app;
 	public ApplicationDetails app;
@@ -64,7 +64,7 @@ public class Slicer {
 	
 
 	public Slicer(List<List<String>> class_list, Logger logger, ApplicationDetails app) throws IOException {
-		this.class_content = class_list;
+		this.classContent = class_list;
 		this.logger = logger;
 		this.app = app;
 		FileWriter writer = new FileWriter("output/dummy.txt");
@@ -82,12 +82,12 @@ public class Slicer {
 		
 		for (SliceVar sVar : this.toSliceSet) {
 			SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
-			if(linenumber == s.line_number)
+			if(linenumber == s.lineNumber)
 				continue;
-	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
-	     	buffer.write(s.class_name + " " + s.method_name + " " + s.line_number + " " + s.slice_var.name);  
+	     //	System.out.println("Class Name " + s.className + " Method name " + s.methodName + " line number " + s.lineNumber);
+	     	buffer.write(s.className + " " + s.methodName + " " + s.lineNumber + " " + s.sliceVar.name);  
 	     	buffer.write("\n");
-	     	linenumber = s.line_number;
+	     	linenumber = s.lineNumber;
 	     	
 		}
 		buffer.close();
@@ -111,10 +111,10 @@ public class Slicer {
 	    for (String unique : lines) {
 	    	String [] parts = unique.split(" ");
 	    	SliceVarUse s = new SliceVarUse(parts[0], parts[1], Integer.valueOf(parts[2]), parts[3]);	
-	     //	System.out.println("Class Name " + s.class_name + " Method name " + s.method_name + " line number " + s.line_number);
+	     //	System.out.println("Class Name " + s.className + " Method name " + s.methodName + " line number " + s.lineNumber);
 	    	
-	    //	System.out.println("cvritical here " + s.var_name);
-	    	sliceAt(s.class_name, s.method_name, s.line_number,s.var_name);
+	    //	System.out.println("cvritical here " + s.varName);
+	    	sliceAt(s.className, s.methodName, s.lineNumber,s.varName);
 	    	
 	    	
 	    	currentWebView = extractWebViewClass();
@@ -126,13 +126,13 @@ public class Slicer {
 
 					// log a list of all annotated methods in the class
 					for (SliceMethod m : this.annotatedMethods) {
-						if (m.class_name == currentWebView.class_name) {
-							this.logger.info("Annotated List => Class: " + m.class_name + " Method: " + m.name);
+						if (m.className == currentWebView.className) {
+							this.logger.info("Annotated List => Class: " + m.className + " Method: " + m.name);
 						}
 					}
 
 					
-					saveSlice(s.class_name, currentWebView);
+					saveSlice(s.className, currentWebView);
 
 					// optionally download webpages for further analysis
 					// downloadUrls();
@@ -142,8 +142,8 @@ public class Slicer {
 
 			}
 			
-		//	saveDB(s.class_name);
-			saveAltDB(s.class_name, s.method_name);
+		//	saveDB(s.className);
+			saveAltDB(s.className, s.methodName);
 			
 			clearSlice();
 	    
@@ -158,7 +158,7 @@ public class Slicer {
 		 * SliceVarUse s = sVar.varUseMap.lastEntry().getValue();
 		 * 
 		 * 
-		 * sliceAt(s.class_name, s.method_name, s.line_number, s.slice_var.name);
+		 * sliceAt(s.className, s.methodName, s.lineNumber, s.sliceVar.name);
 		 * 
 		 * currentWebView = extractWebViewClass(); checkJsEnabled();
 		 * 
@@ -167,21 +167,21 @@ public class Slicer {
 		 * readSources();
 		 * 
 		 * // log a list of all annotated methods in the class for (SliceMethod m :
-		 * this.annotatedMethods) { if (m.class_name == currentWebView.class_name) {
-		 * this.logger.info("Annotated List => Class: " + m.class_name + " Method: " +
+		 * this.annotatedMethods) { if (m.className == currentWebView.className) {
+		 * this.logger.info("Annotated List => Class: " + m.className + " Method: " +
 		 * m.name); } }
 		 * 
 		 * 
-		 * saveSlice(s.class_name, currentWebView);
+		 * saveSlice(s.className, currentWebView);
 		 * 
 		 * // optionally download webpages for further analysis // downloadUrls();
 		 * 
 		 * findLeaks();
 		 * 
 		 * 
-		 * } // System.out.println("Here in Slicer " + s.class_name);
+		 * } // System.out.println("Here in Slicer " + s.className);
 		 * 
-		 * saveDB(s.class_name); //saveAltDB(s.class_name);
+		 * saveDB(s.className); //saveAltDB(s.className);
 		 * 
 		 * clearSlice();
 		 * 
@@ -241,7 +241,7 @@ public class Slicer {
 	/**
 	 * Save statistics in an sqlite3 database
 	 */
-	public void saveDB(String class_name) {
+	public void saveDB(String className) {
 
 		String sql = "INSERT INTO webviews (apk, class_name, slice, uses_webview, permission_set, js_enabled, injects, injected_class, annotated, invoked, leaks) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 
@@ -255,7 +255,7 @@ public class Slicer {
 		
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, app.getAppName());
-			stmt.setString(2, class_name);
+			stmt.setString(2, className);
 			if (this.currentWebView == null) {
 				stmt.setString(3, "");
 			} else {
@@ -273,7 +273,7 @@ public class Slicer {
 			if (this.currentWebView == null) {
 				stmt.setString(8, "");
 			} else {
-				stmt.setString(8, this.currentWebView.class_name);	
+				stmt.setString(8, this.currentWebView.className);	
 			}
 			stmt.setInt(9, this.annotated);
 			stmt.setInt(10, this.invoked);
@@ -289,7 +289,7 @@ public class Slicer {
 	/**
 	 * Save new statistics in an sqlite3 database
 	 */
-	public void saveAltDB(String class_name, String method_name) {
+	public void saveAltDB(String className, String methodName) {
 
 		String sql = "INSERT INTO webview_prime (appName, initiatingClass, bridgeClass, intefaceObject, bridgeMethods, initiatingMethod) VALUES (?,?,?,?,?,?)";
 		
@@ -305,8 +305,8 @@ public class Slicer {
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			//stmt.setString(1, app.getAppName());
 			stmt.setString(1, this.app.getAppName());
-			stmt.setString(6, method_name);
-			stmt.setString(2, class_name);
+			stmt.setString(6, methodName);
+			stmt.setString(2, className);
 			stmt.setString(4, this.interfaceObject);
 			if (this.currentWebView == null) {
 				stmt.setString(5, "");
@@ -326,7 +326,7 @@ public class Slicer {
 			if (this.currentWebView == null) {
 				stmt.setString(3, "");
 			} else {
-				stmt.setString(3, this.currentWebView.class_name);	
+				stmt.setString(3, this.currentWebView.className);	
 			}
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -540,10 +540,10 @@ public class Slicer {
 	/**
 	 * save the slice in a new file in a new directory called output/apkname/
 	 * 
-	 * @param class_name
+	 * @param className
 	 * @param currentWebView
 	 */
-	public void saveSlice(String class_name, SliceClass currentWebView) {
+	public void saveSlice(String className, SliceClass currentWebView) {
 
 		SliceMethod invokedMethod;
 		
@@ -569,7 +569,7 @@ public class Slicer {
 			bw.newLine();
 
 			for (SliceMethod a : this.annotatedMethods) {
-				if (a.class_name == currentWebView.class_name) {
+				if (a.className == currentWebView.className) {
 					this.annotated++;
 					for (String s : a.sourceCode) {
 						this.extraMethods.add(s);
@@ -692,7 +692,7 @@ public class Slicer {
 		String tempVar;
 		Integer i;
 
-		for (List<String> class_temp : this.class_content) {
+		for (List<String> class_temp : this.classContent) {
 			i = 1;
 			for (String temp : class_temp) {
 				// Regex for Variable/Register search
@@ -710,7 +710,7 @@ public class Slicer {
 					// new Method
 					bits = temp.split(" ");
 					if(currentClass!=null) {
-					currentMethod = new SliceMethod(temp, currentClass.class_name, bits[bits.length - 1], i);
+					currentMethod = new SliceMethod(temp, currentClass.className, bits[bits.length - 1], i);
 					currentClass.methodMap.put(bits[bits.length - 1], currentMethod);
 					}
 
@@ -740,13 +740,13 @@ public class Slicer {
 							//System.out.println("important check tempvar " + tempVar);
 							currentVar = new SliceVar(tempVar, currentMethod);
 							currentMethod.varMap.put(tempVar, currentVar);
-						//	System.out.println("important check currentVar " + currentVar.slice_method);
+						//	System.out.println("important check currentVar " + currentVar.sliceMethod);
 						} else {
 							currentVar = currentMethod.varMap.get(tempVar);
 						}
 
 						// create first varUse or add a new varUse to existing var
-						currentVar.createUse(temp, currentClass.class_name, currentMethod.name, i);
+						currentVar.createUse(temp, currentClass.className, currentMethod.name, i);
 
 						// if there is a webview object here take the first register and slice for it
 						// the first register would be the instace of webview for cases we need to slice
@@ -764,7 +764,7 @@ public class Slicer {
 						|| temp.trim().startsWith(".catch")) {
 					if(currentMethod!=null)
 					currentMethod.cfList
-							.add(new SliceControlFlow(temp, currentClass.class_name, currentMethod.name, i));
+							.add(new SliceControlFlow(temp, currentClass.className, currentMethod.name, i));
 				}
 
 				// move-result needs to add the invoke before
@@ -775,14 +775,14 @@ public class Slicer {
 
 				// save last invoke (needed for move-results)
 				if (temp.trim().startsWith("invoke")) {
-					lastInvoke = new SliceControlFlow(temp, currentClass.class_name, currentMethod.name, i);
+					lastInvoke = new SliceControlFlow(temp, currentClass.className, currentMethod.name, i);
 				}
 
 				// Method Returns
 				if (temp.trim().startsWith("return")) {
 					if(currentMethod!=null)
 					currentMethod.returnList
-							.add(new SliceControlFlow(temp, currentClass.class_name, currentMethod.name, i));
+							.add(new SliceControlFlow(temp, currentClass.className, currentMethod.name, i));
 				}
 
 				// if in method save the line for later addition to slice
@@ -812,12 +812,12 @@ public class Slicer {
 	 * Uses the prepared slice objects to create a backward slice of the given
 	 * position
 	 * 
-	 * @param class_name
-	 * @param method_name
+	 * @param className
+	 * @param methodName
 	 * @param line
 	 * @param register
 	 */
-	public void sliceAt(String class_name, String method_name, Integer line, String register) {
+	public void sliceAt(String className, String methodName, Integer line, String register) {
 
 		Integer current_line;
 		SliceVarUse previousUse;
@@ -828,9 +828,9 @@ public class Slicer {
 
 		// Find and add to slice: Class, Method, Line we shall backward slice
 		try{
-		SliceClass currentClass = this.classMap.get(class_name);
+		SliceClass currentClass = this.classMap.get(className);
 		this.slice.add(currentClass);
-		SliceMethod currentMethod = currentClass.methodMap.get(method_name);
+		SliceMethod currentMethod = currentClass.methodMap.get(methodName);
 		this.slice.add(currentMethod);
 		SliceVar currentVar = currentMethod.varMap.get(register);
 		SliceVarUse currentVarUse = currentVar.varUseMap.get(line);
@@ -845,16 +845,16 @@ public class Slicer {
 			// add the current line to slice
 			this.slice.add(currentVarUse);
 
-			current_line = currentVarUse.line_number;
-			currentVar = currentVarUse.slice_var;
+			current_line = currentVarUse.lineNumber;
+			currentVar = currentVarUse.sliceVar;
 
 			// Add all controlflow things for the method
-			for (SliceControlFlow cf : currentVar.slice_method.cfList) {
+			for (SliceControlFlow cf : currentVar.sliceMethod.cfList) {
 				this.slice.add(cf);
 			}
 
-			currentMethod = currentVar.slice_method;
-			currentClass = this.classMap.get(currentMethod.class_name);
+			currentMethod = currentVar.sliceMethod;
+			currentClass = this.classMap.get(currentMethod.className);
 
 			// add class and method lines to slice
 			this.slice.add(currentMethod);
@@ -873,7 +873,7 @@ public class Slicer {
 
 					// if not in trackedSet, add this variable to the set and the queue
 					if (!this.trackedSet.contains(tempVar)) {
-						this.registerQueue.add(tempVar.varUseMap.get(previousUse.line_number));
+						this.registerQueue.add(tempVar.varUseMap.get(previousUse.lineNumber));
 						this.trackedSet.add(tempVar);
 					}
 				}
@@ -903,7 +903,7 @@ public class Slicer {
 										tempVar = invokedMethod.varMap.get(tempVarName);
 
 										if (!this.trackedSet.contains(tempVar) && tempVar != null) {
-											this.registerQueue.add(tempVar.varUseMap.get(s.line_number));
+											this.registerQueue.add(tempVar.varUseMap.get(s.lineNumber));
 											this.trackedSet.add(tempVar);
 										}
 									}
@@ -917,10 +917,10 @@ public class Slicer {
 				this.slice.add(previousUse);
 				
 
-				current_line = previousUse.line_number;
+				current_line = previousUse.lineNumber;
 
-				if (currentVarUse.slice_var.varUseMap.lowerKey(current_line) != null) {
-					previousUse = currentVar.varUseMap.get(currentVarUse.slice_var.varUseMap.lowerKey(current_line)); // Previous
+				if (currentVarUse.sliceVar.varUseMap.lowerKey(current_line) != null) {
+					previousUse = currentVar.varUseMap.get(currentVarUse.sliceVar.varUseMap.lowerKey(current_line)); // Previous
 																														// Use
 																														// of
 																														// this

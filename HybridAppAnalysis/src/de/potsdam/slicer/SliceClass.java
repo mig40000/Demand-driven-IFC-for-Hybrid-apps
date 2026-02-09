@@ -7,10 +7,10 @@ public class SliceClass extends SliceBase {
 
 	public Map<String, SliceMethod> methodMap = new HashMap<String, SliceMethod>();
 	
-	public SliceClass(String line, String class_name, Integer line_number) {
+	public SliceClass(String line, String className, Integer lineNumber) {
 		this.line = line;
-		this.class_name = class_name;
-		this.line_number = line_number;
+		this.className = className;
+		this.lineNumber = lineNumber;
 	}
 
 }

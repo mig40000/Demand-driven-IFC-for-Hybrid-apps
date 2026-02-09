@@ -16,16 +16,16 @@ import de.potsdam.constants.GenericConstants;
  */
 public class ApkToolHandler {
 
+	private static final String APKTOOL_PATH = System.getProperty("apktool.path", "apktool");
+
 	
 	public void dissembeApk(String apkFile, Logger logger, String apkPath) {
 		
 		String outputFolderPath = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + apkFile;
-	//	System.out.println("intemediateFilePath " + outputFolderPath);
 		System.out.println(apkPath);
 		apkPath = apkPath + ".apk";
 		try {
-			//Use apktool to extract the source
-			ProcessBuilder pb = new ProcessBuilder("/usr/local/bin/apktool","d","-o", outputFolderPath, apkPath);
+			ProcessBuilder pb = new ProcessBuilder(APKTOOL_PATH,"d","-o", outputFolderPath, apkPath);
 			Process p = pb.start();
 
 				BufferedReader reader = 
@@ -52,11 +52,10 @@ public class ApkToolHandler {
 	public void assembleApk(String apk, String path) {
 		
 		try {
-			//Use apktool to extract the source
 			apk = apk.replace("Output/", "");
 			apk = apk.replace(".apk", "");
 			System.out.println(apk);
-			ProcessBuilder pb = new ProcessBuilder("/usr/local/bin/apktool","b", apk, "-o", path);
+			ProcessBuilder pb = new ProcessBuilder(APKTOOL_PATH,"b", apk, "-o", path);
 			Process p = pb.start();
 
 				BufferedReader reader = 

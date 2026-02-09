@@ -6,10 +6,11 @@ import typing
 import subprocess
 import re
 from time import time
-from sys import exit, stderr, stdout, stdin
+from sys import exit, stderr
 
 PROJECT_ROOT = os.path.join(os.getenv("PWD"))
-TIMEOUT = 1000
+TIMEOUT_SECONDS = 1000
+JVM_HEAP_SIZE = "16G"
 
 
 def make_config(
@@ -22,7 +23,7 @@ def make_config(
     android_sdk_root: str,
     version: int,
 ):
-    res = dict()
+    res = {}
     print(f"Using SDK_ROOT={android_sdk_root}")
     android_path = os.path.join(
         android_sdk_root, "platforms", f"android-{version}", "android.jar"
@@ -68,22 +69,19 @@ def ifc_analysis(config_file: str, logfile: str) -> None:
         print(f"failed to find {jar_path}")
         exit(100)
 
-    command = " ".join(
-        [
+    command = [
             "java",
-            "-Xmx16G",
-            # "-Xss2G",
+            f"-Xmx{JVM_HEAP_SIZE}",
             "-jar",
             jar_path,
             "-p",
             config_file,
         ]
-    )
 
     with open(logfile, "w+") as f:
         print("running command: ", command)
         try:
-            subprocess.run(command, shell=True, timeout=TIMEOUT, stdout=f, stderr=f)
+            subprocess.run(command, timeout=TIMEOUT_SECONDS, stdout=f, stderr=f)
         except subprocess.TimeoutExpired:
             print("timeout")
 
@@ -100,14 +98,13 @@ def run_pre_processing(apps_path: str) -> None:
 
     command = [
         "java",
-        "-Xmx16G",
+        f"-Xmx{JVM_HEAP_SIZE}",
         "-jar",
         jar_path,
         apps_path,
     ]
-    cmd = " ".join(command)
     try:
-        subprocess.run(cmd, shell=True, timeout=TIMEOUT)
+        subprocess.run(command, timeout=TIMEOUT_SECONDS)
     except subprocess.TimeoutExpired:
         print("timeout")
 
@@ -129,8 +126,8 @@ def construct_js_dir(js_root_dir: str, apk: str) -> str:
     return os.path.join(js_root_dir, canonical_path)
 
 
-def get_js_file(app_js_dir: str, apk: str) -> str:
-    files: str = []
+def get_js_file(app_js_dir: str, apk: str) -> typing.Optional[str]:
+    files: typing.List[str] = []
     apk = apk.replace(".apk", "")
     for _, _, f in os.walk(app_js_dir):
         files.extend([x for x in f if x.startswith(apk)])
@@ -178,7 +175,7 @@ def run_ifc(apps_directory, database, susi_file, android_sdk_root, version):
             start = time()
             ifc_analysis(config_file, f"{apk_name}.log")
             end = time()
-            print(f"\n\nTOTAL TIME: {end - start}/60")
+            print(f"\n\nTOTAL TIME: {(end - start) / 60:.2f} min")
         else:
             print("Could not find js files", file=stderr)
 

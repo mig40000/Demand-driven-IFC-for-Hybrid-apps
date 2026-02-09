@@ -114,7 +114,7 @@ public class ApplicationAnalysis {
 			    
 				//remove duplicate paths
 				this.removeDuplicate(this.appDetails.getActivityPath());
-				//Store each class file content (in smali format) to the SmaliContent class_content
+				//Store each class file content (in smali format) to the SmaliContent classContent
 				String directoryA = GenericConstants.APKTOOL_OUTPUT_DIRECTORY + this.getAppDetails().getSmaliPath();
 				directoryA = directoryA.replace("smali/", "");
 				System.out.println("directory is " + directoryA);
@@ -136,7 +136,7 @@ public class ApplicationAnalysis {
 			//temp abort	
 			//	System.exit(0);
 				
-				for (List<String> fileContentInSmaliFormat : this.smaliData.class_content){
+				for (List<String> fileContentInSmaliFormat : this.smaliData.classContent){
 					String[] fileContentInArray =  fileContentInSmaliFormat.toArray(new String[fileContentInSmaliFormat.size()]);
 					for (int index =0; index< fileContentInArray.length ; index++){
 					if(fileContentInArray[index].contains(GenericConstants.ADDJSInterface)){
@@ -158,7 +158,7 @@ public class ApplicationAnalysis {
 			//	System.out.println("Came Here Abhis");
 				//Commented temporarly abhishek
 				try {
-				new Slicer( this.smaliData.class_content, this.logger.getLogger(), this.appDetails);
+				new Slicer( this.smaliData.classContent, this.logger.getLogger(), this.appDetails);
 				}
 				catch(Exception e) {
 					this.reInitialize();

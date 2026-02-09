@@ -33,7 +33,7 @@ public class BridgeMethodIFCSummaryDriver {
     protected BridgeSummaryFlowfunctions flowfunctions;
     protected BridgeMethodPathSummaryProblem problem;
 
-    private static boolean DEBUG = false;
+    private static final boolean DEBUG = false;
 
     private final static Logger logger = LoggerFactory.getLogger(Config.TOOLNAME);
 
@@ -67,7 +67,6 @@ public class BridgeMethodIFCSummaryDriver {
         try {
             logger.info("solving constraints");
             this.result = solver.solve();
-//            logger.info(" Result = {}", this.result);
             return this.result;
         } catch (CancelException e) {
             throw new IllegalStateException("Failed to solve the constraints");
@@ -88,7 +87,6 @@ public class BridgeMethodIFCSummaryDriver {
             var object = domain.getMappedObject(i);
             factset.add(object);
         }
-//        noderesult.foreach(i -> factset.add(domain.getMappedObject(i)));
         return factset;
     }
 
