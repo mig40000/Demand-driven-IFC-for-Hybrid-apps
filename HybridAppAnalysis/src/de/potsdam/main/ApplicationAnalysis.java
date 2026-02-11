@@ -37,6 +37,7 @@ public class ApplicationAnalysis {
 	private SmaliContent smaliData;
 	private ManifestParser manifestParser;
 	private IIFALogger logger;
+	private String logDirectory;
 	public static int appCounter;
 	
 	static{
@@ -49,6 +50,7 @@ public class ApplicationAnalysis {
 		this.smaliData = new SmaliContent();
 		this.manifestParser = new ManifestParser();
 		this.logger = new IIFALogger();
+		this.logDirectory = normalizeLogDirectory(GenericConstants.DEFAULT_LOG_DIRECTORY);
 	}
 	
 	public ApplicationAnalysis(File inputDirectory){
@@ -56,7 +58,12 @@ public class ApplicationAnalysis {
 		this.fileContainer = new InputApkFileContainer(inputDirectory);
 	}
 	
-	
+	public ApplicationAnalysis(File inputDirectory, String logDirectory){
+        this();
+        this.fileContainer = new InputApkFileContainer(inputDirectory);
+        this.setLogDirectory(logDirectory);
+    }
+
 	public int checkaddJSInterface(String destination) {
 		int counter = 0;
 		try {
@@ -98,7 +105,7 @@ public class ApplicationAnalysis {
 			int counter = 0;
 			try{	
 				this.appDetails.setAppName(individualApplication.toString());
-				this.logger.initLogging(this.appDetails.getAppName(), GenericConstants.DEFAULT_LOG_DIRECTORY);
+				this.logger.initLogging(this.appDetails.getAppName(), this.logDirectory);
 				this.logger.getLogger().info("Application name is " + this.appDetails.getAppName());
 				this.appDetails.setAppPath(individualApplication.getAbsolutePath());
 				this.apkToolHandler.dissembeApk(this.appDetails.getAppName(), this.logger.getLogger(), this.appDetails.getAppPath());
@@ -293,5 +300,22 @@ public class ApplicationAnalysis {
 		this.logger = logger;
 	}
 
-	
+	public void setLogDirectory(String logDirectory) {
+        this.logDirectory = normalizeLogDirectory(logDirectory);
+    }
+
+	public String getLogDirectory() {
+        return logDirectory;
+    }
+
+	private static String normalizeLogDirectory(String directory) {
+        String candidate = (directory == null || directory.trim().isEmpty())
+                ? GenericConstants.DEFAULT_LOG_DIRECTORY
+                : directory.trim();
+        candidate = candidate.replace("\\", File.separator).replace("/", File.separator);
+        if (!candidate.endsWith(File.separator)) {
+            candidate = candidate + File.separator;
+        }
+        return candidate;
+    }
 }

@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="f4e95812-d293-408a-80d7-c31a1715fbb0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/dbinterfaces/BridgedMethodDb.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/dbinterfaces/BridgedMethodDb.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/AndroidLibraryList.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/AndroidLibraryList.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/BridgeSummaryFlowfunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/BridgeSummaryFlowfunctions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/FlowPathFact.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/FlowPathFact.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/ForwardAnalysisFlowFunctions.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/ForwardAnalysisFlowFunctions.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/InvokingFunctionFlowFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/ifc/InvokingFunctionFlowFunction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/main/Analyzer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/main/Analyzer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/utils/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/main/java/iwandroid/utils/Config.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/TestEnd2End.java" beforeDir="false" afterPath="$PROJECT_DIR$/../IFCAnalysis/src/test/java/TestEnd2End.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HybridAppAnalysis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HybridAppAnalysis.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/potsdam/main/ApplicationAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/potsdam/main/ApplicationAnalysis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/de/potsdam/main/IIFACommandLineInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/potsdam/main/IIFACommandLineInterface.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,15 +19,27 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_/Users/abti/Documents/SDU/CodeProject/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis" value="2Nb1gDt4bDZx6s4wtn22Qn4QWXM" />
+    </persistenceIdMap>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
   <component name="ProjectFrameBounds">
     <option name="x" value="2059" />
     <option name="y" value="-152" />
@@ -38,7 +47,6 @@
     <option name="height" value="1027" />
   </component>
   <component name="ProjectId" id="2Nb1gDt4bDZx6s4wtn22Qn4QWXM" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -89,16 +97,52 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547223602566" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
-    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.DirectoryMappings" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.IIFACommandLineInterface.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/abti/Documents/SDU/CodeProject/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="IIFACommandLineInterface" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="de.potsdam.main.IIFACommandLineInterface" />
+      <module name="HybridAppAnalysis" />
+      <option name="PROGRAM_PARAMETERS" value="../apps" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="de.potsdam.main.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
@@ -118,6 +162,7 @@
       <workItem from="1679918077387" duration="8000" />
       <workItem from="1679918602079" duration="389000" />
       <workItem from="1684965597817" duration="597000" />
+      <workItem from="1770800857341" duration="986000" />
     </task>
     <servers />
   </component>
@@ -223,5 +268,13 @@
         </state>
       </provider>
     </entry>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

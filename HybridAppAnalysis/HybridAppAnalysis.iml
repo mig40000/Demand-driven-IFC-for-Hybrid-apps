@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
-    <libelement value="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/commons-io-2.5-javadoc.jar" />
-    <libelement value="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/commons-io-2.5.jar" />
-    <libelement value="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/kxml2-2.3.0.jar" />
-    <libelement value="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/sqlite-jdbc-3.8.11.1.jar" />
+    <libelement value="file://$MODULE_DIR$/libs/commons-io-2.5-javadoc.jar" />
+    <libelement value="file://$MODULE_DIR$/libs/commons-io-2.5.jar" />
+    <libelement value="file://$MODULE_DIR$/libs/kxml2-2.3.0.jar" />
+    <libelement value="file://$MODULE_DIR$/libs/sqlite-jdbc-3.34.0.jar" />
+    <libelement value="file://$MODULE_DIR$/libs/jsoup-1.15.4.jar" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
     </src_description>
   </component>
-  <component name="NewModuleRootManager">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_10">
     <output url="file://$MODULE_DIR$/bin" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -20,7 +21,7 @@
     <orderEntry type="module-library">
       <library name="commons-io-2.5-javadoc.jar">
         <CLASSES>
-          <root url="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/commons-io-2.5-javadoc.jar" />
+          <root url="file://$MODULE_DIR$/libs/commons-io-2.5-javadoc.jar" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -29,7 +30,7 @@
     <orderEntry type="module-library">
       <library name="commons-io-2.5.jar">
         <CLASSES>
-          <root url="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/commons-io-2.5.jar" />
+          <root url="file://$MODULE_DIR$/libs/commons-io-2.5.jar" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -38,16 +39,25 @@
     <orderEntry type="module-library">
       <library name="kxml2-2.3.0.jar">
         <CLASSES>
-          <root url="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/kxml2-2.3.0.jar" />
+          <root url="file://$MODULE_DIR$/libs/kxml2-2.3.0.jar" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="sqlite-jdbc-3.8.11.1.jar">
+      <library name="sqlite-jdbc-3.34.0.jar">
         <CLASSES>
-          <root url="file:///Users/abhishektiwari/Documents/workspace/AnalysisPhase/libs/sqlite-jdbc-3.8.11.1.jar" />
+          <root url="file://$MODULE_DIR$/libs/sqlite-jdbc-3.34.0.jar" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jsoup-1.15.4.jar">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/libs/jsoup-1.15.4.jar" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
