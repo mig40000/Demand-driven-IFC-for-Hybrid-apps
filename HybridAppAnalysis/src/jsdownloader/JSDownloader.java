@@ -29,7 +29,7 @@ public class JSDownloader {
 		String jsString = new String();
 		String ifcObj = "";
 		String appName = "";
-		
+
 		try {
 			Class.forName("org.sqlite.JDBC");
 			c = DriverManager.getConnection(GenericConstants.DB_NAME);
@@ -196,7 +196,7 @@ public class JSDownloader {
 	}
 	
 	public static ArrayList<String> findJSscript(String path, String appName) {
-		
+
 		ArrayList<String> jsFilePath = new ArrayList();
 		try {
 			//Use apktool to extract the source
@@ -235,7 +235,7 @@ public class JSDownloader {
 		if(jsString.contains("asset") && jsString.contains(".html")) {
 			//System.out.println("correctly parsed JsString " + jsString);
 			StringTokenizer st  = new StringTokenizer(jsString, "///");
-			
+
 			while(st.hasMoreElements()) {
 			//	System.out.println("St is " + st.nextToken());
 				if(!flag)
@@ -257,7 +257,7 @@ public class JSDownloader {
 		if(jsString.contains("javascript:")) {
 		//	System.out.println("jsString is " + jsString);
 			String array[] = jsString.split("javascript:");
-			
+
 			for(String token : array) {
 				script = token;
 			//	System.out.println("script is " + script);
