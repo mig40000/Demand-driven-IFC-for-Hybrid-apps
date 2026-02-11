@@ -5,11 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f4e95812-d293-408a-80d7-c31a1715fbb0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HybridAppAnalysis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/HybridAppAnalysis.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/potsdam/main/ApplicationAnalysis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/potsdam/main/ApplicationAnalysis.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/de/potsdam/main/IIFACommandLineInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/de/potsdam/main/IIFACommandLineInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Database/Intent.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/Database/Intent.sqlite" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/jsdownloader/JSDownloader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/jsdownloader/JSDownloader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +20,7 @@
   <component name="CopilotPersistence">
     <persistenceIdMap>
       <entry key="_/Users/abti/Documents/SDU/CodeProject/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis" value="2Nb1gDt4bDZx6s4wtn22Qn4QWXM" />
+      <entry key="_/Users/jyp/Research/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis" value="39WDBY6McJ9Ehyiny2iBFQRhLbV" />
     </persistenceIdMap>
   </component>
   <component name="Git.Settings">
@@ -37,9 +36,9 @@
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectFrameBounds">
     <option name="x" value="2059" />
     <option name="y" value="-152" />
@@ -105,9 +104,11 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/abti/Documents/SDU/CodeProject/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis",
+    "last_opened_file_path": "/Users/jyp/Research/Demand-driven-IFC-for-Hybrid-apps/HybridAppAnalysis",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -117,6 +118,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -163,6 +165,7 @@
       <workItem from="1679918602079" duration="389000" />
       <workItem from="1684965597817" duration="597000" />
       <workItem from="1770800857341" duration="986000" />
+      <workItem from="1770802798905" duration="998000" />
     </task>
     <servers />
   </component>
