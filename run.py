@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 TIMEOUT_SECONDS = 1000
 JVM_HEAP_SIZE = "16G"
 JS_CODE_DIR = Path("JSCode")
-PREPROCESSING_JAR = Path("Preprocessing", "Preprocessing.jar")
-IFC_JAR = Path("iwanDroid-1.0-jar-with-dependencies.jar")
+PREPROCESSING_JAR = Path("PreprocessingBinary", "Preprocessing.jar")
+IFC_JAR = Path("IFCAnalysis", "target", "iwanDroid-1.0-SNAPSHOT-jar-with-dependencies.jar")
 
 
 @dataclass
@@ -96,6 +96,23 @@ def make_config(
     )
 
 
+def _maven_build() -> None:
+    """Build the project with Maven if the IFC JAR is missing."""
+    if IFC_JAR.exists():
+        return
+    logger.info("IFC JAR not found, running Maven build...")
+    try:
+        subprocess.run(
+            ["mvn", "-q", "package", "-DskipTests"],
+            timeout=TIMEOUT_SECONDS, check=True,
+        )
+    except FileNotFoundError:
+        sys.exit("Error: 'mvn' not found. Install Maven or build manually.")
+    except subprocess.CalledProcessError as exc:
+        sys.exit(f"Error: Maven build failed (exit code {exc.returncode})")
+    _require_path(IFC_JAR, "IFC JAR after build")
+
+
 def _run_jar(jar: Path, args: list[str], *, logfile: Path | None = None) -> None:
     _require_path(jar, f"JAR file {jar}")
     command = ["java", f"-Xmx{JVM_HEAP_SIZE}", "-jar", str(jar), *args]
@@ -110,8 +127,11 @@ def _run_jar(jar: Path, args: list[str], *, logfile: Path | None = None) -> None
         logger.error("Command timed out after %ds", TIMEOUT_SECONDS)
 
 
-def run_pre_processing(apps_path: Path) -> None:
-    _run_jar(PREPROCESSING_JAR, [str(apps_path)])
+def run_pre_processing(apps_path: Path, log_dir: Path | None = None) -> None:
+    args = [str(apps_path)]
+    if log_dir is not None:
+        args.extend(["-l", str(log_dir)])
+    _run_jar(PREPROCESSING_JAR, args)
 
 
 def scan_apks(root_dir: Path):
@@ -188,8 +208,8 @@ def validate_args(args) -> None:
 def parse_args(argv: list[str] | None = None):
     parser = ArgumentParser("iwandroid", formatter_class=RawTextHelpFormatter)
     parser.add_argument(
-        "-d", dest="database", default="Intent.sqlite",
-        help="database path from pre-processing (default: Intent.sqlite)",
+        "-d", dest="database", default=str(Path("HybridAppAnalysis", "Database", "Intent.sqlite")),
+        help="database path from pre-processing (default: HybridAppAnalysis/Database/Intent.sqlite)",
     )
     parser.add_argument(
         "-apks", dest="apps_directory", required=True,
@@ -209,6 +229,10 @@ def parse_args(argv: list[str] | None = None):
         "-v", dest="version", type=int, default=30,
         help="android API level (default: 30)",
     )
+    parser.add_argument(
+        "--log-dir", dest="log_dir", default=None,
+        help="directory for preprocessing log files (default: output/logs)",
+    )
     return parser.parse_args(argv)
 
 
@@ -222,7 +246,10 @@ def main(argv: list[str] | None = None) -> None:
     validate_args(args)
 
     apps_dir = Path(args.apps_directory)
-    run_pre_processing(apps_dir)
+    log_dir = Path(args.log_dir) if args.log_dir else None
+
+    _maven_build()
+    run_pre_processing(apps_dir, log_dir=log_dir)
     run_ifc(
         apps_dir,
         Path(args.database),
